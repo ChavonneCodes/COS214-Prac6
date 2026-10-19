@@ -19,6 +19,7 @@
 
 class WorkItemMemento{
     public:
+        WorkItemMemento(std::string,std::string,Data&,WorkItemState*);
         std::string getWorkItemId();
         std::string getActivityId();
         WorkItemState* getStateKind();
