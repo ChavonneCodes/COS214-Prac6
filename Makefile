@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra
 
 # Automatically find all .cpp files EXCEPT the ones with a main() function
-CORE_SRCS = $(filter-out main.cpp test_observer.cpp test_strategy.cpp, $(wildcard *.cpp))
+CORE_SRCS = $(filter-out BuilderComposite.cpp test_observer.cpp test_strategy.cpp, $(wildcard *.cpp))
 
 # The three executable targets
 all: BuilderComposite test_observer test_strategy
