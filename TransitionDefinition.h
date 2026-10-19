@@ -18,4 +18,4 @@ class TransitionDefinition{
         std::string getCondition() const;
 };
 
-#endif;
+#endif
