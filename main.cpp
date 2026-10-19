@@ -1,4 +1,183 @@
+
+// main.cpp
 #include <iostream>
+#include "WorkItem.h"
+#include "ActivityDefinition.h"
+#include "CreatedState.h"
+#include "AvailableState.h"
+#include "AssignedState.h"
+#include "InProgressState.h"
+#include "CompletedState.h"
+#include "RejectedState.h"
+#include "CancelledState.h"
+#include "EscalatedState.h"
+#include "FailedState.h"
+#include "Participant.h"
+
+// --- Tiny test helpers -------------------------------------------------
+static int passed = 0, failed = 0;
+
+void expect(bool cond, const std::string& what) {
+    if (cond) { ++passed; std::cout << "  [PASS] " << what << "\n"; }
+    else      { ++failed; std::cout << "  [FAIL] " << what << "\n"; }
+}
+
+// Identify the dynamic type of the current state via typeid
+std::string stateName(WorkItem* w) {
+    WorkItemState* s = w->getCurrentState(); // add accessor, or use a friend
+    if (!s) return "<null>";
+    return typeid(*s).name();
+}
+
+// --- Fake ActivityDefinition (minimal) --------------------------------
+// Adjust if your real ActivityDefinition differs.
+class TestActivity : public ActivityDefinition {
+public:
+    std::string getId()   const override { return "act-1"; }
+    std::string getName() const override { return "TestActivity"; }
+};
+
+int main() {
+    std::cout << "===== Happy path: Created -> Available -> Assigned -> InProgress -> Completed =====\n";
+    {
+        WorkItem wi("wi-1", new TestActivity());
+        Participant p;
+
+        // Created state
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("CreatedState") != std::string::npos,
+               "initial state is CreatedState");
+
+        wi.makeAvailable();
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("AvailableState") != std::string::npos,
+               "Created -> Available");
+
+        wi.assign(&p);
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("AssignedState") != std::string::npos,
+               "Available -> Assigned");
+
+        wi.start();
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("InProgressState") != std::string::npos,
+               "Assigned -> InProgress");
+
+        wi.complete();
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("CompletedState") != std::string::npos,
+               "InProgress -> Completed");
+    }
+
+    std::cout << "\n===== Cancel paths =====\n";
+    {
+        WorkItem wi("wi-2", new TestActivity());
+        wi.cancel(); // Created -> Cancelled
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("CancelledState") != std::string::npos,
+               "Created -> Cancelled");
+    }
+    {
+        WorkItem wi("wi-3", new TestActivity());
+        wi.makeAvailable();
+        wi.cancel(); // Available -> Cancelled
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("CancelledState") != std::string::npos,
+               "Available -> Cancelled");
+    }
+    {
+        WorkItem wi("wi-4", new TestActivity());
+        wi.makeAvailable();
+        Participant p; wi.assign(&p);
+        wi.cancel(); // Assigned -> Cancelled
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("CancelledState") != std::string::npos,
+               "Assigned -> Cancelled");
+    }
+    {
+        WorkItem wi("wi-5", new TestActivity());
+        wi.makeAvailable(); Participant p; wi.assign(&p);
+        wi.start();
+        wi.cancel(); // InProgress -> Cancelled
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("CancelledState") != std::string::npos,
+               "InProgress -> Cancelled");
+    }
+
+    std::cout << "\n===== Reject path =====\n";
+    {
+        WorkItem wi("wi-6", new TestActivity());
+        wi.makeAvailable(); Participant p; wi.assign(&p);
+        wi.reject(); // Assigned -> Rejected
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("RejectedState") != std::string::npos,
+               "Assigned -> Rejected");
+        wi.makeAvailable(); // Rejected -> Available
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("AvailableState") != std::string::npos,
+               "Rejected -> Available");
+    }
+
+    std::cout << "\n===== Escalate + Fail paths =====\n";
+    {
+        WorkItem wi("wi-7", new TestActivity());
+        wi.makeAvailable(); Participant p; wi.assign(&p);
+        wi.start();
+        wi.escalated(); // InProgress -> Escalated
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("EscalatedState") != std::string::npos,
+               "InProgress -> Escalated");
+
+        wi.cancel(); // Escalated -> Cancelled
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("CancelledState") != std::string::npos,
+               "Escalated -> Cancelled");
+    }
+    {
+        WorkItem wi("wi-8", new TestActivity());
+        wi.makeAvailable(); Participant p; wi.assign(&p);
+        wi.start();
+        wi.fail(); // InProgress -> Failed
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("FailedState") != std::string::npos,
+               "InProgress -> Failed");
+
+        wi.makeAvailable(); // Failed -> Available
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("AvailableState") != std::string::npos,
+               "Failed -> Available");
+    }
+
+    std::cout << "\n===== Invalid transitions (should print 'Invalid State Transition') =====\n";
+    {
+        WorkItem wi("wi-9", new TestActivity());
+        // Created state: start/complete/reject/escalated/fail are invalid
+        std::cout << "  -- CreatedState invalid calls --\n";
+        wi.start();
+        wi.complete();
+        wi.reject();
+        wi.escalated();
+        wi.fail();
+
+        // Still CreatedState after all invalid calls
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("CreatedState") != std::string::npos,
+               "state unchanged after invalid calls");
+    }
+    {
+        WorkItem wi("wi-10", new TestActivity());
+        wi.makeAvailable();
+        // AvailableState: start/complete/reject/fail invalid
+        std::cout << "  -- AvailableState invalid calls --\n";
+        wi.start();
+        wi.complete();
+        wi.reject();
+        wi.fail();
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("AvailableState") != std::string::npos,
+               "AvailableState unchanged after invalid calls");
+    }
+    {
+        WorkItem wi("wi-11", new TestActivity());
+        wi.makeAvailable(); Participant p; wi.assign(&p);
+        wi.start(); wi.complete(); // now Completed
+        std::cout << "  -- CompletedState invalid calls --\n";
+        wi.cancel();
+        wi.escalated();
+        wi.makeAvailable();
+        expect(std::string(typeid(*wi.getCurrentState()).name()).find("CompletedState") != std::string::npos,
+               "CompletedState unchanged after invalid calls");
+    }
+
+    std::cout << "\n=============================================\n";
+    std::cout << "Passed: " << passed << "  Failed: " << failed << "\n";
+    return failed == 0 ? 0 : 1;
+}
+
+/*#include <iostream>
 #include "WorkflowBlueprint.h"
 #include "WorkflowDirector.h"
 #include "ConcreteWorkflowBuilder.h"
@@ -122,4 +301,4 @@ int main() {
     // The 'def' object goes out of scope here, deleting the Definition Tree.
 
     return 0;
-}
+}*/
