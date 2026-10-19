@@ -7,6 +7,7 @@
 
 class Request{
     public:
+        Request(std::string,std::string,std::string,std::string,Data&);
         std::string getAction();
         std::string getRequiredRoleId();
 
