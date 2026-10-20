@@ -5,7 +5,7 @@ InMemoryDefinitionRepository::~InMemoryDefinitionRepository() {
 }
 
 void InMemoryDefinitionRepository::save(WorkflowDefinition* definition) {
-    // TODO: reject nullptr and duplicate (defId, version) pairs
+    // TODO
     definitions.push_back(definition);
 }
 
