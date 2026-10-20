@@ -15,7 +15,7 @@ public:
     virtual void print(int indentLevel = 0) const = 0;
 
     // Composite operations
-    virtual void addChild(RuntimeComponent* child) {
+    virtual void addChild(RuntimeComponent* ) {
         std::cout << "Cannot add child to a leaf runtime component." << std::endl;
     }
     virtual std::vector<RuntimeComponent*> getChildren() const {
