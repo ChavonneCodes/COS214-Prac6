@@ -1,3 +1,4 @@
+
 /**
  * @file Participant.h
  * @brief A person (or system) who can perform work items.
@@ -75,3 +76,4 @@ public:
 };
 
 #endif // PARTICIPANT_H
+
