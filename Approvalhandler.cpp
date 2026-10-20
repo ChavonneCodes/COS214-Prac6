@@ -11,7 +11,7 @@ void ApprovalHandler::setNext(ApprovalHandler* handler) {
     next = handler;
 }
 
-bool ApprovalHandler::handleRequest(Request& ) {
+bool ApprovalHandler::handleRequest(Request& request) {
     // The base handler cannot approve requests itself.
     return false;
 }

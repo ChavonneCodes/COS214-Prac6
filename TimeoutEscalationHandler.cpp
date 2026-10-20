@@ -2,7 +2,7 @@
 using namespace std;
 
 string TimeoutEscalationHandler::getName(){
-    return "TimeoutEscalationHandler";
+    return "Timeout Escalation Handler";
 }
 
 bool TimeoutEscalationHandler::handleRequest(Request& request){
