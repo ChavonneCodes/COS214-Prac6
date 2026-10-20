@@ -7,5 +7,6 @@ class CompletedState: public WorkItemState{
     public:
         
        WorkItemState* clone();
+       std::string getName()override;
 }; 
 #endif

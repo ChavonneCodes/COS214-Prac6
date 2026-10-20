@@ -3,17 +3,20 @@
 class WorkItem;
 class Participant;
 #include <iostream>
+#include <string>
 
 class WorkItemState{
     public: 
-        virtual  void assign(WorkItem* item, Participant* p){std::cout<<"Invalid State Transition"<<std::endl;};
-        virtual bool start(WorkItem* item){std::cout<<"Invalid State Transition"<<std::endl; return false;};
-        virtual bool complete(WorkItem* item){std::cout<<"Invalid State Transition"<<std::endl; return false;};
-        virtual bool reject(WorkItem* item){std::cout<<"Invalid State Transition"<<std::endl; return false;};
-        virtual bool cancel(WorkItem* item){std::cout<<"Invalid State Transition"<<std::endl; return false;};
-        virtual bool escalated(WorkItem* item){std::cout<<"Invalid State Transition"<<std::endl; return false;};
-        virtual bool fail(WorkItem* item){std::cout<<"Invalid State Transition"<<std::endl; return false;};
-        virtual bool makeAvailable(WorkItem* item) {std::cout<<"Invalid State Transition"<<std::endl; return false;};
-        virtual ~WorkItemState(){};
+        virtual  bool assign(WorkItem*, Participant* ){std::cout<<"Invalid State Transition"<<std::endl; return false;};
+        virtual bool start(WorkItem* ){std::cout<<"Invalid State Transition"<<std::endl; return false;};
+        virtual bool complete(WorkItem* ){std::cout<<"Invalid State Transition"<<std::endl; return false;};
+        virtual bool reject(WorkItem* ){std::cout<<"Invalid State Transition"<<std::endl; return false;};
+        virtual bool cancel(WorkItem* ){std::cout<<"Invalid State Transition"<<std::endl; return false;};
+        virtual bool escalated(WorkItem* ){std::cout<<"Invalid State Transition"<<std::endl; return false;};
+        virtual bool fail(WorkItem* ){std::cout<<"Invalid State Transition"<<std::endl; return false;};
+        virtual bool makeAvailable(WorkItem* ) {std::cout<<"Invalid State Transition"<<std::endl; return false;};
+        virtual std::string getName()=0;
+                virtual ~WorkItemState(){};
+        
 };
 #endif

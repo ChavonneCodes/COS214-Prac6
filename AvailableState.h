@@ -5,9 +5,10 @@
 class AvailableState: public WorkItemState{
 
     public:
-        void assign(WorkItem* item, Participant* p)override;
+        bool assign(WorkItem* item, Participant* p)override;
        bool cancel(WorkItem* item) override;
         bool escalated(WorkItem* item)override;
        WorkItemState* clone();
+       std::string getName()override;
 }; 
 #endif

@@ -1,8 +1,12 @@
 
 #include "WorkItem.h"
+#include "CreatedState.h"
+
 
 WorkItem::WorkItem(const std::string& instanceId, ActivityDefinition* def)
-    : instanceId(instanceId), definition(def), state("IDLE"),currentState(new CreatedState()) {}
+    : instanceId(instanceId), definition(def), state("IDLE"),currentState(new CreatedState()),participant(nullptr) {}
+
+
 
 std::string WorkItem::getId() const { return definition->getId(); }
 std::string WorkItem::getState() const { return state; }
@@ -13,13 +17,20 @@ void WorkItem::print(int indentLevel) const {
     std::cout << indent << "[WorkItem] " << definition->getName() 
               << " (State: " << state << ")\n";
 }
+void WorkItem::setParticipant(Participant* p){
+    if (p==nullptr) return;
+    participant =p;
+}
+WorkItemState* WorkItem:: getCurrentState(){
+    return currentState;
+}
 void WorkItem:: changeState(WorkItemState* newState){
     if(newState==nullptr){return;}
     delete currentState;
     currentState = newState;
 }
     bool WorkItem::assign(Participant* p){
-        return currentState->assign(this,p);
+         return currentState->assign(this, p);
     }
     bool WorkItem::start(){
         return currentState->start(this);

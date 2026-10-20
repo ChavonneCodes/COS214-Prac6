@@ -24,3 +24,6 @@ bool InProgressState::fail(WorkItem* item){
 WorkItemState* InProgressState::clone(){
     return new InProgressState(*this);
 }
+ std::string InProgressState::getName(){
+   return "In_Progress";
+ }

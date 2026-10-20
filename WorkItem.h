@@ -4,6 +4,8 @@
 #include "RuntimeComponent.h"
 #include "ActivityDefinition.h"
 #include "WorkItemState.h"
+#include "Participant.h"
+
 
 
 class WorkItem : public RuntimeComponent {
@@ -12,14 +14,18 @@ private:
     ActivityDefinition* definition;
     std::string state;
     WorkItemState* currentState;
+    Participant* participant;
 
 public:
     WorkItem(const std::string& instanceId, ActivityDefinition* def);
+    
     
     std::string getId() const override;
     std::string getState() const override;
     void setState(const std::string& newState) override;
     void print(int indentLevel = 0) const override;
+    void setParticipant(Participant* p);
+    WorkItemState* getCurrentState();
     void changeState(WorkItemState* newState);
     bool assign(Participant* p);
     bool start();
@@ -29,6 +35,7 @@ public:
     bool escalated();
     bool fail();
     bool makeAvailable();
+    virtual ~WorkItem();
        
 
 };

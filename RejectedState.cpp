@@ -13,3 +13,6 @@ bool RejectedState::cancel(WorkItem* item) {
        WorkItemState* RejectedState::clone(){
         return new RejectedState(*this);
        }
+        std::string RejectedState::getName(){
+   return "Rejected";
+ }

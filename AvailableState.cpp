@@ -4,9 +4,12 @@
 #include "EscalatedState.h"
 #include "WorkItem.h"
 
- void AvailableState::assign(WorkItem* item, Participant* p){
-   item->assign(p);
-   item->changeState(new AssignedState());
+ bool AvailableState::assign(WorkItem* item, Participant* p){
+  if (p == nullptr) return false;           
+    item->setParticipant(p);                  
+    item->changeState(new AssignedState());   
+    return true;
+   
  }
  bool AvailableState::cancel(WorkItem* item){
    item->changeState(new CancelledState());
@@ -18,6 +21,9 @@
  }
  WorkItemState* AvailableState::clone(){
     return new AvailableState(*this);
-    return true;
+    
 
+ }
+  std::string AvailableState::getName(){
+   return "Available";
  }

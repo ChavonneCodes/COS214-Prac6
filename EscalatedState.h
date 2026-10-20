@@ -5,8 +5,9 @@
 class EscalatedState: public WorkItemState{
 
     public:
-        void assign(WorkItem* item, Participant* p)override;
+        bool assign(WorkItem* item, Participant* p)override;
        bool cancel(WorkItem* item) override;
        WorkItemState* clone();
+       std::string getName()override;
 }; 
 #endif

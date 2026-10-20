@@ -8,5 +8,6 @@ class CreatedState: public WorkItemState{
        bool cancel(WorkItem* item) override;
        bool makeAvailable(WorkItem* item)override;
        WorkItemState* clone();
+       std::string getName()override;
 }; 
 #endif

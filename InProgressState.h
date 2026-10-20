@@ -10,5 +10,6 @@ class InProgressState: public WorkItemState{
         bool escalated(WorkItem* item)override;
         bool fail(WorkItem* item)override;
        WorkItemState* clone();
+       std::string getName()override;
 }; 
 #endif

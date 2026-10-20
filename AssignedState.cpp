@@ -29,3 +29,6 @@ bool AssignedState::escalated(WorkItem* item){
  WorkItemState*AssignedState:: clone(){
     return new AssignedState(*this);
  }
+ std::string AssignedState::getName(){
+   return "Assigned";
+ }
