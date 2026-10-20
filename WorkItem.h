@@ -4,7 +4,9 @@
 #include "RuntimeComponent.h"
 #include "Participant.h"   // Strategy: the person an AssignmentStrategy picks
 #include "ActivityDefinition.h"
+#include "WorkItemState.h"
 #include "EventBus.h"      // Observer: WorkItem publishes events to the bus
+
 
 class WorkItem : public RuntimeComponent {
 private:
@@ -12,6 +14,7 @@ private:
     ActivityDefinition* definition;
     Participant* assignedParticipant = nullptr;  ///< Who the item is assigned to (not owned, may be null).
     std::string state;
+    WorkItemState* currentState;
     EventBus* eventBus = nullptr;  ///< Bus that events are published to (not owned, may be null).
 
     /**
@@ -46,10 +49,23 @@ public:
      */
     bool assignTo(Participant* participant);
     
+    
     std::string getId() const override;
     std::string getState() const override;
     void setState(const std::string& newState) override;
     void print(int indentLevel = 0) const override;
+    void setParticipant(Participant* p);
+    WorkItemState* getCurrentState();
+    void changeState(WorkItemState* newState);
+    bool assign(Participant* p);
+    bool start();
+    bool complete();
+    bool reject();
+    bool cancel() ;
+    bool escalated();
+    bool fail();
+    bool makeAvailable();
+    virtual ~WorkItem();
 
     /**
      * @brief Attaches the bus that state-change events are published to (Observer pattern).
@@ -62,6 +78,7 @@ public:
      * @return The instance id.
      */
     std::string getInstanceId() const;
+
 };
 
 #endif

@@ -8,7 +8,7 @@
 #include "TransitionDefinition.h"
 #include "ApprovalChainDefinition.h"
 #include "WorkflowComponent.h"
-#include "WorkflowNodeData.h"
+#include "WorkFlowNodeData.h"
 
 struct WorkflowBlueprint {
     std::string id;
