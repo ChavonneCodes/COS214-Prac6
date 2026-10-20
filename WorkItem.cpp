@@ -1,7 +1,12 @@
+
 #include "WorkItem.h"
+#include "CreatedState.h"
+
 
 WorkItem::WorkItem(const std::string& instanceId, ActivityDefinition* def)
-    : instanceId(instanceId), definition(def), state("IDLE") {}
+    : instanceId(instanceId), definition(def), state("IDLE"),currentState(new CreatedState()) {}
+
+
 
 // ---- Strategy support ----
 
@@ -40,10 +45,54 @@ void WorkItem::publish(const std::string& eventName, const std::string& payload)
 
 void WorkItem::print(int indentLevel) const {
     std::string indent(indentLevel * 2, ' ');
-    std::cout << indent << "[WorkItem] " << definition->getName() 
+    std::cout << indent << "[WorkItem] " << definition->getName()  
               << " (State: " << state << ")";
     if (assignedParticipant) {
         std::cout << " (Assigned: " << assignedParticipant->getName() << ")";
     }
     std::cout << "\n";
 }
+
+void WorkItem::setParticipant(Participant* p){
+    if (p==nullptr) return;
+    assignedParticipant =p;
+}
+WorkItemState* WorkItem:: getCurrentState(){
+    return currentState;
+}
+void WorkItem:: changeState(WorkItemState* newState){
+    if(newState==nullptr){return;}
+    delete currentState;
+    currentState = newState;
+}
+    bool WorkItem::assign(Participant* p){
+         return currentState->assign(this, p);
+    }
+    bool WorkItem::start(){
+        return currentState->start(this);
+    }
+    bool WorkItem::complete(){
+        return currentState->complete(this);
+    }
+    bool WorkItem::reject(){
+        return currentState->reject(this);
+    }
+    bool WorkItem::cancel(){
+        return currentState->cancel(this);
+    }
+    bool WorkItem::escalated(){
+        return currentState->escalated(this);
+    }
+    bool WorkItem::fail(){
+        return currentState->fail(this);
+    }
+    bool WorkItem::makeAvailable(){
+        return currentState->makeAvailable(this);
+    }
+    WorkItem::~WorkItem(){
+        delete currentState;
+        
+    }
+
+   
+
