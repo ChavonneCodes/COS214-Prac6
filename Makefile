@@ -1,31 +1,54 @@
-# Compiler and flags
-CXX = g++
+CXX      = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra
 
-# Automatically find all .cpp files EXCEPT the ones with a main() function
-CORE_SRCS = $(filter-out BuilderComposite.cpp test_observer.cpp test_strategy.cpp TestStateAndCommand.cpp, $(wildcard *.cpp))
+# All non-main source files (no main() in any of these)
+SRCS = ActivityDefinition.cpp ApprovalChainDefinition.cpp ApprovalStepDefinition.cpp \
+       Approvalhandler.cpp AssignCommand.cpp AssignedState.cpp AuditObserver.cpp \
+       AvailableState.cpp CancelCommand.cpp CancelledState.cpp CompleteCommand.cpp \
+       CompletedState.cpp ConcreteWorkflowBuilder.cpp ConditionalRouting.cpp \
+       CreatedState.cpp Data.cpp EscalateCommand.cpp EscalatedState.cpp EventBus.cpp \
+       FailedState.cpp HistoryManager.cpp InProgressState.cpp InstanceFactory.cpp \
+       NotificationObserver.cpp Participant.cpp RejectCommand.cpp RejectedState.cpp \
+       Request.cpp RoleApprovalHandler.cpp RoleBasedAssignment.cpp RoleDefintion.cpp \
+       RuleBasedAssignment.cpp SequentialRouting.cpp StageDefinition.cpp StageInstance.cpp \
+       StartCommand.cpp SubProcessDefinition.cpp SubProcessInstance.cpp \
+       TimeoutEscalationHandler.cpp TransitionDefinition.cpp WorkFlowEvent.cpp \
+       WorkItem.cpp WorkItemMemento.cpp WorkflowBuilder.cpp WorkflowDefinition.cpp \
+       WorkflowDirector.cpp WorkflowEngine.cpp WorkloadBasedAssignment.cpp
 
-# The three executable targets
-all: BuilderComposite test_observer test_strategy TestStateAndCommand
+OBJS = $(SRCS:.cpp=.o)
 
-# Build the Builder Compositeapplication
-BuilderComposite: BuilderComposite.cpp $(CORE_SRCS)
+# One target per test file
+TESTS =BuilderComposite TestDecorator TestChainOfResponsibility TestRouting TestObserver TestStrategy TestObserver TestRouting TestChainOfResponsibility TestMemento
+
+all: $(TESTS)
+
+BuilderComposite: BuilderComposite.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-# Build the Observer test
-test_observer: test_observer.cpp $(CORE_SRCS)
+TestDecorator: test_decorator.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-# Build the Strategy test
-test_strategy: test_strategy.cpp $(CORE_SRCS)
+TestChainOfResponsibility: test_ChainOfResponsibility.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-TestStateAndCommand: TestStateAndCommand.cpp $(CORE_SRCS)
+TestRouting: test_routing.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-# Clean up the executables
+TestObserver: test_observer.cpp $(OBJS)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+TestStrategy: test_strategy.cpp $(OBJS)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+TestChainOfResponsibility: test_ChainOfResponsibility.cpp $(OBJS)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+TestMemento: test_memento.cpp $(OBJS)
+       $(CXX) $(CXXFLAGS) $^ -o $@
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 clean:
-	rm -f BuilderComposite test_observer test_strategy TestStateAndCommand
-
-# Phony targets (so "make clean" always works)
-.PHONY: all clean
+	rm -f $(OBJS) $(TESTS)
