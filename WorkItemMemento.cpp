@@ -1,7 +1,7 @@
 #include "WorkItemMemento.h"
 using namespace std;
 
-WorkItemMemento::WorkItemMemento(string activityId,string workItemId,Data& snapshot,workItemState* state) : activityId(activityId) , workItemId(workItemId) , state(state) , dataSnapshot(data){
+WorkItemMemento::WorkItemMemento(string activityId,string workItemId,Data& snapshot,WorkItemState* state) : activityId(activityId) , workItemId(workItemId) , state(state) , dataSnapshot(snapshot){
 }
 
 string WorkItemMemento::getWorkItemId(){

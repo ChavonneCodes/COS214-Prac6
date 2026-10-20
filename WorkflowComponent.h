@@ -11,7 +11,7 @@ class WorkflowComponent {
         virtual std::string getName() const = 0;
         virtual void print(int indentLevel=0)const=0;
 
-        virtual void addChild(WorkflowComponent *child){
+        virtual void addChild(WorkflowComponent*){
             std::cout<<"Cannot add child to a leaf component." << std::endl;
         }
 

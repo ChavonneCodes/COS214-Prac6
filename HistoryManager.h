@@ -10,7 +10,7 @@ class HistoryManager{
     public:
         void push(WorkflowAction*);
         WorkflowAction* pop();
-        std::vector<WorkflowAction> getAll();
+        std::vector<WorkflowAction*> getAll();
 
     private:
         std::vector<WorkflowAction*> executed;  
