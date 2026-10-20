@@ -4,7 +4,7 @@
 using namespace std;
 
 string ApprovalHandler::getName() {
-    return "ApprovalHandler";
+    return "Approval Handler";
 }
 
 void ApprovalHandler::setNext(ApprovalHandler* handler) {
