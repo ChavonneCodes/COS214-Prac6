@@ -1,4 +1,6 @@
 #include "WorkflowDefinition.h"
+#include "WorkflowComponent.h"
+#include <utility>
 
 WorkflowDefinition::WorkflowDefinition(const std::string& id,const std::string& name,int version):
 definitionId(id),name(name),version(version),root(nullptr) {}
