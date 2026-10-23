@@ -20,7 +20,7 @@ class RuntimeVisitor;
  * like WorkItem and composites like StageInstance). It allows the engine to treat
  * individual tasks and groups of tasks uniformly.
  */
-class RuntimeComponent : public Iterable {
+class RuntimeComponent : public Iterable<RuntimeComponent> {
 public:
     /**
      * @brief Virtual destructor to ensure proper cleanup of derived classes.
@@ -87,9 +87,9 @@ public:
         return {};
     }
 
-    Iterator* createIterator() const override
+    Iterator<RuntimeComponent>* createIterator(TraversalStrategy<RuntimeComponent>* strat) const override
     {
-	    return new RuntimeComponentIterator(*this);
+	    return new RuntimeComponentIterator(*this, strat);
     }
 };
 
