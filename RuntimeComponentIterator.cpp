@@ -23,3 +23,7 @@ const Iterable<RuntimeComponent>& RuntimeComponentIterator::getNext()
 	return *child;
 }
 
+RuntimeComponentIterator::~RuntimeComponentIterator()
+{
+	delete strat;
+}
