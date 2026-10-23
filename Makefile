@@ -14,7 +14,8 @@ SRCS = ActivityDefinition.cpp ApprovalChainDefinition.cpp ApprovalStepDefinition
        StartCommand.cpp SubProcessDefinition.cpp SubProcessInstance.cpp \
        TimeoutEscalationHandler.cpp TransitionDefinition.cpp WorkFlowEvent.cpp \
        WorkItem.cpp WorkItemMemento.cpp WorkflowBuilder.cpp WorkflowDefinition.cpp \
-       WorkflowDirector.cpp WorkflowEngine.cpp WorkloadBasedAssignment.cpp
+       WorkflowDirector.cpp WorkflowEngine.cpp WorkloadBasedAssignment.cpp \
+       RuntimeComponentIterator.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

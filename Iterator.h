@@ -2,6 +2,7 @@
 #define ITERATOR_H
 
 #include "RuntimeComponent.h"
+#include <stack>
 
 using namespace std;
 
@@ -17,18 +18,18 @@ class Iterator
 {
 	public:
 		virtual bool hasNext() const = 0;
-		virtual const Iterable* getNext() = 0;
+		virtual const Iterable& getNext() = 0;
 };
 
 class RuntimeComponent;
 class RuntimeComponentIterator : public Iterator
 {
 	private:
-		const RuntimeComponent& component;
+		stack<const RuntimeComponent*> components;
 	public:
-		RuntimeComponentIterator(const RuntimeComponent& component) : component(component) {}
+		RuntimeComponentIterator(const RuntimeComponent&);
 		bool hasNext() const override;
-		const Iterable* getNext() override;
+		const Iterable& getNext() override;
 };
 
 #endif
