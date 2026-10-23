@@ -2,6 +2,7 @@
 #define ITERATOR_H
 
 #include <stack>
+#include <iostream>
 
 using namespace std;
 
@@ -39,14 +40,26 @@ class TraversalStrategy
 };
 
 template <typename T>
-class DFSTraversalStrategy
+class DFSTraversalStrategy : public TraversalStrategy<T>
 {
 	private:
 		stack<const T*> components;
 	public:
-		virtual void push(const T*) override;
-		virtual const T* pop() override;
-		virtual bool isEmpty() const override;
+		virtual void push(const T* comp) override
+		{
+			components.push(comp);
+			cout << "yay" << endl;
+		}
+		virtual const T* pop() override
+		{
+			const T* top = components.top();
+			components.pop();
+			return top;
+		}
+		virtual bool isEmpty() const override
+		{
+			return components.empty();
+		}
 };
 
 class RuntimeComponent;
