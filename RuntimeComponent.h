@@ -1,11 +1,12 @@
 #ifndef RUNTIME_COMPONENT_H
 #define RUNTIME_COMPONENT_H
 
+#include "Iterator.h"
 #include <string>
 #include <vector>
 #include <iostream>
 
-class RuntimeComponent {
+class RuntimeComponent : public Iterable {
 public:
     virtual ~RuntimeComponent() = default;
 
@@ -20,6 +21,11 @@ public:
     }
     virtual std::vector<RuntimeComponent*> getChildren() const {
         return {};
+    }
+
+    Iterator* createIterator() const override
+    {
+	    return new RuntimeComponentIterator(*this);
     }
 };
 
