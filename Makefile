@@ -20,7 +20,7 @@ SRCS = ActivityDefinition.cpp ApprovalChainDefinition.cpp ApprovalStepDefinition
 OBJS = $(SRCS:.cpp=.o)
 
 # One target per test file (no duplicates!)
-TESTS = BuilderComposite TestDecorator TestChainOfResponsibility TestRouting TestObserver TestStrategy TestMemento
+TESTS = BuilderComposite TestDecorator TestChainOfResponsibility TestRouting TestObserver TestStrategy TestMemento TestIterator
 
 .PHONY: all clean
 
@@ -45,6 +45,9 @@ TestStrategy: test_strategy.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 TestMemento: test_memento.cpp $(OBJS)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+TestIterator: test_iterator.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 %.o: %.cpp
