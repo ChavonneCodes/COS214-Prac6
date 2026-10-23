@@ -1,5 +1,5 @@
 CXX      = g++
-CXXFLAGS = -std=c++11 -Wall -Wextra
+CXXFLAGS = -std=c++11 -Wall -Wextra -g
 
 # Automatically find all .cpp files EXCEPT the ones with a main() function
 CORE_SRCS = $(filter-out main.cpp scenario1.cpp BuilderComposite.cpp TestStateAndCommand.cpp test_%.cpp, $(wildcard *.cpp))
