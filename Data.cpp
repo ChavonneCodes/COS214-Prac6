@@ -1,6 +1,8 @@
 #include "Data.h"
 using namespace std;
 
+Data::Data(): value(""){
+}
 Data::Data(string value) : value(value){
 }
 
