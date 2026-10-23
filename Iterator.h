@@ -1,7 +1,6 @@
 #ifndef ITERATOR_H
 #define ITERATOR_H
 
-#include "RuntimeComponent.h"
 #include <stack>
 
 using namespace std;
