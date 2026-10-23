@@ -6,6 +6,7 @@
 
 class Data{
     public:
+        Data();
         Data(std::string);
         std::string getValue();
         void setValue(std::string);
