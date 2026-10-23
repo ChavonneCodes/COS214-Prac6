@@ -6,7 +6,7 @@
 #include <vector>
 #include <iostream>
 
-class RuntimeComponent : public Iterable {
+class RuntimeComponent : public Iterable<RuntimeComponent> {
 public:
     virtual ~RuntimeComponent() = default;
 
@@ -23,9 +23,9 @@ public:
         return {};
     }
 
-    Iterator* createIterator() const override
+    Iterator<RuntimeComponent>* createIterator(TraversalStrategy<RuntimeComponent>* strat) const override
     {
-	    return new RuntimeComponentIterator(*this);
+	    return new RuntimeComponentIterator(*this, strat);
     }
 };
 
