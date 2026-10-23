@@ -23,22 +23,3 @@ const Iterable<RuntimeComponent>& RuntimeComponentIterator::getNext()
 	return *child;
 }
 
-template <typename T>
-void DFSTraversalStrategy<T>::push(const T* component)
-{
-	components.push(component);
-}
-
-template <typename T>
-const T* DFSTraversalStrategy<T>::pop()
-{
-	const T* top = components.top();
-	components.pop();
-	return top;
-}
-
-template <typename T>
-bool DFSTraversalStrategy<T>::isEmpty() const
-{
-	return components.empty();
-}

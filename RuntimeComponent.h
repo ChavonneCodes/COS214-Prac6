@@ -23,7 +23,7 @@ public:
         return {};
     }
 
-    Iterator<RuntimeComponent>* createIterator(TraversalStrategy<RuntimeComponent>* strat) const override
+    RuntimeComponentIterator* createIterator(TraversalStrategy<RuntimeComponent>* strat) const override
     {
 	    return new RuntimeComponentIterator(*this, strat);
     }
