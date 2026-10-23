@@ -2,7 +2,7 @@
 #define ITERATOR_H
 
 #include <stack>
-#include <iostream>
+#include <queue>
 
 using namespace std;
 
@@ -48,7 +48,6 @@ class DFSTraversalStrategy : public TraversalStrategy<T>
 		virtual void push(const T* comp) override
 		{
 			components.push(comp);
-			cout << "yay" << endl;
 		}
 		virtual const T* pop() override
 		{
@@ -60,6 +59,28 @@ class DFSTraversalStrategy : public TraversalStrategy<T>
 		{
 			return components.empty();
 		}
+};
+
+template <typename T>
+class BFSTraversalStrategy : public TraversalStrategy<T>
+{
+        private:
+                queue<const T*> components;
+        public:
+                virtual void push(const T* comp) override
+                {
+                        components.push(comp);
+                }
+                virtual const T* pop() override
+                {
+                        const T* front = components.front();
+                        components.pop();
+                        return front;
+                }
+                virtual bool isEmpty() const override
+                {
+                        return components.empty();
+                }
 };
 
 class RuntimeComponent;
