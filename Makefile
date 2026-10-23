@@ -1,5 +1,5 @@
 CXX      = g++
-CXXFLAGS = -std=c++11 -Wall -Wextra
+CXXFLAGS = -std=c++11 -Wall -Wextra -g
 
 # All non-main source files (no main() in any of these)
 SRCS = ActivityDefinition.cpp ApprovalChainDefinition.cpp ApprovalStepDefinition.cpp \
