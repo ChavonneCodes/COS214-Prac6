@@ -1,4 +1,11 @@
 #include "ActivityDefinition.h"
+/**
+ * @class ActivityDefinition
+ * @brief Represents a single leaf node (activity) in the static Workflow Definition tree.
+ * 
+ * Part of the Composite pattern, this class defines a specific piece of work
+ * that must be performed within a workflow.
+ */
 
 ActivityDefinition::ActivityDefinition(const std::string& id, const std::string& name, 
                        const std::string& roleId, const std::string& chainId)
