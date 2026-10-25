@@ -10,7 +10,7 @@ SRCS = ActivityDefinition.cpp ApprovalChainDefinition.cpp ApprovalStepDefinition
        FailedState.cpp HistoryManager.cpp InProgressState.cpp InstanceFactory.cpp \
        NotificationObserver.cpp Participant.cpp RejectCommand.cpp RejectedState.cpp \
        Request.cpp RoleApprovalHandler.cpp RoleBasedAssignment.cpp RoleDefintion.cpp \
-       RuleBasedAssignment.cpp SequentialRouting.cpp StageDefinition.cpp StageInstance.cpp \
+       RuleBasedAssignment.cpp RuntimeComponent.cpp SequentialRouting.cpp StageDefinition.cpp StageInstance.cpp \
        StartCommand.cpp SubProcessDefinition.cpp SubProcessInstance.cpp \
        TimeoutEscalationHandler.cpp TransitionDefinition.cpp WorkFlowEvent.cpp \
        WorkItem.cpp WorkItemMemento.cpp WorkflowBuilder.cpp WorkflowDefinition.cpp \
@@ -19,11 +19,14 @@ SRCS = ActivityDefinition.cpp ApprovalChainDefinition.cpp ApprovalStepDefinition
 OBJS = $(SRCS:.cpp=.o)
 
 # One target per test file (no duplicates!)
-TESTS = BuilderComposite TestDecorator TestChainOfResponsibility TestRouting TestObserver TestStrategy TestMemento
+TESTS = Scenario1 BuilderComposite TestDecorator TestChainOfResponsibility TestRouting TestObserver TestStrategy TestMemento
 
 .PHONY: all clean
 
 all: $(TESTS)
+
+Scenario1: scenario1.cpp $(OBJS)
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
 BuilderComposite: BuilderComposite.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
@@ -51,3 +54,5 @@ TestMemento: test_memento.cpp $(OBJS)
 
 clean:
 	rm -f $(OBJS) $(TESTS)
+clean-t:
+	del /Q *.o *.exe
