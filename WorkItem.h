@@ -7,13 +7,11 @@
 #include "WorkItemState.h"
 #include "EventBus.h"      // Observer: WorkItem publishes events to the bus
 
-
 class WorkItem : public RuntimeComponent {
 private:
     std::string instanceId;
     ActivityDefinition* definition;
     Participant* assignedParticipant = nullptr;  ///< Who the item is assigned to (not owned, may be null).
-    std::string state;
     WorkItemState* currentState;
     EventBus* eventBus = nullptr;  ///< Bus that events are published to (not owned, may be null).
 
@@ -46,7 +44,7 @@ public:
     Participant* getAssignedParticipant() const;
 
     /**
-     * @brief Assigns the item to a participant and sets its state to "ASSIGNED".
+     * @brief Assigns the item to a participant and transitions its state to Assigned.
      *
      * If the item was already assigned, the previous participant loses one
      * open item and the new participant gains one.
@@ -62,13 +60,13 @@ public:
     std::string getId() const override;
 
     /**
-     * @brief Retrieves the current state of the work item as a string.
-     * @return The current state string.
+     * @brief Retrieves the current state of the work item.
+     * @return The current state name.
      */
     std::string getState() const override;
 
     /**
-     * @brief Sets the state string directly.
+     * @brief Sets the state using a string (compatibility layer for tests/Observer).
      * @param newState The new state string.
      */
     void setState(const std::string& newState) override;
@@ -80,81 +78,36 @@ public:
     void print(int indentLevel = 0) const override;
 
     /**
-     * @brief Sets the assigned participant directly without triggering state changes or events.
+     * @brief Sets the assigned participant directly and updates their workload.
      * @param p Pointer to the participant.
      */
     void setParticipant(Participant* p);
 
     /**
-     * @brief Retrieves the current state object (State pattern).
+     * @brief Retrieves the current state object.
      * @return Pointer to the current WorkItemState.
      */
     WorkItemState* getCurrentState();
 
     /**
-     * @brief Transitions the work item to a new state (State pattern).
-     * 
-     * Deletes the old state object and replaces it with the new one.
+     * @brief Transitions the work item to a new state and publishes an event.
      * @param newState Pointer to the new WorkItemState.
      */
     void changeState(WorkItemState* newState);
 
-    /**
-     * @brief Transitions the work item to the Assigned state.
-     * @param p Pointer to the participant being assigned.
-     * @return true if the transition was successful, false otherwise.
-     */
     bool assign(Participant* p);
-
-    /**
-     * @brief Transitions the work item to the Started/Running state.
-     * @return true if the transition was successful, false otherwise.
-     */
     bool start();
-
-    /**
-     * @brief Transitions the work item to the Completed/Success state.
-     * @return true if the transition was successful, false otherwise.
-     */
     bool complete();
-
-    /**
-     * @brief Transitions the work item to the Rejected state.
-     * @return true if the transition was successful, false otherwise.
-     */
     bool reject();
-
-    /**
-     * @brief Transitions the work item to the Cancelled state.
-     * @return true if the transition was successful, false otherwise.
-     */
-    bool cancel() ;
-
-    /**
-     * @brief Transitions the work item to the Escalated state.
-     * @return true if the transition was successful, false otherwise.
-     */
+    bool cancel();
     bool escalated();
-
-    /**
-     * @brief Transitions the work item to the Failed state.
-     * @return true if the transition was successful, false otherwise.
-     */
     bool fail();
-
-    /**
-     * @brief Transitions the work item to the Available state.
-     * @return true if the transition was successful, false otherwise.
-     */
     bool makeAvailable();
-
-    /**
-     * @brief Destructor that cleans up the current state object.
-     */
+    
     virtual ~WorkItem();
 
     /**
-     * @brief Attaches the bus that state-change events are published to (Observer pattern).
+     * @brief Attaches the bus that state-change events are published to.
      * @param bus Event bus (not owned). Pass nullptr to stop publishing.
      */
     void setEventBus(EventBus* bus);
@@ -164,7 +117,6 @@ public:
      * @return The instance id.
      */
     std::string getInstanceId() const;
-
 };
 
 #endif
