@@ -68,6 +68,13 @@ public:
      * @param indentLevel The number of indentation levels to apply (2 spaces per level).
      */
     void print(int indentLevel = 0) const override;
+
+    /**
+     * @brief Calls the visitor's visitSubProcess() for this node.
+     *
+     * @param visitor The operation to run (Visitor pattern).
+     */
+    void accept(RuntimeVisitor& visitor) override;
 };
 
 #endif // SUB_PROCESS_INSTANCE_H
