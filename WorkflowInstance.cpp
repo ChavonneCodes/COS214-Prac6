@@ -1,33 +1,31 @@
 #include "WorkflowInstance.h"
+#include <iostream>
 
-namespace {
-
-// Walks the Composite tree and collects its leaves.
-// TODO: replace with the RunTimeIterator once the Iterator pattern is in.
-void collectWorkItems(RuntimeComponent* node, std::vector<WorkItem*>& out) {
-    if (!node) return;
-    WorkItem* item = dynamic_cast<WorkItem*>(node);
-    if (item) out.push_back(item);
-    for (RuntimeComponent* child : node->getChildren()) {
-        collectWorkItems(child, out);
-    }
-}
-
-} // namespace
-
-WorkflowInstance::WorkflowInstance(const std::string& instanceId, const std::string& definitionId,
-                                   int definitionVersion, RuntimeComponent* root, EventBus* eventBus)
-    : instanceId(instanceId), definitionId(definitionId), definitionVersion(definitionVersion),
-      root(root), eventBus(eventBus) {}
+WorkflowInstance::WorkflowInstance(const std::string& id, const std::string& defId, int version, 
+                                   RuntimeComponent* rootTree, EventBus* bus)
+    : instanceId(id), definitionId(defId), definitionVersion(version), 
+      root(rootTree), eventBus(bus), state("CREATED") {}
 
 WorkflowInstance::~WorkflowInstance() {
-    delete root;
+    if (root) delete root;
 }
 
-std::string WorkflowInstance::getInstanceId() const { return instanceId; }
+std::string WorkflowInstance::getId() const { return instanceId; }
 std::string WorkflowInstance::getDefinitionId() const { return definitionId; }
 int WorkflowInstance::getDefinitionVersion() const { return definitionVersion; }
+std::string WorkflowInstance::getState() const { return state; }
+void WorkflowInstance::setState(const std::string& newState) { state = newState; }
 RuntimeComponent* WorkflowInstance::getRoot() const { return root; }
+Data& WorkflowInstance::getData() { return data; }
+
+void collectWorkItems(RuntimeComponent* node, std::vector<WorkItem*>& items) {
+    if (!node) return;
+    WorkItem* item = dynamic_cast<WorkItem*>(node);
+    if (item) items.push_back(item);
+    for (RuntimeComponent* child : node->getChildren()) {
+        collectWorkItems(child, items);
+    }
+}
 
 std::vector<WorkItem*> WorkflowInstance::getWorkItems() const {
     std::vector<WorkItem*> items;
@@ -35,22 +33,11 @@ std::vector<WorkItem*> WorkflowInstance::getWorkItems() const {
     return items;
 }
 
-WorkItem* WorkflowInstance::findWorkItem(const std::string& activityId) const {
+WorkItem* WorkflowInstance::findWorkItem(const std::string& workItemId) const {
     for (WorkItem* item : getWorkItems()) {
-        if (item->getId() == activityId) return item;
+        if (item->getId() == workItemId) {
+            return item;
+        }
     }
     return nullptr;
 }
-
-std::string WorkflowInstance::getState() const { return state; }
-
-void WorkflowInstance::setState(const std::string& newState) {
-    std::string oldState = state;
-    state = newState;
-    if (eventBus) {
-        eventBus->notify(WorkFlowEvent("INSTANCE_STATE_CHANGED", instanceId, "-",
-                                       oldState + " -> " + newState));
-    }
-}
-
-Data& WorkflowInstance::getData() { return data; }

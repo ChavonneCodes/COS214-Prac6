@@ -13,7 +13,6 @@ private:
     std::string instanceId;
     ActivityDefinition* definition;
     Participant* assignedParticipant = nullptr;  ///< Who the item is assigned to (not owned, may be null).
-    std::string state;
     WorkItemState* currentState;
     EventBus* eventBus = nullptr;  ///< Bus that events are published to (not owned, may be null).
 
