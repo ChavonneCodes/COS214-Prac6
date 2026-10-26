@@ -3,7 +3,7 @@
 
 using namespace std;
 
-string ApprovalHandler::getName() {
+string ApprovalHandler::getName() const{
     return "Approval Handler";
 }
 
@@ -11,17 +11,23 @@ void ApprovalHandler::setNext(ApprovalHandler* handler) {
     next = handler;
 }
 
-bool ApprovalHandler::handleRequest(Request& request) {
+HandlerResult ApprovalHandler::handleRequest(Request& request) {
     // The base handler cannot approve requests itself.
-    return false;
+    return HandlerResult::Continue;
 }
 
-bool ApprovalHandler::authorise(Request& request) {
+HandlerResult ApprovalHandler::authorise(Request& request) {
 
+    HandlerResult result = handleRequest(request);
     // Step 1: Try to handle the request here.
-    if (handleRequest(request)) {
+    if (result == HandlerResult::Handled) {
         cout << getName() << " handled the request.\n";
-        return true;
+        return result;
+    }
+
+    if(result == HandlerResult::Rejected){
+        cout << getName() << " rejected the Request.\n";
+        return result;
     }
 
     // Step 2: Pass the request to the next handler.
@@ -31,5 +37,5 @@ bool ApprovalHandler::authorise(Request& request) {
 
     // Step 3: No handler could handle the request.
     cout << "No handler could authorise the request.\n";
-    return false;
+    return HandlerResult::Rejected;
 }

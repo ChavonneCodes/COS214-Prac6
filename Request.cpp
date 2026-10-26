@@ -1,20 +1,39 @@
 #include "Request.h"
 using namespace std;
 
-Request::Request(const Data& data): data(data){
+Request::Request(const Data& data)
+    : action(""),
+      workItemId(""),
+      instanceId(""),
+      requiredRoleId(""),
+      data(data),
+      requestId(""),
+      requesterId(""),
+      reason(""),
+      currentState("")
+{
 }
 
-Request::Request(const string& requestId,
-            const string& action,
-            const string& workItemId,
-            const string& instanceId,
-            const string& requiredRoleId,
-            const string& requesterId,
-            const string& reason,
-            const string& currentState,
-            const Data& data)
-    : requestId(requestId),action(action), workItemId(workItemId), instanceId(instanceId),
-      requiredRoleId(requiredRoleId),requesterId(requesterId) , reason(reason), currentState(currentState),data(data)
+Request::Request(
+    const std::string& requestId,
+    const std::string& action,
+    const std::string& workItemId,
+    const std::string& instanceId,
+    const std::string& requiredRoleId,
+    const std::string& requesterId,
+    const std::string& reason,
+    const std::string& currentState,
+    const Data& data
+)
+    : action(action),
+      workItemId(workItemId),
+      instanceId(instanceId),
+      requiredRoleId(requiredRoleId),
+      data(data),
+      requestId(requestId),
+      requesterId(requesterId),
+      reason(reason),
+      currentState(currentState)
 {
 }
 
@@ -51,8 +70,9 @@ void Request::setAction(const string& action){
 }
 
 void Request::setCurrentState(const string& currentState){
-
+    this->currentState = currentState;
 }
+
 void Request::setData(const Data& data){
     this->data = data;
 }

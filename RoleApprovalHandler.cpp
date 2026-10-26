@@ -1,18 +1,30 @@
 #include "RoleApprovalHandler.h"
+#include <iostream>
+
 using namespace std;
 
-
-RoleApprovalHandler::RoleApprovalHandler(const string& roleId) : roleId(roleId){
+RoleApprovalHandler::RoleApprovalHandler(const string& roleId)
+    : roleId(roleId) {
 }
 
-string RoleApprovalHandler::getName(){
-    return "Role Approval Handler";
+string RoleApprovalHandler::getName() const {
+    return "RoleApprovalHandler";
 }
 
-// This handler is responsible for the required role.
-bool RoleApprovalHandler::handleRequest(Request& request) {
-    if (request.getRequiredRoleId() == roleId) {
-        return true;
+HandlerResult RoleApprovalHandler::handleRequest(
+    Request& request) {
+
+    if (request.getAction() != "APPROVE") {
+        return HandlerResult::Continue;
     }
-    return false;
+
+    if (request.getRequiredRoleId() == roleId) {
+        cout << "Required role matched: " << roleId << '\n';
+        return HandlerResult::Handled;
+    }
+
+    cout << "This handler cannot process role: "
+         << request.getRequiredRoleId() << '\n';
+
+    return HandlerResult::Continue;
 }

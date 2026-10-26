@@ -1,4 +1,51 @@
 #include <iostream>
+
+#include "Request.h"
+#include "ValidationApprovalHandler.h"
+#include "WorkflowStateApprovalHandler.h"
+#include "RoleApprovalHandler.h"
+#include "TimeoutEscalationHandler.h"
+
+using namespace std;
+
+int main() {
+    ValidationApprovalHandler validation;
+    WorkflowStateApprovalHandler stateHandler;
+    RoleApprovalHandler managerHandler("MANAGER");
+    TimeoutEscalationHandler timeoutHandler;
+
+    // Build the chain.
+    validation.setNext(&stateHandler);
+    stateHandler.setNext(&managerHandler);
+    managerHandler.setNext(&timeoutHandler);
+
+    Data data("Purchase of new equipment");
+
+    Request request(
+        "REQ-001",
+        "APPROVE",
+        "WI-001",
+        "WF-100",
+        "MANAGER",
+        "EMP-012",
+        "Equipment purchase approval",
+        "Created",
+        data
+    );
+
+    HandlerResult result = validation.authorise(request);
+
+    if (result == HandlerResult::Handled) {
+        cout << "\nRequest processed successfully.\n";
+    } else if (result == HandlerResult::Rejected) {
+        cout << "\nRequest rejected or could not be processed.\n";
+    }
+
+    return 0;
+}
+
+/*
+#include <iostream>
 #include "Request.h"
 #include "RoleApprovalHandler.h"
 #include "TimeoutEscalationHandler.h"
@@ -24,3 +71,4 @@ int main() {
 
     return 0;
 }
+*/
