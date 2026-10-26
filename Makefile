@@ -1,5 +1,4 @@
-# Compiler and flags
-CXX = g++
+CXX      = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra
 
 # Automatically find all .cpp files EXCEPT the ones with a main() function
