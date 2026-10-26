@@ -41,7 +41,7 @@ class Request{
 
     private:
         std::string action;
-        std::string WorkItemId;
+        std::string workItemId;
         std::string instanceId;
         std::string requiredRoleId;
         Data data;

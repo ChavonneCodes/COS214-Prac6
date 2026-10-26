@@ -13,7 +13,7 @@ Request::Request(const string& requestId,
             const string& reason,
             const string& currentState,
             const Data& data)
-    : requestId(requestId),action(action), WorkItemId(workItemId), instanceId(instanceId),
+    : requestId(requestId),action(action), workItemId(workItemId), instanceId(instanceId),
       requiredRoleId(requiredRoleId),requesterId(requesterId) , reason(reason), currentState(currentState),data(data)
 {
 }
@@ -27,7 +27,7 @@ string Request::getRequiredRoleId() const {
 }
 
 string Request::getWorkItemId() const{
-    return WorkItemId;
+    return workItemId;
 }
 string Request::getInstanceId() const{
     return instanceId;
@@ -67,5 +67,10 @@ void Request::setRequiredRoleId(const string& requiredRoleId){
 
 //validator
 bool Request::isValid(){
-    
+    return !requestId.empty()
+        && !action.empty()
+        && !workItemId.empty()
+        && !instanceId.empty()
+        && !requiredRoleId.empty()
+        && !requesterId.empty();
 }
