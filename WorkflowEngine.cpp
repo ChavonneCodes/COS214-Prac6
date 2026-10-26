@@ -1,6 +1,7 @@
 #include "WorkflowEngine.h"
 #include "InstanceFactory.h"
 #include "LabelledRuntimeDecorator.h"
+#include "WorkItem.h"
 
 WorkflowEngine::WorkflowEngine(InMemoryDefinitionRepository* repository, EventBus* eventBus,
                                HistoryManager* history, AuditObserver* audit)
@@ -33,7 +34,6 @@ std::string WorkflowEngine::startWorkflow(const std::string& defId, int version)
     WorkflowInstance* instance = new WorkflowInstance(instanceId, defId, version, root, eventBus);
 
     for (WorkItem* item : instance->getWorkItems()) {
-        item->setState(item->getCurrentState()->getName()); // start from the State object's name (not published)
         item->setEventBus(eventBus);                        // from now on, publish every change
     }
 
