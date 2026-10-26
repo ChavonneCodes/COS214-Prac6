@@ -10,16 +10,23 @@ void InMemoryDefinitionRepository::save(WorkflowDefinition* definition) {
 }
 
 WorkflowDefinition* InMemoryDefinitionRepository::load(const std::string& defId, int version) const {
-    // TODO
-    (void)defId;
-    (void)version;
+    for (WorkflowDefinition* d : definitions) {
+        if (d->getDefinitionId() == defId && d->getVersion() == version) {
+            return d;
+        }
+    }
     return nullptr;
 }
 
 WorkflowDefinition* InMemoryDefinitionRepository::loadLatest(const std::string& defId) const {
-    // TODO
-    (void)defId;
-    return nullptr;
+    WorkflowDefinition* latest = nullptr;
+    for (WorkflowDefinition* d : definitions) {
+        if (d->getDefinitionId() == defId &&
+            (latest == nullptr || d->getVersion() > latest->getVersion())) {
+            latest = d;
+        }
+    }
+    return latest;
 }
 
 const std::vector<WorkflowDefinition*>& InMemoryDefinitionRepository::findAll() const {

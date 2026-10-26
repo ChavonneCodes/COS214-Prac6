@@ -11,4 +11,7 @@ void EscalateCommand::undo(){
     std::cout<<"Command undone"<<std::endl;
 }
 std::string EscalateCommand::getDescription(){
-    return  "WorkItem ID: "+ receiver->getId() +" has been Escalateed to pariticpant: "+ targetRoleId;}
+    return  "WorkItem ID: "+ receiver->getId() +" has been Escalated to role: "+ targetRoleId;}
+std::string EscalateCommand::getInstanceId(){
+    return receiver->getInstanceId();
+}
