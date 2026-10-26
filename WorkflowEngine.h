@@ -1,5 +1,6 @@
 #ifndef WORKFLOWENGINE_H
 #define WORKFLOWENGINE_H
+#include <map>
 #include <string>
 #include <vector>
 #include "WorkflowAction.h"
@@ -7,17 +8,19 @@
 #include "EventBus.h"
 #include "HistoryManager.h"
 #include "AuditObserver.h"
-
-class WorkflowInstance; // TODO: not implemented yet (see UML V4)
+#include "AssignmentStrategy.h"
+#include "Participant.h"
+#include "WorkflowInstance.h"
 
 /**
  * @brief Single entry point to TIVIDY (Facade pattern, role: Facade).
  *
  * Clients (the TUI and the scenarios) talk only to the engine. It hides the
- * subsystems behind it: the definition repository, the event bus, the
- * command history and the audit log.
+ * subsystems behind it: the definition repository, the instance factory, the
+ * event bus, the command history and the audit log.
  *
- * The engine does not own the subsystems it is given.
+ * The engine does not own the subsystems it is given. It does own the
+ * instances it starts and the commands submitted to it.
  */
 class WorkflowEngine{
 private:
@@ -25,6 +28,13 @@ private:
     EventBus* eventBus = nullptr;                       ///< Bus that engine events are published on (not owned).
     HistoryManager* history = nullptr;                  ///< Executed commands, used for undo (not owned).
     AuditObserver* audit = nullptr;                     ///< Audit log observer (not owned).
+
+    AssignmentStrategy* assignment = nullptr;           ///< Picks who gets each new work item (not owned, may be null).
+    std::vector<Participant*> candidates;               ///< Participants the strategy chooses from (not owned).
+
+    std::map<std::string, WorkflowInstance*> instances; ///< Started instances by id (owned).
+    std::vector<WorkflowAction*> submitted;             ///< Every command submitted (owned).
+    int instanceCount = 0;                              ///< Used to number new instance ids.
 
 public:
     WorkflowEngine() = default;
@@ -38,6 +48,19 @@ public:
      */
     WorkflowEngine(InMemoryDefinitionRepository* repository, EventBus* eventBus,
                    HistoryManager* history, AuditObserver* audit);
+
+    /** @brief Deletes the instances started and the commands submitted. */
+    ~WorkflowEngine();
+
+    WorkflowEngine(const WorkflowEngine&) = delete;
+    WorkflowEngine& operator=(const WorkflowEngine&) = delete;
+
+    /**
+     * @brief Sets who new work items are assigned to (Strategy pattern).
+     * @param strategy   Assignment rule (not owned, may be null for no assignment).
+     * @param candidates Participants the rule chooses from (not owned).
+     */
+    void setAssignment(AssignmentStrategy* strategy, const std::vector<Participant*>& candidates);
 
     /**
      * @brief Creates and starts a new instance of a workflow definition.
@@ -56,6 +79,9 @@ public:
 
     /**
      * @brief Executes a command (Command pattern, role: Invoker).
+     *
+     * The engine takes ownership of the command. Commands that succeed are
+     * recorded in the history.
      * @param action Command to execute.
      * @return true if the command succeeded.
      */

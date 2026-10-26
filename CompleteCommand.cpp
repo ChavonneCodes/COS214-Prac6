@@ -10,4 +10,7 @@ void CompleteCommand::undo(){
     std::cout<<"Command undone"<<std::endl;
 }
 std::string CompleteCommand::getDescription(){
-    return  "WorkItem ID: "+receiver->getId() +" has been Completeed";}
+    return  "WorkItem ID: "+receiver->getId() +" has been Completed";}
+std::string CompleteCommand::getInstanceId(){
+    return receiver->getInstanceId();
+}

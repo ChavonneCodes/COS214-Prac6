@@ -8,6 +8,7 @@ public:
     virtual bool execute()=0;
     virtual void undo() =0;
     virtual std::string getDescription()=0;
+    virtual std::string getInstanceId()=0; // workflow instance the command acts on
     virtual ~WorkflowAction(){};
 
 };

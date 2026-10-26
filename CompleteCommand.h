@@ -10,5 +10,6 @@ class CompleteCommand: public WorkflowAction{
         bool execute()override;
         void undo()override;
         std::string getDescription()override;
+        std::string getInstanceId()override;
 };
 #endif

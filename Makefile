@@ -1,6 +1,13 @@
 CXX      = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra
 
+# Automatically find all .cpp files EXCEPT the ones with a main() function
+CORE_SRCS = $(filter-out main.cpp BuilderComposite.cpp TestStateAndCommand.cpp test_%.cpp, $(wildcard *.cpp))
+
+# Every test program (each test_*.cpp has its own main)
+TESTS = $(basename $(wildcard test_*.cpp)) TestStateAndCommand
+
+all: main BuilderComposite $(TESTS)
 # All non-main source files (no main() in any of these)
 SRCS = ActivityDefinition.cpp ApprovalChainDefinition.cpp ApprovalStepDefinition.cpp \
        Approvalhandler.cpp AssignCommand.cpp AssignedState.cpp AuditObserver.cpp \
@@ -18,6 +25,8 @@ SRCS = ActivityDefinition.cpp ApprovalChainDefinition.cpp ApprovalStepDefinition
 
 OBJS = $(SRCS:.cpp=.o)
 
+# Build the full system demo (one project approval run through every pattern)
+main: main.cpp $(CORE_SRCS)
 # One target per test file (no duplicates!)
 TESTS = Scenario1 BuilderComposite TestDecorator TestChainOfResponsibility TestRouting TestObserver TestStrategy TestMemento
 
@@ -31,28 +40,28 @@ Scenario1: scenario1.cpp $(OBJS)
 BuilderComposite: BuilderComposite.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-TestDecorator: test_decorator.cpp $(OBJS)
+# Build the Builder Composite application
+BuilderComposite: BuilderComposite.cpp $(CORE_SRCS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-TestChainOfResponsibility: test_ChainOfResponsibility.cpp $(OBJS)
+# Build any test program from its own source file
+test_%: test_%.cpp $(CORE_SRCS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-TestRouting: test_routing.cpp $(OBJS)
+TestStateAndCommand: TestStateAndCommand.cpp $(CORE_SRCS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-TestObserver: test_observer.cpp $(OBJS)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+# Build and run the demo
+run: main
+	./main
 
-TestStrategy: test_strategy.cpp $(OBJS)
-	$(CXX) $(CXXFLAGS) $^ -o $@
-
-TestMemento: test_memento.cpp $(OBJS)
-	$(CXX) $(CXXFLAGS) $^ -o $@
-
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
+# Clean up the executables
 clean:
+	rm -f main BuilderComposite $(TESTS)
+
+# Phony targets (so "make clean" always works)
+.PHONY: all clean run
+
 	rm -f $(OBJS) $(TESTS)
 clean-t:
 	del /Q *.o *.exe
