@@ -12,3 +12,6 @@ void AssignCommand::undo(){
 }
 std::string AssignCommand::getDescription(){
     return  "WorkItem ID: "+ receiver->getId() +" has been Assigned";}
+std::string AssignCommand::getInstanceId(){
+    return receiver->getInstanceId();
+}

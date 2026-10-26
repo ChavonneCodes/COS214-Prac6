@@ -64,6 +64,7 @@ void WorkItem:: changeState(WorkItemState* newState){
     if(newState==nullptr){return;}
     delete currentState;
     currentState = newState;
+    setState(currentState->getName()); // keep the state name in sync and publish STATE_CHANGED
 }
     bool WorkItem::assign(Participant* p){
          return currentState->assign(this, p);

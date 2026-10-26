@@ -12,3 +12,6 @@ void StartCommand::undo(){
 std::string StartCommand::getDescription(){
     return  "WorkItem ID: "+receiver->getId() +" has started";
 }
+std::string StartCommand::getInstanceId(){
+    return receiver->getInstanceId();
+}

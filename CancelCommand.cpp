@@ -12,3 +12,6 @@ void CancelCommand::undo(){
 std::string CancelCommand::getDescription(){
     return  "WorkItem ID: "+receiver->getId()+" has been Cancelled";
 }
+std::string CancelCommand::getInstanceId(){
+    return receiver->getInstanceId();
+}
