@@ -11,3 +11,6 @@ void RejectCommand::undo(){
 std::string RejectCommand::getDescription(){
     return  "WorkItem ID: "+receiver->getId()+" has been Rejected";
 }
+std::string RejectCommand::getInstanceId(){
+    return receiver->getInstanceId();
+}
