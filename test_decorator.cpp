@@ -1,110 +1,152 @@
-#include "PriorityRuntimeDecorator.h"
-#include "SecurityRuntimeDecorator.h"
+#include "AllowedStatesRuntimeDecorator.h"
+#include "LabelledRuntimeDecorator.h"
+#include "LoggingRuntimeDecorator.h"
 #include "StageInstance.h"
 #include "SubProcessInstance.h"
-#include "WorkItem.h"
 #include <sstream>
 
 static int passed = 0, failed = 0;
+
 static void check(const std::string& what, bool ok) {
     std::cout << (ok ? "[PASS] " : "[FAIL] ") << what << '\n';
     if (ok) ++passed; else ++failed;
 }
-template <typename Exception, typename Operation>
+
+// Restore cout even when a decorated operation throws.
+class OutputCapture {
+    std::ostringstream output;
+    std::streambuf* previous;
+public:
+    OutputCapture() : previous(std::cout.rdbuf(output.rdbuf())) {}
+    ~OutputCapture() { std::cout.rdbuf(previous); }
+    std::string str() const { return output.str(); }
+    OutputCapture(const OutputCapture&) = delete;
+    OutputCapture& operator=(const OutputCapture&) = delete;
+};
+
+template <typename Operation>
 static bool rejects(Operation operation) {
-    try { operation(); } catch (const Exception&) { return true; }
+    try {
+        operation();
+    } catch (const std::invalid_argument&) {
+        return true;
+    }
     return false;
 }
+
+// Count destruction while retaining the real runtime leaf behavior.
 class TrackedLeaf : public SubProcessInstance {
     int& destructions;
 public:
-    TrackedLeaf(SubProcessDefinition* definition, int& count)
-        : SubProcessInstance("instance", definition), destructions(count) {}
+    TrackedLeaf(SubProcessDefinition* definition, int& destructions)
+        : SubProcessInstance("instance", definition), destructions(destructions) {}
     ~TrackedLeaf() override { ++destructions; }
 };
 
 int main() {
-    check("Base rejects null", rejects<std::invalid_argument>([] {
-        RuntimeComponentDecorator node(nullptr);
+    check("Base decorator rejects nullptr", rejects([] {
+        RuntimeComponentDecorator decorator(nullptr);
     }));
-    check("Priority rejects null", rejects<std::invalid_argument>([] {
-        PriorityRuntimeDecorator node(nullptr, 1);
+    check("Logging decorator rejects nullptr", rejects([] {
+        LoggingRuntimeDecorator decorator(nullptr);
     }));
-    check("Security rejects null", rejects<std::invalid_argument>([] {
-        SecurityRuntimeDecorator node(nullptr, "reviewer");
+    check("Label decorator rejects nullptr", rejects([] {
+        LabelledRuntimeDecorator decorator(nullptr, "Review");
     }));
-    Participant reviewer("r", "Reviewer", {"reviewer"});
-    Participant visitor("v", "Visitor", {"viewer"});
-    SubProcessDefinition leaf("call", "approval", 1);
-    ActivityDefinition activity("task", "Review task", "reviewer");
-    StageDefinition stage("stage", "Review");
-    check("Empty role rejected", rejects<std::invalid_argument>([&] {
-        SecurityRuntimeDecorator node(new SubProcessInstance("i", &leaf), "");
+    check("Allowed states decorator rejects nullptr", rejects([] {
+        AllowedStatesRuntimeDecorator decorator(nullptr, {"IDLE"});
     }));
 
-    SecurityRuntimeDecorator secured(new WorkItem("i", &activity), "reviewer");
-    RuntimeComponent& component = secured;
-    check("Anonymous mutation denied", rejects<std::runtime_error>([&] {
-        component.setState("RUNNING");
-    }) && component.getState() == "IDLE");
-    secured.setActor(&visitor);
-    check("Wrong role denied", !secured.canModify() && rejects<std::runtime_error>([&] {
-        component.setState("DONE");
-    }) && component.getState() == "IDLE");
-    secured.setActor(&reviewer);
+    SubProcessDefinition leafDefinition("call", "approval", 1);
+    RuntimeComponentDecorator base(new SubProcessInstance("instance", &leafDefinition));
+    RuntimeComponent& component = base;
+    check("Delegates leaf identifier", component.getId() == "call");
+    check("Delegates initial state", component.getState() == "IDLE");
     component.setState("RUNNING");
-    check("Authorized WorkItem mutation", secured.canModify() && component.getState() == "RUNNING");
-    check("Leaf interface preserved", component.getId() == "task" && component.getChildren().empty()
-          && component.getPriority() == 0);
-    secured.setActor(nullptr);
-    check("Clearing actor revokes access", rejects<std::runtime_error>([&] {
-        component.setState("DONE");
-    }) && component.getState() == "RUNNING");
+    check("Delegates state changes", component.getState() == "RUNNING");
+    check("Wrapped leaf has no children", component.getChildren().empty());
+    std::string printed;
+    {
+        OutputCapture capture;
+        component.print(2);
+        printed = capture.str();
+    }
+    check("Preserves print indentation",
+          printed == "    [SubProcessInstance] Calls approval (State: RUNNING)\n");
 
+    AllowedStatesRuntimeDecorator allowed(
+        new SubProcessInstance("instance", &leafDefinition), {"IDLE", "DONE"});
+    allowed.setState("DONE");
+    check("Accepts an allowed state", allowed.getState() == "DONE");
+    check("Rejects unknown states", rejects([&] { allowed.setState("UNKNOWN"); }));
+    check("Rejected change preserves state", allowed.getState() == "DONE");
+    check("State names are case-sensitive", rejects([&] { allowed.setState("done"); }));
+    allowed.setState("IDLE");
+    check("Does not impose transition order", allowed.getState() == "IDLE");
+    AllowedStatesRuntimeDecorator empty(
+        new SubProcessInstance("instance", &leafDefinition), {});
+    check("Empty allowed set rejects even the current state",
+          rejects([&] { empty.setState("IDLE"); }) && empty.getState() == "IDLE");
+
+    // Logging outside validation must not log a rejected change.
+    LoggingRuntimeDecorator logging(new AllowedStatesRuntimeDecorator(
+        new SubProcessInstance("instance", &leafDefinition), {"IDLE", "DONE"}));
+    std::string log;
+    {
+        OutputCapture capture;
+        logging.setState("DONE");
+        log = capture.str();
+    }
+    check("Logs identifier and old/new states", log == "[STATE] call: IDLE -> DONE\n");
+    bool rejected = false;
+    {
+        OutputCapture capture;
+        rejected = rejects([&] { logging.setState("INVALID"); });
+        log = capture.str();
+    }
+    check("Nested validation propagates rejection", rejected && logging.getState() == "DONE");
+    check("Rejected changes produce no log", log.empty());
+    {
+        OutputCapture capture;
+        logging.setState("DONE");
+        log = capture.str();
+    }
+    check("Normally returning unchanged state is logged", log == "[STATE] call: DONE -> DONE\n");
+
+    StageDefinition stageDefinition("review", "Review");
     int destructions = 0;
     {
-        auto* rawStage = new StageInstance("i", &stage);
-        auto* guard = new SecurityRuntimeDecorator(rawStage, "reviewer");
-        std::unique_ptr<RuntimeComponent> root(new PriorityRuntimeDecorator(guard, 5));
-        std::unique_ptr<RuntimeComponent> pending(new TrackedLeaf(&leaf, destructions));
-        check("Denied insertion retains caller ownership", rejects<std::runtime_error>([&] {
-            root->addChild(pending.get());
-        }) && root->getChildren().empty() && destructions == 0);
-        guard->setActor(&reviewer);
-        RuntimeComponent* normal = pending.get();
-        root->addChild(pending.get());
-        pending.release();
-        auto* first = new PriorityRuntimeDecorator(new TrackedLeaf(&leaf, destructions), 10);
-        auto* second = new SecurityRuntimeDecorator(
-            new PriorityRuntimeDecorator(new TrackedLeaf(&leaf, destructions), 10), "reviewer", &reviewer);
-        root->addChild(first);
-        root->addChild(second);
-        auto children = root->getChildren();
-        check("Highest priority first; ties retain insertion order",
-              children.size() == 3 && children[0] == first && children[1] == second && children[2] == normal);
-        check("Security forwards inner priority", second->getPriority() == 10);
-        check("Stored composite order unchanged", rawStage->getChildren()[0] == normal);
-        first->setPriority(-1);
-        children = root->getChildren();
-        check("Priority changes affect next query", children[0] == second && children[1] == normal && children[2] == first);
-        root->setState("RUNNING");
-        check("Priority outside security forwards authorized changes", root->getState() == "RUNNING" && root->getPriority() == 5);
-        guard->setActor(&visitor);
-        check("Priority outside security preserves denial", rejects<std::runtime_error>([&] {
-            root->setState("DONE");
-        }) && root->getState() == "RUNNING");
-        second->setState("DONE");
-        second->setActor(&visitor);
-        check("Security outside priority preserves denial", rejects<std::runtime_error>([&] {
-            second->setState("RUNNING");
-        }) && second->getState() == "DONE");
-        std::ostringstream output;
-        auto* previous = std::cout.rdbuf(output.rdbuf());
-        root->print(1);
-        std::cout.rdbuf(previous);
-        check("Print still delegates without added labels", output.str().find("  [Stage] Review (State: RUNNING)\n") == 0);
+        // Exercise all decorators together through the RuntimeComponent interface.
+        std::unique_ptr<RuntimeComponent> decorated(new LabelledRuntimeDecorator(
+            new LoggingRuntimeDecorator(new AllowedStatesRuntimeDecorator(
+                new StageInstance("instance", &stageDefinition), {"IDLE", "DONE"})),
+            "Approval"));
+        RuntimeComponent* child = new TrackedLeaf(&leafDefinition, destructions);
+        decorated->addChild(child);
+        const auto children = decorated->getChildren();
+        check("Nested decorators preserve composite children",
+              children.size() == 1 && children[0] == child);
+        {
+            OutputCapture capture;
+            decorated->setState("DONE");
+            log = capture.str();
+        }
+        check("Stacked decorators update and log composite state",
+              decorated->getId() == "review" && decorated->getState() == "DONE"
+              && log == "[STATE] review: IDLE -> DONE\n");
+        {
+            OutputCapture capture;
+            decorated->print(1);
+            printed = capture.str();
+        }
+        check("Label indents the entire composite subtree",
+              printed == "  [Approval]\n"
+                         "    [Stage] Review (State: DONE)\n"
+                         "      [SubProcessInstance] Calls approval (State: IDLE)\n");
+        check("Child remains alive while wrapper owns the stage", destructions == 0);
     }
-    check("Stacked decorators destroy owned subtree exactly once", destructions == 3);
+    check("Deleting the wrapper destroys the owned subtree exactly once", destructions == 1);
+
     std::cout << "=== RESULT: " << passed << " passed, " << failed << " failed ===\n";
     return failed == 0 ? 0 : 1;
 }
