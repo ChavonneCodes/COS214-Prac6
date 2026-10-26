@@ -11,6 +11,7 @@
 #include "AssignmentStrategy.h"
 #include "Participant.h"
 #include "WorkflowInstance.h"
+#include "RuntimeVisitor.h"
 
 /**
  * @brief Single entry point to TIVIDY (Facade pattern, role: Facade).
@@ -105,6 +106,17 @@ public:
      * @return The audit entries, oldest first.
      */
     std::vector<std::string> getAuditTrail(const std::string& instanceId);
+
+    /**
+     * @brief Runs a visitor over an instance's runtime tree (Visitor pattern).
+     *
+     * Lets clients add operations such as reports without reaching into the
+     * tree themselves.
+     * @param instanceId Id of the instance.
+     * @param visitor    Operation to run on every node.
+     * @return false (and nothing visited) if there is no instance with that id.
+     */
+    bool applyVisitor(const std::string& instanceId, RuntimeVisitor& visitor);
 
 };
 #endif

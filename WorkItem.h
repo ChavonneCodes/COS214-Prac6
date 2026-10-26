@@ -164,6 +164,18 @@ public:
      */
     std::string getInstanceId() const;
 
+    /**
+     * @brief Returns the display name of the activity this item performs.
+     * @return The activity name.
+     */
+    std::string getName() const;
+
+    /**
+     * @brief Calls the visitor's visitWorkItem() for this item (Visitor pattern).
+     * @param visitor The operation to run.
+     */
+    void accept(RuntimeVisitor& visitor) override;
+
 };
 
 #endif

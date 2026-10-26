@@ -80,3 +80,10 @@ std::vector<std::string> WorkflowEngine::getAuditTrail(const std::string& instan
     }
     return result;
 }
+
+bool WorkflowEngine::applyVisitor(const std::string& instanceId, RuntimeVisitor& visitor){
+    WorkflowInstance* instance = getInstance(instanceId);
+    if (!instance || !instance->getRoot()) return false;
+    instance->getRoot()->accept(visitor);
+    return true;
+}

@@ -8,6 +8,7 @@
 #include "RejectedState.h"
 #include "CancelledState.h"
 #include "EscalatedState.h"
+#include "RuntimeVisitor.h"
 
 WorkItem::WorkItem(const std::string& instanceId, ActivityDefinition* def)
     : instanceId(instanceId), definition(def), assignedParticipant(nullptr), 
@@ -101,6 +102,10 @@ void WorkItem::setParticipant(Participant* p){
     if (p == nullptr) return;
     assignedParticipant = p;
 }
+
+std::string WorkItem::getName() const { return definition->getName(); }
+
+void WorkItem::accept(RuntimeVisitor& visitor) { visitor.visitWorkItem(*this); }
 
 WorkItem::~WorkItem(){
     delete currentState;
