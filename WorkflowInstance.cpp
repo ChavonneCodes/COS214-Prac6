@@ -41,3 +41,12 @@ WorkItem* WorkflowInstance::findWorkItem(const std::string& workItemId) const {
     }
     return nullptr;
 }
+
+
+void WorkflowInstance::print() const {
+    std::cout << "Instance: " << instanceId << " (" << definitionId << " v" << definitionVersion << ")\n";
+    std::cout << "State: " << state << "\n";
+    if (root) {
+        root->print(0); // Delegates to the Composite tree
+    }
+}

@@ -113,6 +113,11 @@ public:
      * @return Pointer to the WorkItem, or nullptr if it does not exist in the tree.
      */
     WorkItem* findWorkItem(const std::string& workItemId) const; 
+
+    /**
+     * @brief prints the instantiated tree
+     */
+    void print() const;
 };
 
 #endif // WORKFLOW_INSTANCE_H
