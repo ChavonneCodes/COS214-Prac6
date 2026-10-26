@@ -30,18 +30,14 @@ static void require(bool condition, const std::string& message) {
 
 // The current commands accept WorkItem*, so this scenario explicitly checks
 // security before submitting them. This is scenario glue, not engine enforcement.
-// State objects and the display string are currently separate: synchronize the
-// string through the decorator only after checking the command's actual result.
-static void submit(WorkflowEngine& engine, HistoryManager& history,
+// The engine owns submitted commands and records successful ones in history.
+static void submit(WorkflowEngine& engine,
                    SecurityRuntimeDecorator& guard, WorkItem& item,
-                   WorkflowAction& command, const std::string& expectedState,
-                   const std::string& displayState) {
+                   std::unique_ptr<WorkflowAction> command, const std::string& expectedState) {
     require(guard.canModify(), "Actor may modify " + item.getId());
-    engine.submit(&command); // Its boolean result is currently a placeholder.
+    require(engine.submit(command.release()), "Command executed for " + item.getId());
     require(item.getCurrentState()->getName() == expectedState,
             item.getId() + " reached State object " + expectedState);
-    guard.setState(displayState);
-    history.push(&command);
 }
 
 int main() {
@@ -126,6 +122,7 @@ int main() {
         auto* technicalGuard = guards.at("technical");
         technicalGuard->setActor(&visitor);
         const auto eventsBefore = audit.getLog().size();
+        const auto stateBefore = technicalGuard->getState();
         bool denied = false;
         try {
             technicalGuard->setState("SUCCESS");
@@ -133,7 +130,7 @@ int main() {
             denied = true;
             std::cout << "Expected rejection: " << error.what() << '\n';
         }
-        require(denied && technicalGuard->getState() == "IDLE" &&
+        require(denied && technicalGuard->getState() == stateBefore &&
                 audit.getLog().size() == eventsBefore,
                 "Denied attempt changed neither task state nor observer log");
         technicalGuard->setActor(&reviewer);
@@ -143,8 +140,6 @@ int main() {
         RoleApprovalHandler reviewerHandler("reviewer");
         RoleApprovalHandler managerHandler("manager");
         reviewerHandler.setNext(&managerHandler);
-        // Keep commands alive while HistoryManager holds their borrowed pointers.
-        std::vector<std::unique_ptr<WorkflowAction>> commands;
         std::vector<std::string> completed;
         bool approvalRouted = false;
         while (completed.size() < items.size()) {
@@ -154,10 +149,10 @@ int main() {
             for (RuntimeComponent* component : root->getChildren()) {
                 WorkItem& item = *items.at(component->getId());
                 SecurityRuntimeDecorator& guard = *guards.at(component->getId());
-                if (item.getState() == "SUCCESS") continue;
+                if (item.getState() == "Completed") continue;
                 if (item.getId() == "approve") {
-                    if (!approvalRouted || items.at("documents")->getState() != "SUCCESS" ||
-                        items.at("technical")->getState() != "SUCCESS") {
+                    if (!approvalRouted || items.at("documents")->getState() != "Completed" ||
+                        items.at("technical")->getState() != "Completed") {
                         std::cout << "Approval waits for both reviews despite priority 100.\n";
                         continue;
                     }
@@ -168,13 +163,12 @@ int main() {
                 std::cout << "Processing " << item.getId() << " (priority "
                           << component->getPriority() << ")\n";
                 require(guard.canModify() && item.makeAvailable(), "Task becomes available");
-                guard.setState("AVAILABLE");
                 Participant* chosen = assignment.assign(item, candidates);
                 require(chosen != nullptr, "Assignment strategy selects " + item.getId());
-                commands.emplace_back(new AssignCommand(&item, chosen));
-                submit(engine, history, guard, item, *commands.back(), "Assigned", "ASSIGNED");
-                commands.emplace_back(new StartCommand(&item));
-                submit(engine, history, guard, item, *commands.back(), "In_Progress", "RUNNING");
+                submit(engine, guard, item,
+                       std::unique_ptr<WorkflowAction>(new AssignCommand(&item, chosen)), "Assigned");
+                submit(engine, guard, item,
+                       std::unique_ptr<WorkflowAction>(new StartCommand(&item)), "In_Progress");
 
                 if (item.getId() == "technical") {
                     std::cout << "Save review notes, make a mistake, then restore (Memento).\n";
@@ -188,8 +182,8 @@ int main() {
                             snapshot.getStateKind()->getName() == item.getCurrentState()->getName(),
                             "Snapshot restores notes and records the running state");
                 }
-                commands.emplace_back(new CompleteCommand(&item));
-                submit(engine, history, guard, item, *commands.back(), "Completed", "SUCCESS");
+                submit(engine, guard, item,
+                       std::unique_ptr<WorkflowAction>(new CompleteCommand(&item)), "Completed");
                 completed.push_back(item.getId());
                 progressed = true;
                 const ActivityDefinition* activity = findActivity(definition, item.getId());

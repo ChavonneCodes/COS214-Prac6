@@ -30,8 +30,8 @@ public:
     std::vector<RuntimeComponent*> getChildren() const override {
         std::vector<RuntimeComponent*> children = RuntimeComponentDecorator::getChildren();
 
-        for (int i = 0; i < children.size(); i++) {
-            for (int j = i + 1; j < children.size(); j++) {
+        for (size_t i = 0; i < children.size(); i++) {
+            for (size_t j = i + 1; j < children.size(); j++) {
                 RuntimeComponent* a = children.at(i);
                 RuntimeComponent* b = children.at(j);
 
