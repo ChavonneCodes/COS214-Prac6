@@ -17,7 +17,9 @@
  * - Decorator: the runtime tree is labelled with its instance id and pinned version;
  * - Command + State: every action is a command, and the work item's state object decides if it is allowed;
  * - Chain of Responsibility: finance and executive approvals, plus timeout escalation;
- * - Memento + Prototype: a work item's state is cloned into a memento and restored after a mistake.
+ * - Memento + Prototype: a work item's state is cloned into a memento and restored after a mistake;
+ * - Visitor: progress after every step, then a completion report and a workload summary,
+ *   run over the runtime tree through the engine.
  */
 
 #include <functional>
@@ -52,6 +54,8 @@
 #include "CompleteCommand.h"
 #include "RejectCommand.h"
 #include "EscalateCommand.h"
+#include "ProgressReportVisitor.h"
+#include "WorkloadVisitor.h"
 
 namespace {
 
@@ -358,7 +362,7 @@ int main() {
     };
 
     // ---------------------------------------------------------------
-    heading("4. RUN THE WORKFLOW (Command + State + Strategy + Chain + Memento)");
+    heading("4. RUN THE WORKFLOW (Command + State + Strategy + Chain + Memento + Visitor)");
     std::string currentId = "submit";
     while (!currentId.empty()) {
         WorkItem* item = instance->findWorkItem(currentId);
@@ -380,6 +384,12 @@ int main() {
         currentId = next.empty() ? "" : next[0]->getId();
         std::cout << "  Routing (" << routing->getName() << ", outcome '" << outcome << "'): "
                   << (currentId.empty() ? "end of workflow" : "next is " + currentId) << "\n";
+
+        // Visitor: a fresh progress visitor walks the whole tree after every step
+        ProgressReportVisitor progress;
+        engine.applyVisitor(instanceId, progress);
+        std::cout << "  Progress: " << progress.getCompletedItems() << "/" << progress.getTotalItems()
+                  << " work items completed (" << progress.getPercentComplete() << "%)\n";
     }
     instance->setState("COMPLETED");
 
@@ -399,6 +409,22 @@ int main() {
     std::vector<WorkflowAction*> done = engine.getHistory(instanceId);
     std::cout << "\nCommand history (" << done.size() << " commands that changed state):\n";
     for (WorkflowAction* action : done) std::cout << "  " << action->getDescription() << "\n";
+
+    // ---------------------------------------------------------------
+    heading("6. REPORTS (Visitor)");
+    std::cout << "Two new operations over the runtime tree, added without changing WorkItem,\n"
+              << "StageInstance or SubProcessInstance. The engine passes each visitor to the tree.\n";
+
+    ProgressReportVisitor report;
+    engine.applyVisitor(instanceId, report);
+    std::cout << "\nCompletion report for " << instanceId << ":\n";
+    for (const std::string& line : report.getReport()) std::cout << "  " << line << "\n";
+    std::cout << "  Workflow complete: " << (report.isComplete() ? "yes" : "no") << "\n";
+
+    WorkloadVisitor workload;
+    engine.applyVisitor(instanceId, workload);
+    std::cout << "\nWorkload by participant:\n";
+    for (const std::string& line : workload.getSummary()) std::cout << "  " << line << "\n";
 
     heading("DEMO COMPLETE");
     return 0;
