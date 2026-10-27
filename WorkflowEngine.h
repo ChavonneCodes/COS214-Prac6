@@ -38,6 +38,12 @@ private:
     int instanceCount = 0;                              ///< Used to number new instance ids.
 
 public:
+    /**
+     * @brief Creates an engine with no subsystems attached.
+     *
+     * startWorkflow() returns an empty string until a repository is given, and
+     * history, undo and audit calls do nothing. Mainly useful for tests.
+     */
     WorkflowEngine() = default;
 
     /**
@@ -53,7 +59,17 @@ public:
     /** @brief Deletes the instances started and the commands submitted. */
     ~WorkflowEngine();
 
+    /**
+     * @brief Copying is disabled.
+     *
+     * The engine owns its instances and commands, so a copy would delete them twice.
+     */
     WorkflowEngine(const WorkflowEngine&) = delete;
+
+    /**
+     * @brief Copy assignment is disabled, for the same reason as the copy constructor.
+     * @return Not callable.
+     */
     WorkflowEngine& operator=(const WorkflowEngine&) = delete;
 
     /**
