@@ -12,9 +12,9 @@
 /**
  * @class RuntimeComponent
  * @brief The base Component in the Composite pattern for running workflow instances.
- * 
- * This class defines the interface for all nodes in the runtime tree (both leaves 
- * like WorkItem and composites like StageInstance). It allows the engine to treat 
+ *
+ * This class defines the interface for all nodes in the runtime tree (both leaves
+ * like WorkItem and composites like StageInstance). It allows the engine to treat
  * individual tasks and groups of tasks uniformly.
  */
 class RuntimeComponent {
@@ -35,6 +35,9 @@ public:
      * @return The state as a string (e.g., "IDLE", "RUNNING", "SUCCESS").
      */
     virtual std::string getState() const = 0;
+
+    /** @brief Scheduling priority; larger values come first. Undecorated nodes use 0. */
+    virtual int getPriority() const { return 0; }
 
     /**
      * @brief Sets the current execution state of the component.
