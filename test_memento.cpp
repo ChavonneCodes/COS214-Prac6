@@ -139,7 +139,7 @@ void testMementoCopying() {
     }
 
     // Original must remain valid after the copies are destroyed.
-    WorkItemMemento anotherCopy(original);
+    WorkItemMemento anotherCopy(original); 
 
     cout << "PASS: Mementos copied and destroyed." << endl;
 }
