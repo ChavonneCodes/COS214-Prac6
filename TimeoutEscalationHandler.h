@@ -1,20 +1,15 @@
 #ifndef TIMEOUTESCALATIONHANDLER_H
 #define TIMEOUTESCALATIONHANDLER_H
 
+#include <iostream>
 #include "ApprovalHandler.h"
-#include "WorkItem.h"
+#include <string>
 
-class TimeoutEscalationHandler : public ApprovalHandler {
-public:
-    std::string getName() const override;
-    TimeoutEscalationHandler(WorkItem*);
-    TimeoutEscalationHandler();
-
-protected:
-    HandlerResult handleRequest(Request& request) override;
-
-private:
-    WorkItem* workItem;
+class TimeoutEscalationHandler : public ApprovalHandler{
+    public:
+        std::string getName() override;
+    protected:
+        bool handleRequest(Request&) override;
 };
 
 #endif
