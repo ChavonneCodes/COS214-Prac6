@@ -3,7 +3,7 @@ CXXFLAGS = -std=c++11 -Wall -Wextra
 
 # All non-main source files (no main() in any of these)
 SRCS = ActivityDefinition.cpp ApprovalChainDefinition.cpp ApprovalStepDefinition.cpp \
-       Approvalhandler.cpp ValidationApprovalHandler.cpp \
+       ApprovalHandler.cpp ValidationApprovalHandler.cpp \
        WorkflowStateApprovalHandler.cpp \
        AssignCommand.cpp AssignedState.cpp AuditObserver.cpp \
        AvailableState.cpp CancelCommand.cpp CancelledState.cpp CompleteCommand.cpp \

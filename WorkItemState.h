@@ -16,7 +16,8 @@ class WorkItemState{
         virtual bool fail(WorkItem* ){std::cout<<"Invalid State Transition"<<std::endl; return false;};
         virtual bool makeAvailable(WorkItem* ) {std::cout<<"Invalid State Transition"<<std::endl; return false;};
         virtual std::string getName()=0;
-                virtual ~WorkItemState(){};
+        virtual WorkItemState* clone() = 0;
+        virtual ~WorkItemState(){};
         
 };
 #endif

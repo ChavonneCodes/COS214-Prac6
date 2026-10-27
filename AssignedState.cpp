@@ -26,7 +26,7 @@ bool AssignedState::escalated(WorkItem* item){
     item->changeState(new EscalatedState());
     return true;
 }
- WorkItemState*AssignedState:: clone(){
+ WorkItemState* AssignedState:: clone(){
     return new AssignedState(*this);
  }
  std::string AssignedState::getName(){

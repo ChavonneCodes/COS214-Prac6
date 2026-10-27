@@ -2,6 +2,12 @@
 #include "WorkItem.h"
 #include "CreatedState.h"
 
+/**
+ * @brief Constructs a work item in its initial state.
+ *
+ * @param instanceId ID of the workflow instance.
+ * @param def Activity definition associated with this work item.
+ */
 WorkItem::WorkItem(const std::string& instanceId, ActivityDefinition* def)
     : instanceId(instanceId), definition(def), data(""),state("IDLE"),currentState(new CreatedState()) {}
 
@@ -22,6 +28,15 @@ bool WorkItem::assignTo(Participant* participant) {
     return true;
 }
 
+
+/**
+ * @brief Creates a snapshot of this work item's current data and state.
+ *
+ * The WorkItemMemento constructor clones the state pointer, so the
+ * snapshot remains valid after the work item changes state.
+ *
+ * @return A memento representing the current snapshot.
+ */
 WorkItemMemento WorkItem::createMemento(){
     return WorkItemMemento(
                             definition->getId(),
@@ -31,19 +46,36 @@ WorkItemMemento WorkItem::createMemento(){
                         );
 }
 
+/**
+ * @brief Restores the data and state from a saved memento.
+ *
+ * The snapshot is checked to ensure it belongs to this work item
+ * and its associated activity. The state is cloned before replacing
+ * the current state.
+ *
+ * @param memento Pointer to the memento to restore.
+ *        If nullptr, no action is performed.
+ */
 void WorkItem::restoreMemento(WorkItemMemento* memento){
     if(memento == nullptr){
         return;
     }
 
     //make sure the snapshot belongs to this work item
-    if(memento->getWorkItemId() != getId()){
+    if(memento->workItemId != getId()){
         return;
     }
-    data = memento->getDataSnapshot();
+
+    if(memento->activityId != definition->getId()){
+        return;
+    }
+
+    WorkItemState* restoredState = memento->state->clone();
+
+    data = memento->dataSnapshot;
 
     //restore the saved state
-    changeState(memento->getStateKind());
+    changeState(restoredState);
 }
 
 std::string WorkItem::getId() const { return definition->getId(); }
@@ -87,30 +119,41 @@ void WorkItem:: changeState(WorkItemState* newState){
     delete currentState;
     currentState = newState;
 }
-    bool WorkItem::assign(Participant* p){
-         return currentState->assign(this, p);
-    }
-    bool WorkItem::start(){
-        return currentState->start(this);
-    }
-    bool WorkItem::complete(){
-        return currentState->complete(this);
-    }
-    bool WorkItem::reject(){
-        return currentState->reject(this);
-    }
-    bool WorkItem::cancel(){
-        return currentState->cancel(this);
-    }
-    bool WorkItem::escalated(){
-        return currentState->escalated(this);
-    }
-    bool WorkItem::fail(){
-        return currentState->fail(this);
-    }
-    bool WorkItem::makeAvailable(){
-        return currentState->makeAvailable(this);
-    }
+bool WorkItem::assign(Participant* p){
+        return currentState->assign(this, p);
+}
+
+bool WorkItem::start(){
+    return currentState->start(this);
+}
+
+bool WorkItem::complete(){
+    return currentState->complete(this);
+}
+
+bool WorkItem::reject(){
+    return currentState->reject(this);
+}
+
+bool WorkItem::cancel(){
+    return currentState->cancel(this);
+}
+
+bool WorkItem::escalated(){
+    return currentState->escalated(this);
+}
+
+bool WorkItem::fail(){
+    return currentState->fail(this);
+}
+
+bool WorkItem::makeAvailable(){
+    return currentState->makeAvailable(this);
+}
+
+/**
+ * @brief Destroys the work item and releases its current state.
+ */
     WorkItem::~WorkItem(){
         delete currentState;
         
