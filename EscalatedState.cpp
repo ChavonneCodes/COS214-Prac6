@@ -4,7 +4,7 @@
 #include "WorkItem.h"
 
 bool EscalatedState::assign(WorkItem* item, Participant* p){
-   if (p == nullptr) return false;           
+   if (p == nullptr) return false;          
     item->setParticipant(p);                  
     item->changeState(new AssignedState());   
     return true;

@@ -1,4 +1,5 @@
 #include "StageInstance.h"
+#include "RuntimeVisitor.h"
 
 StageInstance::StageInstance(const std::string& instanceId, StageDefinition* def)
     : instanceId(instanceId), definition(def), state("IDLE") {}
@@ -20,6 +21,16 @@ void StageInstance::addChild(RuntimeComponent* child) {
 
 std::vector<RuntimeComponent*> StageInstance::getChildren() const {
     return children;
+}
+
+std::string StageInstance::getName() const { return definition->getName(); }
+
+void StageInstance::accept(RuntimeVisitor& visitor) {
+    visitor.visitStage(*this);
+    for (RuntimeComponent* child : children) {
+        child->accept(visitor);
+    }
+    visitor.leaveStage(*this);
 }
 
 void StageInstance::print(int indentLevel) const {

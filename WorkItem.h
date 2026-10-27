@@ -15,7 +15,6 @@ private:
     std::string instanceId;
     ActivityDefinition* definition;
     Participant* assignedParticipant = nullptr;  ///< Who the item is assigned to (not owned, may be null).
-    std::string state;
     WorkItemState* currentState;
     EventBus* eventBus = nullptr;  ///< Bus that events are published to (not owned, may be null).
     Data data;
@@ -28,6 +27,12 @@ private:
     void publish(const std::string& eventName, const std::string& payload);
 
 public:
+    /**
+     * @brief Constructs a new WorkItem.
+     * 
+     * @param instanceId The ID of the parent workflow instance.
+     * @param def Pointer to the ActivityDefinition blueprint this item is based on.
+     */
     WorkItem(const std::string& instanceId, ActivityDefinition* def);
 
     /**
@@ -55,20 +60,97 @@ public:
     void restoreMemento(WorkItemMemento*);
     WorkItemMemento createMemento();
     std::string getId() const override;
+
+    /**
+     * @brief Retrieves the current state of the work item as a string.
+     * @return The current state string.
+     */
     std::string getState() const override;
+
+    /**
+     * @brief Sets the state string directly.
+     * @param newState The new state string.
+     */
     void setState(const std::string& newState) override;
+
+    /**
+     * @brief Prints the work item details to standard output.
+     * @param indentLevel The indentation level for hierarchical display.
+     */
     void print(int indentLevel = 0) const override;
+
+    /**
+     * @brief Sets the assigned participant directly without triggering state changes or events.
+     * @param p Pointer to the participant.
+     */
     void setParticipant(Participant* p);
+
+    /**
+     * @brief Retrieves the current state object (State pattern).
+     * @return Pointer to the current WorkItemState.
+     */
     WorkItemState* getCurrentState();
+
+    /**
+     * @brief Transitions the work item to a new state (State pattern).
+     * 
+     * Deletes the old state object and replaces it with the new one.
+     * @param newState Pointer to the new WorkItemState.
+     */
     void changeState(WorkItemState* newState);
+
+    /**
+     * @brief Transitions the work item to the Assigned state.
+     * @param p Pointer to the participant being assigned.
+     * @return true if the transition was successful, false otherwise.
+     */
     bool assign(Participant* p);
+
+    /**
+     * @brief Transitions the work item to the Started/Running state.
+     * @return true if the transition was successful, false otherwise.
+     */
     bool start();
+
+    /**
+     * @brief Transitions the work item to the Completed/Success state.
+     * @return true if the transition was successful, false otherwise.
+     */
     bool complete();
+
+    /**
+     * @brief Transitions the work item to the Rejected state.
+     * @return true if the transition was successful, false otherwise.
+     */
     bool reject();
+
+    /**
+     * @brief Transitions the work item to the Cancelled state.
+     * @return true if the transition was successful, false otherwise.
+     */
     bool cancel() ;
+
+    /**
+     * @brief Transitions the work item to the Escalated state.
+     * @return true if the transition was successful, false otherwise.
+     */
     bool escalated();
+
+    /**
+     * @brief Transitions the work item to the Failed state.
+     * @return true if the transition was successful, false otherwise.
+     */
     bool fail();
+
+    /**
+     * @brief Transitions the work item to the Available state.
+     * @return true if the transition was successful, false otherwise.
+     */
     bool makeAvailable();
+
+    /**
+     * @brief Destructor that cleans up the current state object.
+     */
     virtual ~WorkItem();
 
     /**
@@ -82,6 +164,18 @@ public:
      * @return The instance id.
      */
     std::string getInstanceId() const;
+
+    /**
+     * @brief Returns the display name of the activity this item performs.
+     * @return The activity name.
+     */
+    std::string getName() const;
+
+    /**
+     * @brief Calls the visitor's visitWorkItem() for this item (Visitor pattern).
+     * @param visitor The operation to run.
+     */
+    void accept(RuntimeVisitor& visitor) override;
 
 };
 

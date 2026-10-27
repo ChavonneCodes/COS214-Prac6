@@ -1,5 +1,6 @@
 #ifndef WORKFLOWENGINE_H
 #define WORKFLOWENGINE_H
+#include <map>
 #include <string>
 #include <vector>
 #include "WorkflowAction.h"
@@ -7,17 +8,20 @@
 #include "EventBus.h"
 #include "HistoryManager.h"
 #include "AuditObserver.h"
-
-class WorkflowInstance; // TODO: not implemented yet (see UML V4)
+#include "AssignmentStrategy.h"
+#include "Participant.h"
+#include "WorkflowInstance.h"
+#include "RuntimeVisitor.h"
 
 /**
  * @brief Single entry point to TIVIDY (Facade pattern, role: Facade).
  *
  * Clients (the TUI and the scenarios) talk only to the engine. It hides the
- * subsystems behind it: the definition repository, the event bus, the
- * command history and the audit log.
+ * subsystems behind it: the definition repository, the instance factory, the
+ * event bus, the command history and the audit log.
  *
- * The engine does not own the subsystems it is given.
+ * The engine does not own the subsystems it is given. It does own the
+ * instances it starts and the commands submitted to it.
  */
 class WorkflowEngine{
 private:
@@ -26,7 +30,20 @@ private:
     HistoryManager* history = nullptr;                  ///< Executed commands, used for undo (not owned).
     AuditObserver* audit = nullptr;                     ///< Audit log observer (not owned).
 
+    AssignmentStrategy* assignment = nullptr;           ///< Picks who gets each new work item (not owned, may be null).
+    std::vector<Participant*> candidates;               ///< Participants the strategy chooses from (not owned).
+
+    std::map<std::string, WorkflowInstance*> instances; ///< Started instances by id (owned).
+    std::vector<WorkflowAction*> submitted;             ///< Every command submitted (owned).
+    int instanceCount = 0;                              ///< Used to number new instance ids.
+
 public:
+    /**
+     * @brief Creates an engine with no subsystems attached.
+     *
+     * startWorkflow() returns an empty string until a repository is given, and
+     * history, undo and audit calls do nothing. Mainly useful for tests.
+     */
     WorkflowEngine() = default;
 
     /**
@@ -38,6 +55,29 @@ public:
      */
     WorkflowEngine(InMemoryDefinitionRepository* repository, EventBus* eventBus,
                    HistoryManager* history, AuditObserver* audit);
+
+    /** @brief Deletes the instances started and the commands submitted. */
+    ~WorkflowEngine();
+
+    /**
+     * @brief Copying is disabled.
+     *
+     * The engine owns its instances and commands, so a copy would delete them twice.
+     */
+    WorkflowEngine(const WorkflowEngine&) = delete;
+
+    /**
+     * @brief Copy assignment is disabled, for the same reason as the copy constructor.
+     * @return Not callable.
+     */
+    WorkflowEngine& operator=(const WorkflowEngine&) = delete;
+
+    /**
+     * @brief Sets who new work items are assigned to (Strategy pattern).
+     * @param strategy   Assignment rule (not owned, may be null for no assignment).
+     * @param candidates Participants the rule chooses from (not owned).
+     */
+    void setAssignment(AssignmentStrategy* strategy, const std::vector<Participant*>& candidates);
 
     /**
      * @brief Creates and starts a new instance of a workflow definition.
@@ -56,6 +96,9 @@ public:
 
     /**
      * @brief Executes a command (Command pattern, role: Invoker).
+     *
+     * The engine takes ownership of the command. Commands that succeed are
+     * recorded in the history.
      * @param action Command to execute.
      * @return true if the command succeeded.
      */
@@ -79,6 +122,17 @@ public:
      * @return The audit entries, oldest first.
      */
     std::vector<std::string> getAuditTrail(const std::string& instanceId);
+
+    /**
+     * @brief Runs a visitor over an instance's runtime tree (Visitor pattern).
+     *
+     * Lets clients add operations such as reports without reaching into the
+     * tree themselves.
+     * @param instanceId Id of the instance.
+     * @param visitor    Operation to run on every node.
+     * @return false (and nothing visited) if there is no instance with that id.
+     */
+    bool applyVisitor(const std::string& instanceId, RuntimeVisitor& visitor);
 
 };
 #endif

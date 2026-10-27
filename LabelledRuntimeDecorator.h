@@ -8,6 +8,7 @@
 #define LABELLED_RUNTIME_DECORATOR_H
 
 #include "RuntimeComponentDecorator.h"
+#include <iostream>
 
 /**
  * @class LabelledRuntimeDecorator

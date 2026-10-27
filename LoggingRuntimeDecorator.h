@@ -8,6 +8,7 @@
 #define LOGGING_RUNTIME_DECORATOR_H
 
 #include "RuntimeComponentDecorator.h"
+#include <iostream>
 
 /**
  * @class LoggingRuntimeDecorator

@@ -51,6 +51,11 @@ public:
         return wrapped->getState();
     }
 
+    /** @brief Preserve priority when another decorator is stacked outside it. */
+    int getPriority() const override {
+        return wrapped->getPriority();
+    }
+
     /**
      * @brief Forwards a state change to the wrapped component.
      * @param newState Requested state name.
@@ -83,6 +88,16 @@ public:
      */
     std::vector<RuntimeComponent*> getChildren() const override {
         return wrapped->getChildren();
+    }
+
+    /**
+     * @brief Passes a visitor to the wrapped component.
+     * @param visitor The operation to run (Visitor pattern).
+     *
+     * The decorator itself is invisible to visitors: they see the wrapped node.
+     */
+    void accept(RuntimeVisitor& visitor) override {
+        wrapped->accept(visitor);
     }
 };
 

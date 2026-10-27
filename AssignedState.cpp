@@ -11,6 +11,7 @@ bool AssignedState::start(WorkItem* item){
     item->changeState(new InProgressState());
     return true;
     
+    
 }
 bool AssignedState::reject(WorkItem* item){
    item->changeState(new RejectedState());

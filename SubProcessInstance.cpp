@@ -1,4 +1,5 @@
 #include "SubProcessInstance.h"
+#include "RuntimeVisitor.h"
 
 SubProcessInstance::SubProcessInstance(const std::string& instanceId, SubProcessDefinition* def)
     : instanceId(instanceId), definition(def), state("IDLE") {}
@@ -12,3 +13,5 @@ void SubProcessInstance::print(int indentLevel) const {
     std::cout << indent << "[SubProcessInstance] Calls " << definition->getCalledDefinitionId() 
               << " (State: " << state << ")\n";
 }
+
+void SubProcessInstance::accept(RuntimeVisitor& visitor) { visitor.visitSubProcess(*this); }
