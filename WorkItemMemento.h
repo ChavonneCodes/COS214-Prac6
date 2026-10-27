@@ -19,20 +19,13 @@
 
 class WorkItemMemento{
     public:
-        WorkItemMemento();
         WorkItemMemento(std::string,std::string,Data&,WorkItemState*);
-        /*
-            std::string getWorkItemId();
-            std::string getActivityId();
-            WorkItemState* getStateKind();
-            Data getDataSnapshot();
-        */
-        WorkItemMemento(const WorkItemMemento& other);
-        WorkItemMemento& operator=(const WorkItemMemento& other);
-        ~WorkItemMemento();
-    private:
-        friend class WorkItem;
+        std::string getWorkItemId();
+        std::string getActivityId();
+        WorkItemState* getStateKind();
+        Data getDataSnapshot();
 
+    private:
         std::string activityId;
         std::string workItemId;
         WorkItemState* state;

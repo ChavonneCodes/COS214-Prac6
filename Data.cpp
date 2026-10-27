@@ -3,7 +3,6 @@ using namespace std;
 
 Data::Data(): value(""){
 }
-
 Data::Data(string value) : value(value){
 }
 

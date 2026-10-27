@@ -28,58 +28,13 @@ bool WorkItem::assignTo(Participant* participant) {
     return currentState->assign(this, participant); // Transitions to AssignedState
 }
 
+// ---- State Pattern Support ----
 
-/**
- * @brief Creates a snapshot of this work item's current data and state.
- *
- * The WorkItemMemento constructor clones the state pointer, so the
- * snapshot remains valid after the work item changes state.
- *
- * @return A memento representing the current snapshot.
- */
-WorkItemMemento WorkItem::createMemento(){
-    return WorkItemMemento(
-                            definition->getId(),
-                            getId(),
-                            data,
-                            currentState
-                        );
+std::string WorkItem::getState() const { 
+    return currentState->getName(); 
 }
 
-/**
- * @brief Restores the data and state from a saved memento.
- *
- * The snapshot is checked to ensure it belongs to this work item
- * and its associated activity. The state is cloned before replacing
- * the current state.
- *
- * @param memento Pointer to the memento to restore.
- *        If nullptr, no action is performed.
- */
-void WorkItem::restoreMemento(WorkItemMemento* memento){
-    if(memento == nullptr){
-        return;
-    }
-
-    //make sure the snapshot belongs to this work item
-    if(memento->workItemId != getId()){
-        return;
-    }
-
-    if(memento->activityId != definition->getId()){
-        return;
-    }
-
-    WorkItemState* restoredState = memento->state->clone();
-
-    data = memento->dataSnapshot;
-
-    //restore the saved state
-    changeState(restoredState);
-}
-
-std::string WorkItem::getId() const { return definition->getId(); }
-std::string WorkItem::getState() const { return state; }
+// This method is now just a compatibility wrapper for tests that call setState("...")
 void WorkItem::setState(const std::string& newState) {
     if (newState == "Created" || newState == "CREATED" || newState == "IDLE") changeState(new CreatedState());
     else if (newState == "Available" || newState == "AVAILABLE") changeState(new AvailableState());
