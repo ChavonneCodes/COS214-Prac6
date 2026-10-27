@@ -8,9 +8,10 @@
 class RoleApprovalHandler : public ApprovalHandler {
     public:
         RoleApprovalHandler(const std::string&);
-        std::string getName() override;
+        std::string getName() const override;
+
     protected:
-        bool handleRequest(Request&) override;
+        HandlerResult handleRequest(Request&) override;
     private:
         std::string roleId;
 };
