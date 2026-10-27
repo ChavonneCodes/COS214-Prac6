@@ -6,6 +6,8 @@
 #include "ActivityDefinition.h"
 #include "WorkItemState.h"
 #include "EventBus.h"      // Observer: WorkItem publishes events to the bus
+#include "WorkItemMemento.h"
+#include "Data.h"
 
 
 class WorkItem : public RuntimeComponent {
@@ -16,6 +18,7 @@ private:
     std::string state;
     WorkItemState* currentState;
     EventBus* eventBus = nullptr;  ///< Bus that events are published to (not owned, may be null).
+    Data data;
 
     /**
      * @brief Publishes an event on the bus; does nothing if no bus is attached.
@@ -49,7 +52,8 @@ public:
      */
     bool assignTo(Participant* participant);
     
-    
+    void restoreMemento(WorkItemMemento*);
+    WorkItemMemento createMemento();
     std::string getId() const override;
     std::string getState() const override;
     void setState(const std::string& newState) override;

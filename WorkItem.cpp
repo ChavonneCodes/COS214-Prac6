@@ -2,10 +2,8 @@
 #include "WorkItem.h"
 #include "CreatedState.h"
 
-
 WorkItem::WorkItem(const std::string& instanceId, ActivityDefinition* def)
-    : instanceId(instanceId), definition(def), state("IDLE"),currentState(new CreatedState()) {}
-
+    : instanceId(instanceId), definition(def), data(""),state("IDLE"),currentState(new CreatedState()) {}
 
 
 // ---- Strategy support ----
@@ -22,6 +20,30 @@ bool WorkItem::assignTo(Participant* participant) {
     assignedParticipant->addOpenItem();
     setState("ASSIGNED");
     return true;
+}
+
+WorkItemMemento WorkItem::createMemento(){
+    return WorkItemMemento(
+                            definition->getId(),
+                            getId(),
+                            data,
+                            currentState
+                        );
+}
+
+void WorkItem::restoreMemento(WorkItemMemento* memento){
+    if(memento == nullptr){
+        return;
+    }
+
+    //make sure the snapshot belongs to this work item
+    if(memento->getWorkItemId() != getId()){
+        return;
+    }
+    data = memento->getDataSnapshot();
+
+    //restore the saved state
+    changeState(memento->getStateKind());
 }
 
 std::string WorkItem::getId() const { return definition->getId(); }
