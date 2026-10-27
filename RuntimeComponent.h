@@ -9,14 +9,12 @@
 #include <string>
 #include <vector>
 
-class RuntimeVisitor;
-
 /**
  * @class RuntimeComponent
  * @brief The base Component in the Composite pattern for running workflow instances.
- * 
- * This class defines the interface for all nodes in the runtime tree (both leaves 
- * like WorkItem and composites like StageInstance). It allows the engine to treat 
+ *
+ * This class defines the interface for all nodes in the runtime tree (both leaves
+ * like WorkItem and composites like StageInstance). It allows the engine to treat
  * individual tasks and groups of tasks uniformly.
  */
 class RuntimeComponent {
@@ -38,6 +36,9 @@ public:
      */
     virtual std::string getState() const = 0;
 
+    /** @brief Scheduling priority; larger values come first. Undecorated nodes use 0. */
+    virtual int getPriority() const { return 0; }
+
     /**
      * @brief Sets the current execution state of the component.
      * @param newState The new state string.
@@ -49,15 +50,6 @@ public:
      * @param indentLevel The indentation level for formatting hierarchical output.
      */
     virtual void print(int indentLevel = 0) const = 0;
-
-    /**
-     * @brief Accepts a visitor (Visitor pattern, role: Element).
-     *
-     * Each node calls the visit method for its own class. Composite nodes also
-     * pass the visitor on to their children.
-     * @param visitor The operation to run on this node.
-     */
-    virtual void accept(RuntimeVisitor& visitor) = 0;
 
     // --- Composite Operations ---
 
