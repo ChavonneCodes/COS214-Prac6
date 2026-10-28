@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 
+
 class HistoryManager{
     public:
         void push(WorkflowAction*);

@@ -12,6 +12,7 @@
 #include "Participant.h"
 #include "WorkflowInstance.h"
 #include "RuntimeVisitor.h"
+#include "RoutingStrategy.h"
 
 /**
  * @brief Single entry point to TIVIDY (Facade pattern, role: Facade).
@@ -133,6 +134,68 @@ public:
      * @return false (and nothing visited) if there is no instance with that id.
      */
     bool applyVisitor(const std::string& instanceId, RuntimeVisitor& visitor);
+
+    /**
+     * @brief Advances the workflow by one step.
+     * 
+     * Asks the router what comes next. If the next node is an activity,
+     * returns its runtime WorkItem for the client to process. If the next
+     * node is a sub-process, dispatches it automatically, runs the child
+     * to completion, then recurses to the sub-process's successor.
+     * 
+     * @param instanceId   The running workflow instance.
+     * @param completedId  The ID of the node that just finished ("" for the first step).
+     * @param outcome      The outcome of the completed node.
+     * @param router       The routing strategy to consult.
+     * @return The next WorkItem for the client to process, or nullptr if done.
+     */
+    WorkItem* step(const std::string& instanceId,
+                   const std::string& completedId,
+                   const std::string& outcome,
+                   RoutingStrategy& router);
+    
+    /**
+     * @brief Automatically dispatches IDLE sub-processes and detects
+     *        when running sub-processes have completed.
+     * 
+     * This method acts as the engine's structural dispatcher. It recursively
+     * traverses the runtime tree of the specified workflow instance looking
+     * for SubProcessInstance nodes.
+     * 
+     * It handles two scenarios automatically:
+     * 
+     * 1. **Dispatch (IDLE → RUNNING):**
+     *    If a SubProcessInstance is in the "IDLE" state and has no child
+     *    instance yet, the engine:
+     *    - Loads the child definition from the repository (by ID + version)
+     *    - Instantiates the child runtime tree via InstanceFactory
+     *    - Creates and stores a nested WorkflowInstance
+     *    - Attaches the event bus to all child work items
+     *    - Transitions the sub-process node to "RUNNING"
+     * 
+     * 2. **Completion (RUNNING → COMPLETED):**
+     *    If a SubProcessInstance is in the "RUNNING" state and its child
+     *    instance has reached "COMPLETED", the engine marks the sub-process
+     *    node as "COMPLETED", allowing the parent workflow to resume.
+     * 
+     * @note **Structural, not behavioural.** This method handles the
+     *       *bureaucracy* of sub-processes (loading, instantiating, state
+     *       transitions). It does **not** execute the child's tasks — those
+     *       still require participants to act via the standard command
+     *       interface. The client calls advance() after a task completes
+     *       (to dispatch a newly-reachable sub-process) and after a child
+     *       instance completes (to let the parent resume).
+     * 
+     * @note **Ownership.** The WorkflowEngine takes sole ownership of the
+     *       nested WorkflowInstance and stores it in its instances map.
+     *       The SubProcessInstance holds only a non-owning pointer.
+     * 
+     * @param instanceId The unique ID of the parent workflow instance to advance.
+     * 
+     * @throws Nothing. If the repository is null or the definition is missing,
+     *         the method silently returns without dispatching.
+     */
+    void advance(const std::string& instanceId); 
 
 };
 #endif

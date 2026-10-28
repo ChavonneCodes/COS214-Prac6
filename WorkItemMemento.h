@@ -19,7 +19,6 @@
 
 class WorkItemMemento{
     public:
-        WorkItemMemento();
         WorkItemMemento(std::string,std::string,Data&,WorkItemState*);
         WorkItemMemento(const WorkItemMemento& other);
         ~WorkItemMemento();
@@ -34,6 +33,7 @@ class WorkItemMemento{
     private:
         friend class WorkItem;
 
+    private:
         std::string activityId;
         std::string workItemId;
         WorkItemState* state;

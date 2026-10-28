@@ -22,8 +22,8 @@ public:
      * @param outcome    Ignored.
      * @return The next activities, or an empty list if there are none.
      */
-    std::vector<const ActivityDefinition*> next(
-        const ActivityDefinition& completed,
+    std::vector<const WorkflowComponent*> next(
+        const WorkflowComponent& completed,
         const WorkflowDefinition& definition,
         const std::string& outcome) override;
 
