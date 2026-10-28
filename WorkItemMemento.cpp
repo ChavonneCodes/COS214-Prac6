@@ -1,21 +1,83 @@
 #include "WorkItemMemento.h"
 using namespace std;
 
+/**
+ * @brief Constructs an empty memento.
+ *
+ * @details The memento has no associated IDs or saved state.
+ */
+WorkItemMemento::WorkItemMemento() : activityId("") , workItemId("") , state(nullptr) , dataSnapshot(""){
+}
+
+/**
+ * @brief Constructs a memento containing a snapshot of a work item.
+ *
+ * @param activityId ID of the activity associated with the work item.
+ * @param workItemId ID of the work item being saved.
+ * @param snapshot Data to preserve in the memento.
+ * @param state Current state to snapshot. The memento clones this state.
+ */
 WorkItemMemento::WorkItemMemento(string activityId,string workItemId,Data& snapshot,WorkItemState* state) : activityId(activityId) , workItemId(workItemId) , state(state) , dataSnapshot(snapshot){
 }
 
-string WorkItemMemento::getWorkItemId(){
+/**
+ * @brief Copy constructor.
+ *
+ * Creates an independent copy of the saved state.
+ *
+ * @param other Memento to copy.
+ */
+WorkItemMemento::WorkItemMemento(const WorkItemMemento& other)
+    : activityId(other.activityId),
+      workItemId(other.workItemId),
+      state(other.state != nullptr ? other.state->clone() : nullptr),
+      dataSnapshot(other.dataSnapshot)
+{
+}
+
+/**
+ * @brief Copy assignment operator.
+ *
+ * Replaces the current snapshot with an independent copy of another.
+ *
+ * @param other Memento to copy.
+ * @return Reference to this memento.
+ */
+WorkItemMemento& WorkItemMemento::operator=(const WorkItemMemento& other){
+    if(this != &other){
+        WorkItemState* copiedState = other.state != nullptr ? other.state->clone() : nullptr;
+
+        delete state;
+
+        activityId = other.activityId;
+        workItemId = other.workItemId;
+        dataSnapshot = other.dataSnapshot;
+        state = copiedState;
+    }
+    
+    return *this;
+}
+
+/**
+ * @brief Destroys the memento and releases its owned state.
+ */
+WorkItemMemento::~WorkItemMemento(){
+    delete state;
+}
+
+
+string WorkItemMemento::getWorkItemId() const{
     return workItemId;
 }
 
-string WorkItemMemento::getActivityId(){
+string WorkItemMemento::getActivityId() const{
     return activityId;
 }
 
-WorkItemState* WorkItemMemento::getStateKind(){
+WorkItemState* WorkItemMemento::getStateKind() const{
     return state;
 }
 
-Data WorkItemMemento::getDataSnapshot(){
+Data WorkItemMemento::getDataSnapshot() const{
     return dataSnapshot;
 }

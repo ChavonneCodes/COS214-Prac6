@@ -20,10 +20,18 @@
 class WorkItemMemento{
     public:
         WorkItemMemento(std::string,std::string,Data&,WorkItemState*);
-        std::string getWorkItemId();
-        std::string getActivityId();
-        WorkItemState* getStateKind();
-        Data getDataSnapshot();
+        WorkItemMemento(const WorkItemMemento& other);
+        ~WorkItemMemento();
+        WorkItemMemento& operator=(const WorkItemMemento& other);
+
+        //getters
+        std::string getActivityId() const;
+        std::string getWorkItemId() const;
+        WorkItemState* getStateKind() const;
+        Data getDataSnapshot() const;
+        
+    private:
+        friend class WorkItem;
 
     private:
         std::string activityId;
