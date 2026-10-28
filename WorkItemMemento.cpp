@@ -1,3 +1,12 @@
+/**
+ * @file WorkItemMemento.cpp
+ * @brief Implements the Memento pattern for WorkItem snapshots.
+ *
+ * A memento stores a work item's identifiers, data snapshot, and state.
+ * The saved state is cloned so that it remains valid independently
+ * of subsequent changes to the original WorkItem.
+ */
+
 #include "WorkItemMemento.h"
 using namespace std;
 
@@ -17,7 +26,8 @@ WorkItemMemento::WorkItemMemento() : activityId("") , workItemId("") , state(nul
  * @param snapshot Data to preserve in the memento.
  * @param state Current state to snapshot. The memento clones this state.
  */
-WorkItemMemento::WorkItemMemento(string activityId,string workItemId,Data& snapshot,WorkItemState* state) : activityId(activityId) , workItemId(workItemId) , state(state) , dataSnapshot(snapshot){
+
+WorkItemMemento::WorkItemMemento(string activityId,string workItemId,Data& snapshot,WorkItemState* state) : activityId(activityId) , workItemId(workItemId) , state(state != nullptr ? state->clone() : nullptr) , dataSnapshot(snapshot){
 }
 
 /**

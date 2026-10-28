@@ -28,11 +28,6 @@ bool WorkItem::assignTo(Participant* participant) {
     return currentState->assign(this, participant); // Transitions to AssignedState
 }
 
-// ---- State Pattern Support ----
-
-std::string WorkItem::getState() const { 
-    return currentState->getName(); 
-}
 
 /**
  * @brief Creates a snapshot of this work item's current data and state.

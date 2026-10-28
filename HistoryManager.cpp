@@ -1,3 +1,10 @@
+/**
+ * @file HistoryManager.cpp
+ * @brief Implements storage and retrieval of work item snapshots.
+ *
+ * HistoryManager maintains a collection of mementos that can be used
+ * to restore previous work item states.
+ */
 #include "HistoryManager.h"
 using namespace std;
 

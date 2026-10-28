@@ -425,7 +425,7 @@ int main() {
 
         const ActivityDefinition* activity = findActivity(*definition, currentId);
         RoutingStrategy* routing = routingFor.count(currentId) ? routingFor[currentId] : &sequential;
-        std::vector<const WorkflowComponent*> next = routing->next(*activity, *definition, outcome);
+        std::vector<const ActivityDefinition*> next = routing->next(*activity, *definition, outcome);
 
         currentId = next.empty() ? "" : next[0]->getId();
         std::cout << "  Routing (" << routing->getName() << ", outcome '" << outcome << "'): "
