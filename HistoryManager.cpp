@@ -13,8 +13,8 @@ using namespace std;
  *
  * @return Vector containing the saved snapshots.
  */
-vector<WorkItemMemento> HistoryManager::getAll(){
-    return mementos;
+vector<WorkflowAction*> HistoryManager::getAll(){
+    return executed;
 }
 
 /**
@@ -25,8 +25,8 @@ vector<WorkItemMemento> HistoryManager::getAll(){
  *
  * @param action Memento to save.
  */
-void HistoryManager::save(WorkItemMemento& action){
-    mementos.push_back(action);
+void HistoryManager::push(WorkflowAction* action){
+    executed.push_back(action);
 }
 
 
@@ -35,26 +35,15 @@ void HistoryManager::save(WorkItemMemento& action){
  *
  * @return Most recent memento, or a default memento if history is empty.
  */
-WorkItemMemento HistoryManager::pop(){
-    if(mementos.empty()){
-        return WorkItemMemento();
-    }
+WorkflowAction* HistoryManager::pop(){
+    WorkflowAction* a1;
+    if(!executed.empty()){
+        a1 = executed.at(executed.size() - 1);
+        executed.pop_back();
+        return a1;
+    } 
 
-    WorkItemMemento last = mementos.back();
-    mementos.pop_back();
-
-    return last;
+    a1 = nullptr;
+    return a1;
 }
 
-/**
- * @brief Returns the most recent snapshot without removing it.
- *
- * @return Most recent memento, or a default memento if history is empty.
- */
-WorkItemMemento HistoryManager::getLast(){
-    if(mementos.empty()){
-        return WorkItemMemento();
-    }
-
-    return mementos.back();
-}
