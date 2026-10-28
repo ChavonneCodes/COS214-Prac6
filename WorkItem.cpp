@@ -29,14 +29,6 @@ bool WorkItem::assignTo(Participant* participant) {
 }
 
 
-/**
- * @brief Creates a snapshot of this work item's current data and state.
- *
- * The WorkItemMemento constructor clones the state pointer, so the
- * snapshot remains valid after the work item changes state.
- *
- * @return A memento representing the current snapshot.
- */
 WorkItemMemento WorkItem::createMemento(){
     return WorkItemMemento(
                             definition->getId(),
@@ -46,16 +38,6 @@ WorkItemMemento WorkItem::createMemento(){
                         );
 }
 
-/**
- * @brief Restores the data and state from a saved memento.
- *
- * The snapshot is checked to ensure it belongs to this work item
- * and its associated activity. The state is cloned before replacing
- * the current state.
- *
- * @param memento Pointer to the memento to restore.
- *        If nullptr, no action is performed.
- */
 void WorkItem::restoreMemento(WorkItemMemento* memento){
     if(memento == nullptr){
         return;
