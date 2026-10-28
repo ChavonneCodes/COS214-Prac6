@@ -1,5 +1,6 @@
 #include "SubProcessInstance.h"
 #include "RuntimeVisitor.h"
+#include  "WorkflowInstance.h"
 
 SubProcessInstance::SubProcessInstance(const std::string& instanceId, SubProcessDefinition* def)
     : instanceId(instanceId), definition(def), state("IDLE") {}
@@ -15,3 +16,15 @@ void SubProcessInstance::print(int indentLevel) const {
 }
 
 void SubProcessInstance::accept(RuntimeVisitor& visitor) { visitor.visitSubProcess(*this); }
+
+void SubProcessInstance::setChildInstance(WorkflowInstance* child) {
+    childInstance = child;
+}
+
+WorkflowInstance* SubProcessInstance::getChildInstance() const {
+    return childInstance;
+}
+
+SubProcessDefinition* SubProcessInstance::getDefinition() const {
+    return definition;
+}
