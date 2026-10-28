@@ -79,14 +79,6 @@ public:
      */
     virtual std::vector<RuntimeComponent*> getChildren() const;
 
-    // Composite operations
-    virtual void addChild(RuntimeComponent* ) {
-        std::cout << "Cannot add child to a leaf runtime component." << std::endl;
-    }
-    virtual std::vector<RuntimeComponent*> getChildren() const {
-        return {};
-    }
-
     RuntimeComponentIterator* createIterator(TraversalStrategy<RuntimeComponent>* strat) const override
     {
 	    return new RuntimeComponentIterator(*this, strat);

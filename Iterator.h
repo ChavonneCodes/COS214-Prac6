@@ -234,6 +234,7 @@ class RuntimeComponentIterator : public Iterator<RuntimeComponent>
 		 * @return const Iterable<RuntimeComponent>& Reference to the next element.
 		 */
 		const Iterable<RuntimeComponent>& getNext() override;
+		~RuntimeComponentIterator();
 };
 
 #endif // ITERATOR_H
