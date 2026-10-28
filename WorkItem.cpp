@@ -62,17 +62,17 @@ void WorkItem::restoreMemento(WorkItemMemento* memento){
     }
 
     //make sure the snapshot belongs to this work item
-    if(memento->workItemId != getId()){
+    if(memento->getWorkItemId() != getId()){
         return;
     }
 
-    if(memento->activityId != definition->getId()){
+    if(memento->getActivityId() != definition->getId()){
         return;
     }
 
-    WorkItemState* restoredState = memento->state->clone();
+    WorkItemState* restoredState = memento->getStateKind()->clone();
 
-    data = memento->dataSnapshot;
+    data = memento->getDataSnapshot();
 
     //restore the saved state
     changeState(restoredState);
