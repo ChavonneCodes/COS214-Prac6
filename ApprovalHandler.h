@@ -16,7 +16,7 @@ public:
 
 protected:
     // Each derived handler defines its own approval logic.
-    virtual bool handleRequest(Request& request);
+    virtual bool handleRequest(Request&);
 
 private:
     ApprovalHandler* next = nullptr;
