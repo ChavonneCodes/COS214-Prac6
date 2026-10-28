@@ -74,3 +74,20 @@ WorkItemMemento& WorkItemMemento::operator=(const WorkItemMemento& other){
 WorkItemMemento::~WorkItemMemento(){
     delete state;
 }
+
+
+string WorkItemMemento::getWorkItemId() const{
+    return workItemId;
+}
+
+string WorkItemMemento::getActivityId() const{
+    return activityId;
+}
+
+WorkItemState* WorkItemMemento::getStateKind() const{
+    return state;
+}
+
+Data WorkItemMemento::getDataSnapshot() const{
+    return dataSnapshot;
+}

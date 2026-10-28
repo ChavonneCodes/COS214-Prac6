@@ -22,8 +22,15 @@ class WorkItemMemento{
         WorkItemMemento();
         WorkItemMemento(std::string,std::string,Data&,WorkItemState*);
         WorkItemMemento(const WorkItemMemento& other);
-        WorkItemMemento& operator=(const WorkItemMemento& other);
         ~WorkItemMemento();
+        WorkItemMemento& operator=(const WorkItemMemento& other);
+
+        //getters
+        std::string getActivityId() const;
+        std::string getWorkItemId() const;
+        WorkItemState* getStateKind() const;
+        Data getDataSnapshot() const;
+        
     private:
         friend class WorkItem;
 

@@ -307,7 +307,7 @@ int main() {
 
         // Memento + Prototype: snapshot a clone of the current state before anything risky
         Data notes("Architecture review: microservices design accepted");
-        WorkItemMemento snapshot("techReview", item->getId(), notes, item->getCurrentState()->clone());
+        WorkItemMemento snapshot("techReview", item->getId(), notes, item->getCurrentState()); //changed item->getCurrentState()->clone() -> item->getCurrentState() 
         std::cout << "  Saved memento of '" << snapshot.getWorkItemId() << "' in state "
                   << snapshot.getStateKind()->getName() << "\n";
 
@@ -317,7 +317,7 @@ int main() {
 
         std::cout << "  Rolling back: undo the last command and restore the memento.\n";
         engine.undoLast();
-        item->changeState(snapshot.getStateKind()); // the work item now owns the saved state
+        item->changeState(snapshot.getStateKind()->clone()); // the work item now owns the saved state
         std::cout << "    state restored to " << item->getCurrentState()->getName()
                   << ", notes: \"" << snapshot.getDataSnapshot().getValue() << "\"\n";
 
@@ -330,7 +330,24 @@ int main() {
         run(engine, new StartCommand(item), item);
 
         std::cout << "  Asking the approval chain to sign off the budget...\n";
-        Request request("APPROVE", item->getId(), instanceId, "finance", instance->getData().getValue());
+        Request request(
+            "REQ-FIN-001",
+            "APPROVE",
+            item->getId(),
+            instanceId,
+            "finance",
+            "finance-reviewer",
+            "Budget approval",
+            item->getCurrentState()->getName(),
+            instance->getData()
+        );
+
+        HandlerResult financeResult = financeApprover.authorise(request);
+
+        if (financeResult == HandlerResult::Rejected) {
+            std::cout << "Finance approval was rejected.\n";
+        }
+
         financeApprover.authorise(request);
 
         std::string outcome = std::stoi(instance->getData().getValue()) > EXECUTIVE_LIMIT
@@ -344,16 +361,45 @@ int main() {
     behaviour["execApproval"] = [&](WorkItem* item) {
         run(engine, new AssignCommand(item, item->getAssignedParticipant()), item);
         std::cout << "  The approval deadline passes without a decision from Naledi...\n";
-        Request timeout("TIMEOUT", item->getId(), instanceId, "board", instance->getData().getValue());
-        if (financeApprover.authorise(timeout)) {
+        Request timeout(
+            "REQ-TIMEOUT-001",
+            "TIMEOUT",
+            item->getId(),
+            instanceId,
+            "board",
+            "system",
+            "Executive approval deadline exceeded",
+            item->getCurrentState()->getName(),
+            instance->getData()
+        );
+
+        HandlerResult timeoutResult = financeApprover.authorise(timeout);
+
+        if (timeoutResult == HandlerResult::Handled) {
             std::string target = "executive";
             run(engine, new EscalateCommand(item, target), item);
         }
 
         std::cout << "  Mandla (CEO) picks up the escalated approval.\n";
         run(engine, new AssignCommand(item, &mandla), item);
-        Request signOff("APPROVE", item->getId(), instanceId, "executive", instance->getData().getValue());
-        executiveApprover.authorise(signOff);
+        Request signOff(
+            "REQ-EXEC-001",
+            "APPROVE",
+            item->getId(),
+            instanceId,
+            "executive",
+            "executive-reviewer",
+            "Executive project sign-off",
+            item->getCurrentState()->getName(),
+            instance->getData()
+        );
+
+        HandlerResult signOffResult = executiveApprover.authorise(signOff);
+
+        if (signOffResult == HandlerResult::Rejected) {
+            std::cout << "Executive approval was rejected.\n";
+        }
+
         eventBus.notify(WorkFlowEvent("APPROVAL_DECISION", instanceId, item->getId(),
                                       "project approved by the executive"));
         run(engine, new StartCommand(item), item);

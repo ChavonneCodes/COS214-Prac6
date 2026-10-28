@@ -78,8 +78,8 @@ void WorkItem::restoreMemento(WorkItemMemento* memento){
     changeState(restoredState);
 }
 
-std::string WorkItem::getId() const { return definition->getId(); }
-std::string WorkItem::getState() const { return state; }
+
+std::string WorkItem::getState() const { return currentState->getName(); }
 void WorkItem::setState(const std::string& newState) {
     if (newState == "Created" || newState == "CREATED" || newState == "IDLE") changeState(new CreatedState());
     else if (newState == "Available" || newState == "AVAILABLE") changeState(new AvailableState());
