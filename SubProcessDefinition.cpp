@@ -8,6 +8,10 @@ std::string SubProcessDefinition::getName() const { return "Call SubProcess: " +
 std::string SubProcessDefinition::getCalledDefinitionId() const { return calledDefinitionId; }
 int SubProcessDefinition::getCalledVersion() const { return calledVersion; }
 
+SubProcessDefinition* SubProcessDefinition::clone() const {
+    return new SubProcessDefinition(*this); // only values (ids and a version number), so a copy is already deep
+}
+
 void SubProcessDefinition::print(int indentLevel) const {
     std::string indent(indentLevel * 2, ' ');
     std::cout << indent << "* SubProcess: Calls " << calledDefinitionId << " (v" << calledVersion << ")\n";

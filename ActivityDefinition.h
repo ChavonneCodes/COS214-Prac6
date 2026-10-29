@@ -3,6 +3,7 @@
  * @brief Defines the ActivityDefinition class.
  * 
  * Part of the Composite pattern: this represents a Leaf node in the activity tree.
+ * Also a ConcretePrototype in the Prototype pattern (see clone()).
  * It represents a single piece of work (an activity) within the workflow blueprint.
  */
 
@@ -83,6 +84,17 @@ public:
      * @return The required role ID.
      */
     std::string getRequiredRoleId() const;
-};
+
+    /**
+     * @brief Creates an independent copy of this activity (Prototype pattern).
+     *
+     * An activity is a leaf with only value members (id, name, role, chain),
+     * so the copy is a plain field-by-field duplicate.
+     *
+     * @note The caller owns the returned pointer.
+     * @return A new ActivityDefinition with the same id, name, role and approval chain.
+     */
+    ActivityDefinition* clone() const override;
+    };
 
 #endif // ACTIVITY_DEFINITION_H

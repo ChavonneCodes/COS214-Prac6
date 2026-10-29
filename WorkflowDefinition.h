@@ -12,6 +12,7 @@
 
 #include <string>
 #include <vector>
+#include <stdexcept>
 #include "ActivityDefinition.h"
 #include "RoleDefinition.h"
 #include "ApprovalChainDefinition.h"
@@ -92,6 +93,24 @@ public:
      * @return Pointer to the root WorkflowComponent.
      */
     WorkflowComponent* getRoot() const;
+
+    /**
+     * @brief Creates an editable copy of this definition under a new version (Prototype pattern).
+     *
+     * The copy has the same definition id and name, copies of every role,
+     * activity, transition and approval chain, and a deep copy of the
+     * Composite tree (made with WorkflowComponent::clone()). Only the version
+     * number differs. Editing the copy (setRoot, addChild on its tree, addRole,
+     * ...) never changes this definition, so a team can tweak a workflow
+     * without rebuilding it with the Builder.
+     *
+     * @note The caller owns the returned pointer (for example by passing it to
+     *       InMemoryDefinitionRepository::save, which stores it).
+     * @param newVersion The version of the copy. Must differ from getVersion().
+     * @throws std::invalid_argument if newVersion equals this definition's version.
+     * @return A newly allocated independent WorkflowDefinition.
+     */
+    WorkflowDefinition* cloneWithVersion(int newVersion) const;
 
     // --- Methods used by the Builder to populate the definition ---
 

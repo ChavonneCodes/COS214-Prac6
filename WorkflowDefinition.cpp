@@ -1,6 +1,7 @@
 #include "WorkflowDefinition.h"
 #include "WorkflowComponent.h"
 #include <utility>
+#include <memory>
 
 WorkflowDefinition::WorkflowDefinition(const std::string& id,const std::string& name,int version):
 definitionId(id),name(name),version(version),root(nullptr) {}
@@ -17,6 +18,24 @@ void WorkflowDefinition::setRoot(WorkflowComponent* rootNode) {
 
 WorkflowComponent* WorkflowDefinition::getRoot() const {
     return root;
+}
+
+WorkflowDefinition* WorkflowDefinition::cloneWithVersion(int newVersion) const {
+    if (newVersion == version) {
+        throw std::invalid_argument("cloneWithVersion: the copy needs a different version number");
+    }
+
+    std::unique_ptr<WorkflowDefinition> copy(new WorkflowDefinition(definitionId, name, newVersion));
+    copy->chainId = chainId;
+    // These lists hold plain values, so copying the vectors is already a deep copy.
+    copy->activities = activities;
+    copy->roles = roles;
+    copy->approvalChains = approvalChains;
+    copy->transitions = transitions;
+    if (root != nullptr) {
+        copy->root = root->clone(); // the Prototype step: duplicate the whole Composite tree
+    }
+    return copy.release();
 }
 
 void WorkflowDefinition::addActivity(const ActivityDefinition& activity){
