@@ -271,4 +271,5 @@ int main() {
         std::cerr << "SCENARIO 1 FAILED: " << error.what() << '\n';
         return 1;
     }
+        
 }
