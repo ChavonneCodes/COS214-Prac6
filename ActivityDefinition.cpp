@@ -18,4 +18,8 @@ void ActivityDefinition::print(int indentLevel) const {
 }
 std::string ActivityDefinition::getId() const { return activityId; }
 std::string ActivityDefinition::getName() const { return name; }
+
+ActivityDefinition* ActivityDefinition::clone() const {
+    return new ActivityDefinition(*this); // all members are values, so a copy is already deep
+}
 std::string ActivityDefinition::getRequiredRoleId() const { return requiredRoleId; }
