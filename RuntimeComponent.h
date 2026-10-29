@@ -6,8 +6,11 @@
 #ifndef RUNTIME_COMPONENT_H
 #define RUNTIME_COMPONENT_H
 
+#include "Iterator.h"
 #include <string>
 #include <vector>
+
+class RuntimeVisitor;
 
 /**
  * @class RuntimeComponent
@@ -17,7 +20,7 @@
  * like WorkItem and composites like StageInstance). It allows the engine to treat
  * individual tasks and groups of tasks uniformly.
  */
-class RuntimeComponent {
+class RuntimeComponent : public Iterable<RuntimeComponent> {
 public:
     /**
      * @brief Virtual destructor to ensure proper cleanup of derived classes.
@@ -51,6 +54,15 @@ public:
      */
     virtual void print(int indentLevel = 0) const = 0;
 
+    /**
+     * @brief Accepts a visitor (Visitor pattern, role: Element).
+     *
+     * Each node calls the visit method for its own class. Composite nodes also
+     * pass the visitor on to their children.
+     * @param visitor The operation to run on this node.
+     */
+    virtual void accept(RuntimeVisitor& visitor) = 0;
+
     // --- Composite Operations ---
 
     /**
@@ -66,6 +78,11 @@ public:
      * @return A vector of pointers to the child components.
      */
     virtual std::vector<RuntimeComponent*> getChildren() const;
+
+    RuntimeComponentIterator* createIterator(TraversalStrategy<RuntimeComponent>* strat) const override
+    {
+	    return new RuntimeComponentIterator(*this, strat);
+    }
 };
 
-#endif // RUNTIME_COMPONENT_H
+#endif //RUNTIME_COMPONENT_H

@@ -4,19 +4,25 @@
 #include "Request.h"
 #include <string>
 
+enum class HandlerResult{
+    Continue,
+    Handled,
+    Rejected
+};
+
 class ApprovalHandler {
 public:
     virtual ~ApprovalHandler() = default;
 
-    virtual std::string getName();
+    virtual std::string getName() const;
 
     void setNext(ApprovalHandler* handler);
 
-    bool authorise(Request& request);
+    HandlerResult authorise(Request& request);
 
 protected:
     // Each derived handler defines its own approval logic.
-    virtual bool handleRequest(Request& request);
+    virtual HandlerResult handleRequest(Request& request);
 
 private:
     ApprovalHandler* next = nullptr;

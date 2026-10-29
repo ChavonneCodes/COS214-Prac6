@@ -65,14 +65,7 @@ class WorkItemState{
          * @return name of state
          */
         virtual std::string getName()=0;
-        /**
-         * @brief Prototype: copy of this state, used for mementos
-         * @return WorkItemState object
-         */
-        virtual WorkItemState* clone()=0; 
-        /**
-         * @brief virtual destructor
-         */
+        virtual WorkItemState* clone() = 0;
         virtual ~WorkItemState(){};
         
 };

@@ -4,10 +4,14 @@
  * 
  * Part of the Composite pattern: this represents the base Component (node) 
  * in the static workflow definition tree.
+ *
+ * Also the Prototype in the Prototype pattern: every node can clone() itself
+ * (deep copy), so an existing definition tree can be duplicated and edited
+ * without rebuilding it from scratch.
  */
 
-#ifndef WORKFLOW_COMPONENT_H
-#define WORKFLOW_COMPONENT_H
+#ifndef WORKFLOW_COMPONeNT_H
+#define WORKFLOW_COMPONeNT_H
 
 #include <string>
 #include <vector>
@@ -47,7 +51,7 @@ public:
      */
     virtual void print(int indentLevel = 0) const = 0;
 
-    // --- Composite Operations ---
+    // Composite Operations
 
     /**
      * @brief Adds a child component. Only valid for composite nodes.
@@ -66,6 +70,22 @@ public:
     virtual std::vector<WorkflowComponent*> getChildren() const {
         return {};
     }
+
+    // Prototype Operation
+
+    /**
+     * @brief Creates a deep copy of this component (Prototype pattern).
+     *
+     * The copy is completely independent of the original: for a composite
+     * node every child is cloned recursively, so editing the copy (adding or
+     * removing children) never changes the original tree, and vice versa.
+     *
+     * @note The caller owns the returned pointer and must delete it, or hand
+     *       it to something that takes ownership (e.g. StageDefinition::addChild
+     *       or WorkflowDefinition::setRoot).
+     * @return A newly allocated copy of this component and its whole subtree.
+     */
+    virtual WorkflowComponent* clone() const = 0;
 };
 
-#endif // WORKFLOW_COMPONENT_H
+#endif // WORKFLOW_COMPONeNT_H

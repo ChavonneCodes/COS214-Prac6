@@ -8,7 +8,7 @@
 #define CONDITIONAL_ROUTING_H
 
 #include "RoutingStrategy.h"
-
+#include "RoutingHelper.h"
 /**
  * @class ConditionalRouting
  * @brief Goes to one activity if the outcome matches a condition, otherwise to another.
@@ -37,8 +37,8 @@ public:
      * @param outcome    Result of the finished activity.
      * @return A list with the chosen activity, or an empty list if it does not exist.
      */
-    std::vector<const ActivityDefinition*> next(
-        const ActivityDefinition& completed,
+    std::vector<const WorkflowComponent*> next(
+        const WorkflowComponent& completed,
         const WorkflowDefinition& definition,
         const std::string& outcome) override;
 

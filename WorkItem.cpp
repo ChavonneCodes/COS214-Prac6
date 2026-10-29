@@ -8,6 +8,7 @@
 #include "RejectedState.h"
 #include "CancelledState.h"
 #include "EscalatedState.h"
+#include "RuntimeVisitor.h"
 
 WorkItem::WorkItem(const std::string& instanceId, ActivityDefinition* def)
     : instanceId(instanceId), definition(def), assignedParticipant(nullptr), 
@@ -27,13 +28,40 @@ bool WorkItem::assignTo(Participant* participant) {
     return currentState->assign(this, participant); // Transitions to AssignedState
 }
 
-// ---- State Pattern Support ----
 
-std::string WorkItem::getState() const { 
-    return currentState->getName(); 
+WorkItemMemento WorkItem::createMemento(){
+    return WorkItemMemento(
+                            definition->getId(),
+                            getId(),
+                            data,
+                            currentState
+                        );
 }
 
-// This method is now just a compatibility wrapper for tests that call setState("...")
+void WorkItem::restoreMemento(WorkItemMemento* memento){
+    if(memento == nullptr){
+        return;
+    }
+
+    //make sure the snapshot belongs to this work item
+    if(memento->workItemId != getId()){
+        return;
+    }
+
+    if(memento->activityId != definition->getId()){
+        return;
+    }
+
+    WorkItemState* restoredState = memento->state->clone();
+
+    data = memento->dataSnapshot;
+
+    //restore the saved state
+    changeState(restoredState);
+}
+
+
+std::string WorkItem::getState() const { return currentState->getName(); }
 void WorkItem::setState(const std::string& newState) {
     if (newState == "Created" || newState == "CREATED" || newState == "IDLE") changeState(new CreatedState());
     else if (newState == "Available" || newState == "AVAILABLE") changeState(new AvailableState());
@@ -101,6 +129,10 @@ void WorkItem::setParticipant(Participant* p){
     if (p == nullptr) return;
     assignedParticipant = p;
 }
+
+std::string WorkItem::getName() const { return definition->getName(); }
+
+void WorkItem::accept(RuntimeVisitor& visitor) { visitor.visitWorkItem(*this); }
 
 WorkItem::~WorkItem(){
     delete currentState;

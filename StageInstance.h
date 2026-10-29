@@ -92,6 +92,20 @@ public:
      * @return A vector of pointers to the child runtime components.
      */
     std::vector<RuntimeComponent*> getChildren() const override;
+
+    /**
+     * @brief Retrieves the display name of the stage.
+     *
+     * @return The stage name (delegated from the definition).
+     */
+    std::string getName() const;
+
+    /**
+     * @brief Visits this stage, then every child in order, then leaves the stage.
+     *
+     * @param visitor The operation to run (Visitor pattern).
+     */
+    void accept(RuntimeVisitor& visitor) override;
 };
 
 #endif // STAGE_INSTANCE_H

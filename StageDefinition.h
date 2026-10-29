@@ -4,6 +4,7 @@
  * 
  * Part of the Composite pattern: this represents a Composite (branch) node 
  * in the workflow definition tree.
+ * Also a ConcretePrototype in the Prototype pattern (see clone()).
  */
 
 #ifndef STAGE_DEFINITION_H
@@ -84,6 +85,20 @@ public:
      * @param indentLevel The number of indentation levels to apply (2 spaces per level).
      */
     void print(int indentLevel = 0) const override;
+
+    /**
+     * @brief Creates a deep copy of this stage and everything below it (Prototype pattern).
+     *
+     * Because a stage owns its children through raw pointers, copying the
+     * pointers would make two stages delete the same objects. Instead every
+     * child is cloned (recursively, through its own clone()), so the copy owns
+     * a completely separate subtree. Nested stages, activities and
+     * sub-processes are all duplicated.
+     *
+     * @note The caller owns the returned pointer.
+     * @return A new StageDefinition with the same id and name and cloned children.
+     */
+    StageDefinition* clone() const override;
 };
 
 #endif // STAGE_DEFINITION_H

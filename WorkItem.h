@@ -6,6 +6,8 @@
 #include "ActivityDefinition.h"
 #include "WorkItemState.h"
 #include "EventBus.h"      // Observer: WorkItem publishes events to the bus
+#include "WorkItemMemento.h"
+#include "Data.h"
 
 
 class WorkItem : public RuntimeComponent {
@@ -15,6 +17,7 @@ private:
     Participant* assignedParticipant = nullptr;  ///< Who the item is assigned to (not owned, may be null).
     WorkItemState* currentState;
     EventBus* eventBus = nullptr;  ///< Bus that events are published to (not owned, may be null).
+    Data data;
 
     /**
      * @brief Publishes an event on the bus; does nothing if no bus is attached.
@@ -53,11 +56,27 @@ public:
      * @return true on success, false (and no change) if participant is nullptr.
      */
     bool assignTo(Participant* participant);
-    
+
     /**
-     * @brief Retrieves the unique identifier of the work item.
-     * @return The activity ID.
+     * @brief Restores the data and state from a saved memento.
+     *
+     * The snapshot is checked to ensure it belongs to this work item
+     * and its associated activity. The state is cloned before replacing
+     * the current state.
+     *
+     * @param memento Pointer to the memento to restore.
+     *        If nullptr, no action is performed.
      */
+    void restoreMemento(WorkItemMemento*);
+    /**
+     * @brief Creates a snapshot of this work item's current data and state.
+     *
+     * The WorkItemMemento constructor clones the state pointer, so the
+     * snapshot remains valid after the work item changes state.
+     *
+     * @return A memento representing the current snapshot.
+     */
+    WorkItemMemento createMemento();
     std::string getId() const override;
 
     /**
@@ -163,6 +182,18 @@ public:
      * @return The instance id.
      */
     std::string getInstanceId() const;
+
+    /**
+     * @brief Returns the display name of the activity this item performs.
+     * @return The activity name.
+     */
+    std::string getName() const;
+
+    /**
+     * @brief Calls the visitor's visitWorkItem() for this item (Visitor pattern).
+     * @param visitor The operation to run.
+     */
+    void accept(RuntimeVisitor& visitor) override;
 
 };
 

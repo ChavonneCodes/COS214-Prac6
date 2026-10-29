@@ -31,8 +31,8 @@ public:
      * @param outcome    Result of the finished activity, e.g. "passed" or "failed".
      * @return The next activities (empty if the workflow ends here).
      */
-    virtual std::vector<const ActivityDefinition*> next(
-        const ActivityDefinition& completed,
+    virtual std::vector<const WorkflowComponent*> next(
+        const WorkflowComponent& completed,
         const WorkflowDefinition& definition,
         const std::string& outcome) = 0;
 
