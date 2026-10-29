@@ -2,12 +2,16 @@
 #define ESCALATECOMMAND_H
 #include "WorkItem.h"
 #include "WorkflowAction.h"
+#include "Participant.h"
+#include "WorkItemMemento.h"
+#include <string>
+#include <vector>
 class EscalateCommand: public WorkflowAction{
     private:
         WorkItem* receiver;
-        std::string targetRoleId;
+        std::vector<WorkItemMemento> myHistory;
     public:
-        EscalateCommand(WorkItem* r, std::string& id);
+        EscalateCommand(WorkItem* r);
          /**
          * @brief calls the appropriate method in WorkItem to execute the command
          * @return true if method is executed successfully, false otherwise

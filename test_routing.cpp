@@ -41,4 +41,5 @@ int main() {
 
     std::cout << "=== RESULT: " << passed << " passed, " << failed << " failed ===" << std::endl;
     return failed == 0 ? 1 - 1 : 1;
+    
 }

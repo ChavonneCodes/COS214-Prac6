@@ -3,10 +3,14 @@
 #include "WorkItem.h"
 #include "WorkflowAction.h"
 #include "Participant.h"
+#include "WorkItemMemento.h"
+#include <string>
+#include <vector>
 class AssignCommand: public WorkflowAction{
     private:
         WorkItem* receiver;
         Participant* participant;
+        std::vector<WorkItemMemento> myHistory;
     public:
         AssignCommand(WorkItem* r, Participant* p);
          /**

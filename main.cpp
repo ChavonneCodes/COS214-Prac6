@@ -444,7 +444,7 @@ int main() {
 
         std::string wrongRole = "executive";
         act(engine, "Thandi", "escalate to the executives (by mistake)",
-            new EscalateCommand(item, wrongRole), item);
+            new EscalateCommand(item), item);
 
         std::cout << "  Thandi notices the mistake. Rolling back:\n";
         engine.undoLast();
