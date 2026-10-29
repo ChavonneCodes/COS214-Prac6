@@ -3,10 +3,11 @@ using namespace std;
 
 Data::Data(): value(""){
 }
+
 Data::Data(string value) : value(value){
 }
 
-string Data::getValue(){
+string Data::getValue() const{
     return value;
 }
 
