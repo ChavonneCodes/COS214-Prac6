@@ -1,11 +1,11 @@
 #include "SequentialRouting.h"
 #include "RoutingHelper.h"
 
-std::vector<const ActivityDefinition*> SequentialRouting::next(
-    const ActivityDefinition& completed,
+std::vector<const WorkflowComponent*> SequentialRouting::next(
+    const WorkflowComponent& completed,
     const WorkflowDefinition& definition,
     const std::string& /*outcome*/) {
-    std::vector<const ActivityDefinition*> result;
+    std::vector<const WorkflowComponent*> result;
     const std::vector<TransitionDefinition>& transitions = definition.getTransitions();
     for (size_t i = 0; i < transitions.size(); ++i) {
         if (transitions[i].getFrom() == completed.getId() &&

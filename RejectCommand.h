@@ -2,9 +2,13 @@
 #define REJECTCOMMAND_H
 #include "WorkItem.h"
 #include "WorkflowAction.h"
+#include "WorkItemMemento.h"
+#include <vector>
+#include <string>
 class RejectCommand: public WorkflowAction{
     private:
         WorkItem* receiver;
+        std::vector<WorkItemMemento> myHistory;
     public:
         RejectCommand(WorkItem* r);
          /**

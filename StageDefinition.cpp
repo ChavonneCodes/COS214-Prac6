@@ -1,4 +1,5 @@
 #include "StageDefinition.h"
+#include <memory>
 
 StageDefinition::StageDefinition(const std::string& id, const std::string& name)
     : stageId(id), name(name) {}
@@ -20,6 +21,16 @@ void StageDefinition::addChild(WorkflowComponent* child) {
 
 std::vector<WorkflowComponent*> StageDefinition::getChildren() const {
     return children;
+}
+
+StageDefinition* StageDefinition::clone() const {
+    // The unique_ptr frees the half-built copy (and the children already added
+    // to it) if a child's clone() ever throws.
+    std::unique_ptr<StageDefinition> copy(new StageDefinition(stageId, name));
+    for (const WorkflowComponent* child : children) {
+        copy->addChild(child->clone()); // polymorphic: each child decides how to copy itself
+    }
+    return copy.release();
 }
 
 void StageDefinition::print(int indentLevel) const {

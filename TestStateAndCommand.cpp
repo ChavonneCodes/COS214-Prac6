@@ -12,6 +12,11 @@
 #include "RejectCommand.h"
 #include "CancelCommand.h"
 #include "EscalateCommand.h"
+#include "WorkflowEngine.h"
+#include "InMemoryDefinitionRepository.h"
+#include "EventBus.h"
+#include "HistoryManager.h"
+#include "NotificationObserver.h"
 
 // Run a command, then show whether it was accepted and what the state is now.
 void run(WorkflowAction& cmd, WorkItem& item) {
@@ -22,6 +27,14 @@ void run(WorkflowAction& cmd, WorkItem& item) {
 }
 
 int main() {
+     InMemoryDefinitionRepository repository;
+    EventBus eventBus;
+    HistoryManager history;
+    AuditObserver audit;
+    NotificationObserver decisions("APPROVAL_DECISION");
+    eventBus.attach(&audit);
+    eventBus.attach(&decisions);
+    WorkflowEngine engine(&repository, &eventBus, &history, &audit);
     ActivityDefinition* def = new ActivityDefinition("act1", "Review", "role1");
     std::vector<std::string> roles;
 roles.push_back("role1");
@@ -36,9 +49,38 @@ roles.push_back("role1");
     a.makeAvailable();                       // Created -> Available
     std::cout << "after makeAvailable: " << a.getCurrentState()->getName() << "\n";
 
-    AssignCommand   assign(&a, person);
-    StartCommand    start(&a);
-    CompleteCommand complete(&a);
+    WorkflowAction* complete = new CompleteCommand(&a);
+    engine.submit(complete);
+    
+    a.print();
+    WorkflowAction* assign = new AssignCommand(&a, person);
+    engine.submit(assign);
+    a.print();
+    WorkflowAction* start = new StartCommand(&a);
+    engine.submit(start);
+    a.print();
+    WorkflowAction* escalate = new EscalateCommand(&a);
+    engine.submit(escalate);
+    a.print();
+    WorkflowAction* assign2 = new AssignCommand(&a, person);
+    engine.submit(assign2);
+    a.print();
+    
+    WorkflowAction* reject = new RejectCommand(&a);
+    engine.submit(reject);
+
+    a.print();
+    engine.undoLast();
+    a.print();
+    engine.undoLast();
+    a.print();
+    engine.undoLast();
+    a.print();
+    engine.undoLast();
+    a.print();
+
+
+    /*CompleteCommand complete(&a);
     run(assign, a);                          // Available   -> Assigned
     run(start, a);                           // Assigned    -> In_Progress
     run(complete, a);                        // In_Progress -> Completed
@@ -76,7 +118,7 @@ roles.push_back("role1");
     run(escalateD, d);                       // -> Escalated
     run(cancelD, d);                         // -> Cancelled
 
-   
+   */
 
     delete person;
     delete def;

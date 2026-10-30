@@ -7,6 +7,11 @@
  * Budgets above the executive limit also need executive sign-off before the
  * project can kick off.
  *
+ * The output is written for someone seeing the system for the first time:
+ * it explains what a workflow engine is, tells the story one step at a time,
+ * and says which design pattern is doing the work at each point. It ends with
+ * a table of every pattern shown and where to find it.
+ *
  * Patterns shown, in the order they appear:
  * - Facade: WorkflowEngine is the only entry point for starting work and submitting commands;
  * - Observer: every state change is published on the EventBus to the audit log and notifications;
@@ -62,6 +67,7 @@ namespace {
 const std::string DEFINITION_ID = "project-approval";
 const int EXECUTIVE_LIMIT = 500000;   ///< Budgets above this (in rand) need executive sign-off.
 const int PROPOSAL_BUDGET = 750000;   ///< Budget of the proposal in this run.
+const size_t LOG_PREVIEW = 6;         ///< How many audit and history lines to show before "...".
 
 /**
  * @brief Prints a section heading.
@@ -71,6 +77,51 @@ void heading(const std::string& title) {
     std::cout << "\n=================================================================\n"
               << " " << title << "\n"
               << "=================================================================\n";
+}
+
+/**
+ * @brief Prints plain-English lines that explain what is about to happen.
+ * @param lines Lines to print, each indented by two spaces.
+ */
+void explain(const std::vector<std::string>& lines) {
+    for (const std::string& line : lines) std::cout << "  " << line << "\n";
+}
+
+/**
+ * @brief Prints which design pattern is doing the work, and why.
+ * @param name What the pattern is called.
+ * @param why  One sentence on what it solves at this point of the story.
+ */
+void pattern(const std::string& name, const std::string& why) {
+    const size_t width = 80;
+    std::string line = "  [Pattern: " + name + "]";
+    std::string word;
+    for (size_t i = 0; i <= why.size(); ++i) {
+        if (i < why.size() && why[i] != ' ') {
+            word += why[i];
+            continue;
+        }
+        if (word.empty()) continue;
+        if (line.size() + 1 + word.size() > width) {   // wrap, keeping the text lined up
+            std::cout << line << "\n";
+            line = "      " + word;
+        } else {
+            line += " " + word;
+        }
+        word.clear();
+    }
+    std::cout << line << "\n";
+}
+
+/**
+ * @brief Prints a list, cut short after LOG_PREVIEW lines.
+ * @param lines The full list.
+ */
+void printPreview(const std::vector<std::string>& lines) {
+    for (size_t i = 0; i < lines.size() && i < LOG_PREVIEW; ++i) std::cout << "    " << lines[i] << "\n";
+    if (lines.size() > LOG_PREVIEW) {
+        std::cout << "    ... (" << lines.size() - LOG_PREVIEW << " more, " << lines.size() << " in total)\n";
+    }
 }
 
 /**
@@ -172,41 +223,76 @@ WorkflowBlueprint makeProjectApprovalBlueprint(int version) {
 }
 
 /**
- * @brief Submits a command through the engine and prints the state change.
- * @param engine  The engine (takes ownership of the command).
- * @param command Command to run.
- * @param item    Work item the command acts on.
+ * @brief Submits a command through the engine and prints what happened.
+ *
+ * The action is printed first, then the result: the new state if the work
+ * item's state allowed it, or "refused" if it did not.
+ * @param engine        The engine (takes ownership of the command).
+ * @param who           Person doing the action.
+ * @param action        What they do, in plain words.
+ * @param command       Command to run.
+ * @param item          Work item the command acts on.
+ * @param expectRefusal true if this is a deliberate illegal action, to show the State pattern refusing it.
  * @return true if the work item's state allowed the action.
  */
-bool run(WorkflowEngine& engine, WorkflowAction* command, WorkItem* item) {
+bool act(WorkflowEngine& engine, const std::string& who, const std::string& action,
+         WorkflowAction* command, WorkItem* item, bool expectRefusal = false) {
     std::string before = item->getCurrentState()->getName();
-    std::cout << "  > " << command->getDescription() << "\n";
+    std::cout << "  " << who << ": " << action
+              << (expectRefusal ? " (should be refused)" : "") << "\n";
     bool ok = engine.submit(command);
-    std::cout << "    state: " << before << " -> " << item->getCurrentState()->getName()
-              << (ok ? "" : "  (not allowed, nothing recorded)") << "\n";
+    if (ok) {
+        std::cout << "      " << before << " -> " << item->getCurrentState()->getName() << "\n";
+    } else {
+        std::cout << "      refused: not allowed while the item is " << before
+                  << (expectRefusal ? ", as expected" : "") << "\n";
+    }
     return ok;
 }
 
 /**
- * @brief Runs the normal path for a work item: assign, start, complete.
+ * @brief Runs the normal path for an assigned work item: start, then complete.
  * @param engine The engine.
- * @param item   Work item to work on.
+ * @param item   Work item to work on (already assigned by the factory).
  */
-void assignStartComplete(WorkflowEngine& engine, WorkItem* item) {
-    run(engine, new AssignCommand(item, item->getAssignedParticipant()), item);
-    run(engine, new StartCommand(item), item);
-    run(engine, new CompleteCommand(item), item);
+void startAndComplete(WorkflowEngine& engine, WorkItem* item) {
+    std::string who = item->getAssignedParticipant()->getName();
+    act(engine, who, "start " + item->getName(), new StartCommand(item), item);
+    act(engine, who, "complete " + item->getName(), new CompleteCommand(item), item);
 }
 
 } // namespace
 
 int main() {
-    heading("TIVIDY DEMO: TECH COMPANY PROJECT APPROVAL");
-    std::cout << "Proposal budget: R" << PROPOSAL_BUDGET
-              << " (executive sign-off needed above R" << EXECUTIVE_LIMIT << ")\n";
+    heading("TIVIDY: A WORKFLOW ENGINE");
+    explain({
+        "TIVIDY runs business processes. A company describes a process once, as a",
+        "workflow DEFINITION: its steps, which role may do each step, and the order.",
+        "The engine then runs any number of INSTANCES of that definition, one for each",
+        "real case. Each step of a running instance is a WORK ITEM. A work item is",
+        "given to a person and moves through a life cycle:",
+        "",
+        "    Created -> Available -> Assigned -> In_Progress -> Completed",
+        "    (it can also be Rejected, Escalated, Cancelled or Failed on the way)",
+        "",
+        "Every action is checked against that life cycle, recorded, and can be undone.",
+        "",
+        "THE STORY IN THIS DEMO",
+        "Deon, a developer, proposes a new project with a budget of R" + std::to_string(PROPOSAL_BUDGET) + ".",
+        "It needs a product review (Lerato), a technical review (a head engineer) and",
+        "a budget review (Ayesha, finance). Because the budget is above R" + std::to_string(EXECUTIVE_LIMIT) + ",",
+        "an executive must also sign off before the project can kick off.",
+        "Three things go wrong on the way, to show how the engine copes:",
+        "  1. the product review is sent back once,",
+        "  2. a reviewer escalates by mistake and it is rolled back,",
+        "  3. the executive misses the deadline, so the approval is escalated to the CEO.",
+        "",
+        "Lines starting with [Pattern: ...] say which design pattern is doing the work.",
+        "A table of every pattern and where it appears is printed at the end."
+    });
 
     // ---------------------------------------------------------------
-    heading("1. SET UP THE ENGINE (Facade) AND ITS SUBSYSTEMS (Observer)");
+    heading("1. SET UP THE ENGINE");
     InMemoryDefinitionRepository repository;
     EventBus eventBus;
     HistoryManager history;
@@ -215,10 +301,18 @@ int main() {
     eventBus.attach(&audit);
     eventBus.attach(&decisions);
     WorkflowEngine engine(&repository, &eventBus, &history, &audit);
-    std::cout << "Engine ready with " << eventBus.observerCount() << " observers on the event bus.\n";
+
+    explain({"The engine is created with a place to store definitions, an event bus,",
+             "a command history and an audit log."});
+    pattern("Facade", "everything below goes through one object, WorkflowEngine. The client never "
+                      "touches the repository, factory, history or audit log directly.");
+    pattern("Observer", "the engine publishes every change on the event bus. " +
+                        std::to_string(eventBus.observerCount()) + " observers listen: an audit log "
+                        "that records every state change, and a notifier that tells the proposer "
+                        "about approval decisions.");
 
     // ---------------------------------------------------------------
-    heading("2. BUILD AND STORE THE DEFINITION (Builder + Composite)");
+    heading("2. DEFINE THE PROCESS (the template)");
     WorkflowDirector director;
     for (int version = 1; version <= 2; ++version) {
         ConcreteWorkflowBuilder builder;
@@ -232,12 +326,19 @@ int main() {
         std::cerr << "ERROR: the definition was not stored correctly.\n";
         return 1;
     }
-    std::cout << "The repository holds " << repository.findAll().size() << " versions of '"
+    explain({"The Project Approval process is defined and saved in two versions.",
+             "Version 2 adds a Security Review. A running case keeps the version it started",
+             "on, so changing the process never breaks cases that are already in progress."});
+    pattern("Builder", "a Director feeds the steps to a Builder one at a time, so a "
+                       "definition is never half-built.");
+    pattern("Composite", "the process is a tree: stages (+) contain activities (-) or other "
+                         "stages, and the engine treats single steps and whole stages the same way.");
+    std::cout << "\n  The repository holds " << repository.findAll().size() << " versions of '"
               << latest->getName() << "'. Latest is v" << latest->getVersion() << ":\n";
-    latest->getRoot()->print(1);
+    latest->getRoot()->print(2);
 
     // ---------------------------------------------------------------
-    heading("3. START A WORKFLOW INSTANCE (Factory Method + Strategy + Decorator)");
+    heading("3. START A CASE (an instance of the process)");
     Participant deon("p1", "Deon", {"proposer"}, 0);
     Participant lerato("p2", "Lerato", {"product_manager"}, 1);
     Participant sipho("p3", "Sipho", {"head_engineer"}, 2);
@@ -252,12 +353,14 @@ int main() {
     WorkloadBasedAssignment assignment;
     engine.setAssignment(&assignment, staff);
 
-    std::cout << "Trying to start a definition that does not exist...\n";
+    explain({"First, a mistake: asking for a process that does not exist."});
     std::string missing = engine.startWorkflow("does-not-exist", 1);
-    std::cout << "  startWorkflow returned " << (missing.empty() ? "no instance (start error reported)" : missing) << "\n";
+    std::cout << "    " << (missing.empty() ? "refused: no such definition, nothing was started"
+                                            : "started " + missing) << "\n\n";
 
-    std::cout << "\nStarting '" << DEFINITION_ID << "' pinned to v1 (assignment strategy: "
-              << assignment.getName() << ")\n";
+    explain({"Now Deon's proposal is started on version 1. The engine copies the template",
+             "into a live tree of work items and gives each one to a person. Sipho already",
+             "has two open items, so the technical review goes to Thandi instead:"});
     std::string instanceId = engine.startWorkflow(DEFINITION_ID, 1);
     WorkflowInstance* instance = engine.getInstance(instanceId);
     if (!instance) {
@@ -267,16 +370,24 @@ int main() {
     instance->getData().setValue(std::to_string(PROPOSAL_BUDGET));
     WorkflowDefinition* definition = repository.load(DEFINITION_ID, instance->getDefinitionVersion());
 
-    std::cout << "\nInstance " << instanceId << " is " << instance->getState() << " on v"
-              << instance->getDefinitionVersion() << " (v" << latest->getVersion()
-              << " has a security review, this instance does not). Runtime tree:\n";
-    instance->getRoot()->print(1);
+    pattern("Factory Method", "InstanceFactory turns each definition node into the matching runtime "
+                              "node (activity -> work item, stage -> stage instance).");
+    pattern("Strategy", "who gets each work item is decided by a swappable assignment strategy (" +
+                        assignment.getName() + ": the least busy person with the right role).");
+    pattern("Decorator", "the runtime tree is wrapped with a label showing the instance id and "
+                         "the version it is pinned to, without changing the tree classes.");
+    std::cout << "\n  Case " << instanceId << " is " << instance->getState() << " on v"
+              << instance->getDefinitionVersion() << ".\n  It has no Security Review, because that is only in v"
+              << latest->getVersion() << ". Live tree:\n";
+    instance->getRoot()->print(2);
+    explain({"(Stages only group work items, so they stay IDLE. Work items carry the state.)"});
 
     // ---------------------------------------------------------------
-    // Chain of Responsibility: finance -> executive -> timeout escalation
+    // Chain of Responsibility: finance -> executive -> timeout escalation.
+    // The timeout handler watches the executive approval work item.
     RoleApprovalHandler financeApprover("finance");
     RoleApprovalHandler executiveApprover("executive");
-    TimeoutEscalationHandler timeoutEscalation;
+    TimeoutEscalationHandler timeoutEscalation(instance->findWorkItem("execApproval"));
     financeApprover.setNext(&executiveApprover);
     executiveApprover.setNext(&timeoutEscalation);
 
@@ -286,191 +397,242 @@ int main() {
     std::map<std::string, RoutingStrategy*> routingFor;
     routingFor["financeReview"] = &budgetCheck;
 
+    // What each step is about, printed before it runs.
+    std::map<std::string, std::string> story;
+    story["submit"] = "Deon submits the proposal.";
+    story["productReview"] = "Lerato finds the scope unclear and sends the proposal back. Deon fixes it.";
+    story["techReview"] = "Thandi reviews the architecture, but escalates the review by mistake.";
+    story["financeReview"] = "Ayesha asks the approval chain to sign off the budget.";
+    story["execApproval"] = "Naledi misses the approval deadline, so the request is escalated.";
+    story["kickoff"] = "Everything is approved. Deon kicks off the project.";
+
     // What happens inside each activity. Each returns the outcome used for routing.
     std::map<std::string, std::function<std::string(WorkItem*)>> behaviour;
 
+    behaviour["submit"] = [&](WorkItem* item) {
+        pattern("Command", "each action below is a command object handed to the engine, which "
+                           "runs it and keeps it in the history so it can be undone.");
+        pattern("State", "the work item's current state object decides whether an action is allowed.");
+        startAndComplete(engine, item);
+        return std::string("approved");
+    };
+
     behaviour["productReview"] = [&](WorkItem* item) {
-        std::cout << "  Lerato sends the proposal back: the scope is unclear.\n";
-        run(engine, new AssignCommand(item, item->getAssignedParticipant()), item);
-        run(engine, new RejectCommand(item), item);
-        std::cout << "  Lerato tries to complete the rejected review anyway...\n";
-        run(engine, new CompleteCommand(item), item);
-        std::cout << "  Deon clarifies the scope and the review is re-offered.\n";
+        act(engine, "Lerato", "send the proposal back", new RejectCommand(item), item);
+        act(engine, "Lerato", "complete the rejected review anyway", new CompleteCommand(item), item, true);
+        pattern("State", "a Rejected item cannot be completed, so the state object refused it "
+                         "(and printed \"Invalid State Transition\").");
+        std::cout << "  Deon clarifies the scope, so the review is offered again.\n";
         item->makeAvailable();
-        assignStartComplete(engine, item);
+        act(engine, "Lerato", "take the review again", new AssignCommand(item, &lerato), item);
+        startAndComplete(engine, item);
         return std::string("approved");
     };
 
     behaviour["techReview"] = [&](WorkItem* item) {
-        run(engine, new AssignCommand(item, item->getAssignedParticipant()), item);
-        run(engine, new StartCommand(item), item);
+        act(engine, "Thandi", "start Technical Review", new StartCommand(item), item);
 
-        // Memento + Prototype: snapshot a clone of the current state before anything risky
+        // Memento + Prototype: snapshot the item before anything risky
         Data notes("Architecture review: microservices design accepted");
-        WorkItemMemento snapshot("techReview", item->getId(), notes, item->getCurrentState()); //changed item->getCurrentState()->clone() -> item->getCurrentState() 
-        std::cout << "  Saved memento of '" << snapshot.getWorkItemId() << "' in state "
-                  << snapshot.getStateKind()->getName() << "\n";
+        WorkItemMemento snapshot("techReview", item->getId(), notes, item->getCurrentState());
+        std::cout << "  Before going on, a snapshot of the review is saved (state "
+                  << item->getCurrentState()->getName() << ").\n";
+        pattern("Memento", "the snapshot stores the work item's state and notes outside the item, "
+                           "so it can be put back later.");
+        pattern("Prototype", "the snapshot holds a clone of the state object, so later changes to "
+                             "the item cannot change the saved copy.");
 
-        std::string wrongRole = "executive";
-        std::cout << "  Thandi escalates the review by mistake.\n";
-        run(engine, new EscalateCommand(item, wrongRole), item);
+        act(engine, "Thandi", "escalate to the executives (by mistake)",
+            new EscalateCommand(item), item);
 
-        std::cout << "  Rolling back: undo the last command and restore the memento.\n";
+        std::cout << "  Thandi notices the mistake. Rolling back:\n";
         engine.undoLast();
-        item->changeState(snapshot.getStateKind()->clone()); // the work item now owns the saved state
-        std::cout << "    state restored to " << item->getCurrentState()->getName()
-                  << ", notes: \"" << snapshot.getDataSnapshot().getValue() << "\"\n";
+        item->restoreMemento(&snapshot);
+        std::cout << "      state restored to " << item->getCurrentState()->getName()
+                  << ", notes kept: \"" << notes.getValue() << "\"\n";
+        pattern("Command + Memento", "the engine takes the escalation off its history (undo), and "
+                                     "the memento restores the state from before it.");
 
-        run(engine, new CompleteCommand(item), item);
+        act(engine, "Thandi", "complete Technical Review", new CompleteCommand(item), item);
         return std::string("approved");
     };
 
     behaviour["financeReview"] = [&](WorkItem* item) {
-        run(engine, new AssignCommand(item, item->getAssignedParticipant()), item);
-        run(engine, new StartCommand(item), item);
+        act(engine, "Ayesha", "start Budget Review", new StartCommand(item), item);
 
-        std::cout << "  Asking the approval chain to sign off the budget...\n";
-        Request request(
-            "REQ-FIN-001",
-            "APPROVE",
-            item->getId(),
-            instanceId,
-            "finance",
-            "finance-reviewer",
-            "Budget approval",
-            item->getCurrentState()->getName(),
-            instance->getData()
-        );
-
+        std::cout << "  Approval request for role 'finance' sent to the chain "
+                     "(finance -> executive -> timeout):\n";
+        Request request("REQ-FIN-001", "APPROVE", item->getId(), instanceId, "finance",
+                        "finance-reviewer", "Budget approval", item->getCurrentState()->getName(),
+                        instance->getData());
         HandlerResult financeResult = financeApprover.authorise(request);
+        pattern("Chain of Responsibility", "the request goes along a chain of handlers until one "
+                                           "of them can approve it, so the sender does not need "
+                                           "to know who approves what.");
 
-        if (financeResult == HandlerResult::Rejected) {
-            std::cout << "Finance approval was rejected.\n";
+        if (financeResult != HandlerResult::Handled) {
+            std::cout << "  The budget was not approved, so the case stops here.\n";
+            return std::string("rejected");
         }
-
-        financeApprover.authorise(request);
 
         std::string outcome = std::stoi(instance->getData().getValue()) > EXECUTIVE_LIMIT
                                   ? "over_limit" : "within_limit";
         eventBus.notify(WorkFlowEvent("APPROVAL_DECISION", instanceId, item->getId(),
                                       "budget approved by finance (" + outcome + ")"));
-        run(engine, new CompleteCommand(item), item);
+        act(engine, "Ayesha", "complete Budget Review", new CompleteCommand(item), item);
+        std::cout << "  Budget R" << PROPOSAL_BUDGET << " is "
+                  << (outcome == "over_limit" ? "above" : "within") << " the R" << EXECUTIVE_LIMIT
+                  << " limit (outcome '" << outcome << "').\n";
         return outcome;
     };
 
     behaviour["execApproval"] = [&](WorkItem* item) {
-        run(engine, new AssignCommand(item, item->getAssignedParticipant()), item);
-        std::cout << "  The approval deadline passes without a decision from Naledi...\n";
-        Request timeout(
-            "REQ-TIMEOUT-001",
-            "TIMEOUT",
-            item->getId(),
-            instanceId,
-            "board",
-            "system",
-            "Executive approval deadline exceeded",
-            item->getCurrentState()->getName(),
-            instance->getData()
-        );
+        std::cout << "  The deadline passes without a decision from Naledi.\n"
+                     "  A timeout request goes to the start of the chain:\n";
+        Request timeout("REQ-TIMEOUT-001", "TIMEOUT", item->getId(), instanceId, "executive",
+                        "system", "Executive approval deadline exceeded",
+                        item->getCurrentState()->getName(), instance->getData());
+        financeApprover.authorise(timeout);
+        std::cout << "      Assigned -> " << item->getCurrentState()->getName() << "\n";
+        pattern("Chain of Responsibility", "both approval handlers passed the timeout on; only the "
+                                           "timeout handler deals with it, and it escalates the item.");
 
-        HandlerResult timeoutResult = financeApprover.authorise(timeout);
+        act(engine, "Mandla (CEO)", "pick up the escalated approval", new AssignCommand(item, &mandla), item);
 
-        if (timeoutResult == HandlerResult::Handled) {
-            std::string target = "executive";
-            run(engine, new EscalateCommand(item, target), item);
+        std::cout << "  Approval request for role 'executive' sent to the chain:\n";
+        Request signOff("REQ-EXEC-001", "APPROVE", item->getId(), instanceId, "executive",
+                        "executive-reviewer", "Executive project sign-off",
+                        item->getCurrentState()->getName(), instance->getData());
+        if (financeApprover.authorise(signOff) != HandlerResult::Handled) {
+            std::cout << "  The executive did not approve, so the case stops here.\n";
+            return std::string("rejected");
         }
-
-        std::cout << "  Mandla (CEO) picks up the escalated approval.\n";
-        run(engine, new AssignCommand(item, &mandla), item);
-        Request signOff(
-            "REQ-EXEC-001",
-            "APPROVE",
-            item->getId(),
-            instanceId,
-            "executive",
-            "executive-reviewer",
-            "Executive project sign-off",
-            item->getCurrentState()->getName(),
-            instance->getData()
-        );
-
-        HandlerResult signOffResult = executiveApprover.authorise(signOff);
-
-        if (signOffResult == HandlerResult::Rejected) {
-            std::cout << "Executive approval was rejected.\n";
-        }
-
         eventBus.notify(WorkFlowEvent("APPROVAL_DECISION", instanceId, item->getId(),
                                       "project approved by the executive"));
-        run(engine, new StartCommand(item), item);
-        run(engine, new CompleteCommand(item), item);
+        startAndComplete(engine, item);
         return std::string("approved");
     };
 
     // ---------------------------------------------------------------
-    heading("4. RUN THE WORKFLOW (Command + State + Strategy + Chain + Memento + Visitor)");
+    heading("4. RUN THE CASE, ONE STEP AT A TIME");
+    explain({"Each step shows what happens, who does what, the result, and what comes next."});
+
+    int stepNumber = 0;
+    bool firstStep = true;
     std::string currentId = "submit";
     while (!currentId.empty()) {
         WorkItem* item = instance->findWorkItem(currentId);
         Participant* who = item->getAssignedParticipant();
-        std::cout << "\n--- " << currentId << " (" << (who ? who->getName() : "unassigned") << ") ---\n";
+        std::cout << "\n--- Step " << ++stepNumber << ": " << item->getName() << " ("
+                  << (who ? who->getName() : "unassigned") << ", role " << item->getRequiredRoleId()
+                  << ") ---\n";
+        if (story.count(currentId)) std::cout << "  " << story[currentId] << "\n";
 
-        item->makeAvailable();
         std::string outcome = "approved";
         if (behaviour.count(currentId)) {
             outcome = behaviour[currentId](item);
         } else {
-            assignStartComplete(engine, item);
+            startAndComplete(engine, item);
         }
+        if (outcome == "rejected") break;
 
         const ActivityDefinition* activity = findActivity(*definition, currentId);
         RoutingStrategy* routing = routingFor.count(currentId) ? routingFor[currentId] : &sequential;
-        std::vector<const ActivityDefinition*> next = routing->next(*activity, *definition, outcome);
-
+        std::vector<const WorkflowComponent*> next = routing->next(*activity, *definition, outcome);
         currentId = next.empty() ? "" : next[0]->getId();
-        std::cout << "  Routing (" << routing->getName() << ", outcome '" << outcome << "'): "
-                  << (currentId.empty() ? "end of workflow" : "next is " + currentId) << "\n";
+
+        WorkItem* nextItem = currentId.empty() ? nullptr : instance->findWorkItem(currentId);
+        std::cout << "  Next: " << (nextItem ? nextItem->getName() : "end of the process")
+                  << "  (decided by " << routing->getName() << " routing)\n";
+        if (firstStep) {
+            pattern("Strategy", "what comes next is decided by a swappable routing strategy. Most "
+                                "steps use Sequential routing; the budget review uses Conditional "
+                                "routing.");
+        }
+        if (routing == &budgetCheck) {
+            pattern("Strategy", "Conditional routing sent the case to Executive Approval because the "
+                                "outcome was 'over_limit'. A smaller budget would go straight to kickoff.");
+        }
 
         // Visitor: a fresh progress visitor walks the whole tree after every step
         ProgressReportVisitor progress;
         engine.applyVisitor(instanceId, progress);
-        std::cout << "  Progress: " << progress.getCompletedItems() << "/" << progress.getTotalItems()
-                  << " work items completed (" << progress.getPercentComplete() << "%)\n";
+        std::cout << "  Progress: " << progress.getCompletedItems() << " of " << progress.getTotalItems()
+                  << " steps done (" << progress.getPercentComplete() << "%)\n";
+        if (firstStep) {
+            pattern("Visitor", "the progress line is worked out by a visitor that walks the live tree "
+                               "and counts finished work items.");
+        }
+        firstStep = false;
     }
     instance->setState("COMPLETED");
 
     // ---------------------------------------------------------------
-    heading("5. RESULTS (all read back through the Facade)");
-    std::cout << "Instance " << instanceId << " is " << engine.getInstance(instanceId)->getState()
-              << ". Final runtime tree:\n";
-    engine.getInstance(instanceId)->getRoot()->print(1);
+    heading("5. WHAT THE ENGINE RECORDED");
+    explain({"Everything here is read back through the engine (the Facade)."});
+    std::cout << "\n  Case " << instanceId << " is " << engine.getInstance(instanceId)->getState()
+              << ". Final tree\n  (note that Mandla, not Naledi, did the executive approval):\n";
+    engine.getInstance(instanceId)->getRoot()->print(2);
+
+    std::cout << "\n  Notifications sent to the proposer (Observer, filtered to approval decisions):\n";
+    for (const std::string& line : decisions.getNotifications()) std::cout << "    " << line << "\n";
 
     std::vector<std::string> trail = engine.getAuditTrail(instanceId);
-    std::cout << "\nAudit trail (" << trail.size() << " entries):\n";
-    for (const std::string& line : trail) std::cout << "  " << line << "\n";
+    std::cout << "\n  Audit trail: every state change, published on the event bus (Observer):\n";
+    printPreview(trail);
+    std::cout << "  The Technical Review entries still show the escalation that was rolled back,\n"
+              << "  because an audit log never forgets:\n";
+    for (const std::string& line : trail) {
+        if (line.find("item=techReview ") != std::string::npos) std::cout << "    " << line << "\n";
+    }
 
-    std::cout << "\nNotifications sent to the proposer:\n";
-    for (const std::string& line : decisions.getNotifications()) std::cout << "  " << line << "\n";
-
-    std::vector<WorkflowAction*> done = engine.getHistory(instanceId);
-    std::cout << "\nCommand history (" << done.size() << " commands that changed state):\n";
-    for (WorkflowAction* action : done) std::cout << "  " << action->getDescription() << "\n";
+    std::vector<std::string> commands;
+    for (WorkflowAction* action : engine.getHistory(instanceId)) commands.push_back(action->getDescription());
+    std::cout << "\n  Command history: the commands that are still in effect (Command).\n"
+              << "  The undone escalation is not here, which is what makes undo possible:\n";
+    printPreview(commands);
 
     // ---------------------------------------------------------------
-    heading("6. REPORTS (Visitor)");
-    std::cout << "Two new operations over the runtime tree, added without changing WorkItem,\n"
-              << "StageInstance or SubProcessInstance. The engine passes each visitor to the tree.\n";
+    heading("6. REPORTS");
+    pattern("Visitor", "two new reports over the live tree, added without changing WorkItem, "
+                       "StageInstance or SubProcessInstance. The engine passes each visitor to the tree.");
 
     ProgressReportVisitor report;
     engine.applyVisitor(instanceId, report);
-    std::cout << "\nCompletion report for " << instanceId << ":\n";
-    for (const std::string& line : report.getReport()) std::cout << "  " << line << "\n";
-    std::cout << "  Workflow complete: " << (report.isComplete() ? "yes" : "no") << "\n";
+    std::cout << "\n  Completion report for " << instanceId << ":\n";
+    for (const std::string& line : report.getReport()) std::cout << "    " << line << "\n";
+    std::cout << "    Process complete: " << (report.isComplete() ? "yes" : "no") << "\n";
 
     WorkloadVisitor workload;
     engine.applyVisitor(instanceId, workload);
-    std::cout << "\nWorkload by participant:\n";
-    for (const std::string& line : workload.getSummary()) std::cout << "  " << line << "\n";
+    std::cout << "\n  Who did what:\n";
+    for (const std::string& line : workload.getSummary()) std::cout << "    " << line << "\n";
+
+    // ---------------------------------------------------------------
+    heading("PATTERNS IN THIS DEMO");
+    std::cout
+        << "  Pattern                  Where you saw it                      Main classes\n"
+        << "  -----------------------  ------------------------------------  ------------------------------------\n"
+        << "  Facade                   every action goes through the engine  WorkflowEngine\n"
+        << "  Observer                 audit trail and notifications         EventBus, AuditObserver,\n"
+        << "                                                                 NotificationObserver\n"
+        << "  Builder                  section 2, building the definition    WorkflowDirector,\n"
+        << "                                                                 ConcreteWorkflowBuilder\n"
+        << "  Composite                the definition and live trees         StageDefinition, ActivityDefinition,\n"
+        << "                                                                 StageInstance, WorkItem\n"
+        << "  Factory Method           section 3, starting the case          InstanceFactory\n"
+        << "  Strategy                 who does a step, and what comes next  WorkloadBasedAssignment,\n"
+        << "                                                                 SequentialRouting, ConditionalRouting\n"
+        << "  Decorator                the label on the live tree            LabelledRuntimeDecorator\n"
+        << "  Command                  every action in section 4, and undo   AssignCommand, StartCommand, ...,\n"
+        << "                                                                 HistoryManager\n"
+        << "  State                    actions allowed or refused            WorkItemState and its subclasses\n"
+        << "  Chain of Responsibility  steps 4 and 5, approvals and timeout  RoleApprovalHandler,\n"
+        << "                                                                 TimeoutEscalationHandler\n"
+        << "  Memento                  step 3, rolling back the escalation   WorkItemMemento\n"
+        << "  Prototype                step 3, cloning the saved state       WorkItemState::clone()\n"
+        << "  Visitor                  progress lines and section 6 reports  RuntimeVisitor, ProgressReportVisitor,\n"
+        << "                                                                 WorkloadVisitor\n";
 
     heading("DEMO COMPLETE");
     return 0;

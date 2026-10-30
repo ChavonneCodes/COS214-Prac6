@@ -28,6 +28,7 @@ bool WorkItem::assignTo(Participant* participant) {
     return currentState->assign(this, participant); // Transitions to AssignedState
 }
 
+
 WorkItemMemento WorkItem::createMemento(){
     return WorkItemMemento(
                             definition->getId(),
@@ -95,7 +96,9 @@ bool WorkItem::start() { return currentState->start(this); }
 bool WorkItem::complete() { return currentState->complete(this); }
 bool WorkItem::reject() { return currentState->reject(this); }
 bool WorkItem::cancel() { return currentState->cancel(this); }
-bool WorkItem::escalated() { return currentState->escalated(this); }
+bool WorkItem::escalated() {
+    assignedParticipant = nullptr;
+    return currentState->escalated(this); }
 bool WorkItem::fail() { return currentState->fail(this); }
 bool WorkItem::makeAvailable() { return currentState->makeAvailable(this); }
 

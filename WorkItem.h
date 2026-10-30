@@ -56,7 +56,7 @@ public:
      * @return true on success, false (and no change) if participant is nullptr.
      */
     bool assignTo(Participant* participant);
-    
+
     /**
      * @brief Restores the data and state from a saved memento.
      *
@@ -68,7 +68,6 @@ public:
      *        If nullptr, no action is performed.
      */
     void restoreMemento(WorkItemMemento*);
-
     /**
      * @brief Creates a snapshot of this work item's current data and state.
      *

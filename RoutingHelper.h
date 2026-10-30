@@ -23,4 +23,22 @@ inline const ActivityDefinition* findActivity(const WorkflowDefinition& definiti
     return nullptr;
 }
 
+inline const WorkflowComponent* findNodeInTree(const WorkflowComponent* node,
+                                               const std::string& id) {
+    if (!node) return nullptr;
+    if (node->getId() == id) return node;
+    for (WorkflowComponent* child : node->getChildren()) {
+        const WorkflowComponent* found = findNodeInTree(child, id);
+        if (found) return found;
+    }
+    return nullptr;
+}
+
+/** @brief Finds ANY node (activity, stage, or sub-process) by id. */
+inline const WorkflowComponent* findNode(const WorkflowDefinition& definition,
+                                         const std::string& id) {
+    if (const ActivityDefinition* act = findActivity(definition, id)) return act;
+    return findNodeInTree(definition.getRoot(), id);
+}
+
 #endif // ROUTING_HELPER_H

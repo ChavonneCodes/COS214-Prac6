@@ -2,9 +2,13 @@
 #define CANCELCOMMAND_H
 #include "WorkItem.h"
 #include "WorkflowAction.h"
+#include "WorkItemMemento.h"
+#include <string>
+#include <vector>
 class CancelCommand: public WorkflowAction{
     private:
         WorkItem* receiver;
+        std::vector<WorkItemMemento> myHistory;
     public:
         CancelCommand(WorkItem* r);
          /**

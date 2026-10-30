@@ -2,10 +2,14 @@
 #define STARTCOMMAND_H
 #include "WorkItem.h"
 #include "WorkflowAction.h"
+#include "WorkItemMemento.h"
+#include <string>
+#include <vector>
 
 class StartCommand: public WorkflowAction{
     private:
         WorkItem* receiver;  
+        std::vector<WorkItemMemento> myHistory;
     public:
         StartCommand(WorkItem* r);
         /**

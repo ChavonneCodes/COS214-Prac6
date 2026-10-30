@@ -5,10 +5,32 @@ AssignCommand:: AssignCommand(WorkItem* r, Participant* p){
     participant =p;
 }
 bool AssignCommand::execute(){
-    return receiver->assign(participant);
+    if(!receiver||!participant){
+        return false;
+    }
+    WorkItemMemento snapshot = receiver->createMemento();
+    bool successful = false;
+    try{
+    successful = receiver->assign(participant);
+    }catch(...){
+        receiver->restoreMemento(&snapshot);
+        throw;
+    }
+    if(!successful){
+        receiver->restoreMemento(&snapshot);
+        return false;
+    }
+    myHistory.push_back(std::move(snapshot));
+
+    return true;
 }
 void AssignCommand::undo(){
-    std::cout<<"Command undone"<<std::endl;
+    if(!receiver|| myHistory.empty()){
+        return;
+    }
+    receiver->restoreMemento(&myHistory.back());
+    myHistory.pop_back();
+    std::cout<<"Assignment undone"<<std::endl;
 }
 std::string AssignCommand::getDescription(){
     return  "WorkItem ID: "+ receiver->getId() +" has been Assigned";}

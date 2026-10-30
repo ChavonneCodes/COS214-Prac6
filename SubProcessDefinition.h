@@ -4,6 +4,7 @@
  * 
  * Part of the Composite pattern: this represents a special Leaf node in the 
  * workflow definition tree that calls another workflow definition.
+ * Also a ConcretePrototype in the Prototype pattern (see clone()).
  */
 
 #ifndef SUB_PROCESS_DEFINITION_H
@@ -75,6 +76,18 @@ public:
      * @param indentLevel The number of indentation levels to apply (2 spaces per level).
      */
     void print(int indentLevel = 0) const override;
+
+    /**
+     * @brief Creates an independent copy of this sub-process call (Prototype pattern).
+     *
+     * The copy keeps the same called definition id and called version: a
+     * sub-process node only *refers* to another workflow, so cloning it does
+     * not clone or re-version that other workflow.
+     *
+     * @note The caller owns the returned pointer.
+     * @return A new SubProcessDefinition pointing at the same called definition.
+     */
+    SubProcessDefinition* clone() const override;
 };
 
 #endif // SUB_PROCESS_DEFINITION_H
