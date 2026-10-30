@@ -436,13 +436,12 @@ int main() {
         Data notes("Architecture review: microservices design accepted");
         WorkItemMemento snapshot("techReview", item->getId(), notes, item->getCurrentState());
         std::cout << "  Before going on, a snapshot of the review is saved (state "
-                  << snapshot.getStateKind()->getName() << ").\n";
+                  << item->getCurrentState()->getName() << ").\n";
         pattern("Memento", "the snapshot stores the work item's state and notes outside the item, "
                            "so it can be put back later.");
         pattern("Prototype", "the snapshot holds a clone of the state object, so later changes to "
                              "the item cannot change the saved copy.");
 
-        std::string wrongRole = "executive";
         act(engine, "Thandi", "escalate to the executives (by mistake)",
             new EscalateCommand(item), item);
 
@@ -450,7 +449,7 @@ int main() {
         engine.undoLast();
         item->restoreMemento(&snapshot);
         std::cout << "      state restored to " << item->getCurrentState()->getName()
-                  << ", notes kept: \"" << snapshot.getDataSnapshot().getValue() << "\"\n";
+                  << ", notes kept: \"" << notes.getValue() << "\"\n";
         pattern("Command + Memento", "the engine takes the escalation off its history (undo), and "
                                      "the memento restores the state from before it.");
 
