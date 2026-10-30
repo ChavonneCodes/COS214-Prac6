@@ -1,161 +1,113 @@
 
-/**
- * @file test_history_manager.cpp
- * @brief Tests the WorkItemMemento and HistoryManager classes.
- *
- * Compile this file with the implementations of HistoryManager,
- * WorkItemMemento, Data, WorkItemState, and CreatedState.
- */
-
-#include <cassert>
 #include <iostream>
-
-#include "HistoryManager.h"
+#include <cassert>
 #include "WorkItemMemento.h"
-#include "CreatedState.h"
 #include "Data.h"
 
 using namespace std;
 
 /**
- * @brief Tests saving and retrieving snapshots.
- */
-void testSaveAndGetLast() {
-    cout << "Test: save() and getLast()" << endl;
-
-    HistoryManager history;
-
-    Data data("Initial data");
-    CreatedState state;
-
-    WorkItemMemento first(
-        "ACT01",
-        "WI01",
-        data,
-        &state
-    );
-
-    history.save(first);
-
-    assert(history.getAll().size() == 1);
-
-    WorkItemMemento last = history.getLast();
-
-    // Confirm the saved snapshot can be copied and retrieved.
-    assert(history.getAll().size() == 1);
-
-    cout << "PASS: Snapshot saved and retrieved." << endl;
-}
-
-/**
- * @brief Tests that pop() removes the latest snapshot.
- */
-void testPop() {
-    cout << "Test: pop()" << endl;
-
-    HistoryManager history;
-
-    Data data1("First snapshot");
-    Data data2("Second snapshot");
-
-    CreatedState state;
-
-    WorkItemMemento first(
-        "ACT01",
-        "WI01",
-        data1,
-        &state
-    );
-
-    WorkItemMemento second(
-        "ACT01",
-        "WI01",
-        data2,
-        &state
-    );
-
-    history.save(first);
-    history.save(second);
-
-    assert(history.getAll().size() == 2);
-
-    WorkItemMemento removed = history.pop();
-
-    assert(history.getAll().size() == 1);
-
-    // The first snapshot should now be the most recent.
-    WorkItemMemento remaining = history.getLast();
-
-    assert(history.getAll().size() == 1);
-
-    cout << "PASS: pop() removes the latest snapshot." << endl;
-}
-
-/**
- * @brief Tests behaviour when history is empty.
- */
-void testEmptyHistory() {
-    cout << "Test: empty history" << endl;
-
-    HistoryManager history;
-
-    assert(history.getAll().empty());
-
-    // Both operations should safely return default mementos.
-    WorkItemMemento last = history.getLast();
-    WorkItemMemento removed = history.pop();
-
-    assert(history.getAll().empty());
-
-    cout << "PASS: Empty history handled safely." << endl;
-}
-
-/**
- * @brief Tests copying and destroying mementos.
+ * @class WorkItemMementoTest
+ * @brief Tests the behaviour of the WorkItemMemento class.
  *
- * The test is especially useful for detecting double deletion
- * when compiled with AddressSanitizer.
+ * This test class is a friend of WorkItemMemento so that it can
+ * access the private getters without making them publicly accessible.
  */
-void testMementoCopying() {
-    cout << "Test: memento copying" << endl;
+class WorkItemMementoTest {
+private:
 
-    Data data("Copy test");
-    CreatedState state;
-
-    WorkItemMemento original(
-        "ACT01",
-        "WI01",
-        data,
-        &state
-    );
-
-    {
-        WorkItemMemento copy(original);
-        WorkItemMemento assigned;
-
-        assigned = copy;
-
-        // All three mementos should own independent state clones.
+    /**
+     * @brief Displays a test result.
+     */
+    static void pass(const string& message) {
+        cout << "[PASS] " << message << "\n\n";
     }
 
-    // Original must remain valid after the copies are destroyed.
-    WorkItemMemento anotherCopy(original); 
+public:
 
-    cout << "PASS: Mementos copied and destroyed." << endl;
-}
+    /**
+     * @brief Demonstrates that a memento stores a snapshot of data.
+     *
+     * The original data is changed after the memento is created.
+     * The snapshot should retain the original value.
+     */
+    static void testSnapshotPreservation() {
+
+        cout << "========================================\n";
+        cout << "TEST: MEMENTO SNAPSHOT PRESERVATION\n";
+        cout << "========================================\n\n";
+
+        // Step 1: Create the original work item data.
+        Data originalData("Work item is waiting for approval.");
+
+        cout << "STEP 1: Creating original work item data\n";
+        cout << "Original data: "
+             << originalData.getValue() << "\n\n";
+
+        // Step 2: Create a memento to save the current state.
+        WorkItemMemento memento(
+            "ACT001",
+            "WORK001",
+            originalData,
+            nullptr
+        );
+
+        cout << "STEP 2: Creating a memento\n";
+        cout << "Activity ID: " << memento.getActivityId() << "\n";
+        cout << "Work Item ID: " << memento.getWorkItemId() << "\n";
+        cout << "Saved snapshot: "
+             << memento.getDataSnapshot().getValue() << "\n\n";
+
+        // Step 3: Change the original work item data.
+        cout << "STEP 3: Updating the original work item data\n";
+
+        originalData.setValue("Work item has been approved.");
+
+        cout << "Updated original data: "
+             << originalData.getValue() << "\n\n";
+
+        // Step 4: Display both values to demonstrate preservation.
+        cout << "STEP 4: Comparing original data with saved snapshot\n";
+
+        cout << "Original data: "
+             << originalData.getValue() << "\n";
+
+        cout << "Saved snapshot: "
+             << memento.getDataSnapshot().getValue() << "\n\n";
+
+        // Step 5: Verify that the snapshot was not changed.
+        assert(
+            memento.getDataSnapshot().getValue()
+            == "Work item is waiting for approval."
+        );
+
+        assert(
+            originalData.getValue()
+            == "Work item has been approved."
+        );
+
+        pass("Memento preserved the original data after modification.");
+    }
+
+    /**
+     * @brief Runs all WorkItemMemento tests.
+     */
+    static void runAllTests() {
+
+        testSnapshotPreservation();
+
+        cout << "========================================\n";
+        cout << "ALL MEMENTO TESTS COMPLETED\n";
+        cout << "========================================\n";
+    }
+};
 
 /**
- * @brief Runs all tests.
- *
- * @return 0 if every assertion passes.
+ * @brief Main entry point for the memento tests.
  */
 int main() {
-    testSaveAndGetLast();
-    testPop();
-    testEmptyHistory();
-    testMementoCopying();
 
-    cout << "\nAll tests passed." << endl;
+    WorkItemMementoTest::runAllTests();
 
     return 0;
 }
