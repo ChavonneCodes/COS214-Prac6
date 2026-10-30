@@ -77,6 +77,11 @@ public:
      * @return A memento representing the current snapshot.
      */
     WorkItemMemento createMemento();
+
+    /**
+     * @brief Retrieves the current ID of the work item as a string.
+     * @return The current ID string.
+     */
     std::string getId() const override;
 
     /**

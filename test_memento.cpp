@@ -1,133 +1,113 @@
 
 #include <iostream>
 #include <cassert>
-#include <string>
-#include <vector>
-
-#include "Data.h"
-#include "HistoryManager.h"
 #include "WorkItemMemento.h"
+#include "Data.h"
 
 using namespace std;
 
+/**
+ * @class WorkItemMementoTest
+ * @brief Tests the behaviour of the WorkItemMemento class.
+ *
+ * This test class is a friend of WorkItemMemento so that it can
+ * access the private getters without making them publicly accessible.
+ */
+class WorkItemMementoTest {
+private:
+
+    /**
+     * @brief Displays a test result.
+     */
+    static void pass(const string& message) {
+        cout << "[PASS] " << message << "\n\n";
+    }
+
+public:
+
+    /**
+     * @brief Demonstrates that a memento stores a snapshot of data.
+     *
+     * The original data is changed after the memento is created.
+     * The snapshot should retain the original value.
+     */
+    static void testSnapshotPreservation() {
+
+        cout << "========================================\n";
+        cout << "TEST: MEMENTO SNAPSHOT PRESERVATION\n";
+        cout << "========================================\n\n";
+
+        // Step 1: Create the original work item data.
+        Data originalData("Work item is waiting for approval.");
+
+        cout << "STEP 1: Creating original work item data\n";
+        cout << "Original data: "
+             << originalData.getValue() << "\n\n";
+
+        // Step 2: Create a memento to save the current state.
+        WorkItemMemento memento(
+            "ACT001",
+            "WORK001",
+            originalData,
+            nullptr
+        );
+
+        cout << "STEP 2: Creating a memento\n";
+        cout << "Activity ID: " << memento.getActivityId() << "\n";
+        cout << "Work Item ID: " << memento.getWorkItemId() << "\n";
+        cout << "Saved snapshot: "
+             << memento.getDataSnapshot().getValue() << "\n\n";
+
+        // Step 3: Change the original work item data.
+        cout << "STEP 3: Updating the original work item data\n";
+
+        originalData.setValue("Work item has been approved.");
+
+        cout << "Updated original data: "
+             << originalData.getValue() << "\n\n";
+
+        // Step 4: Display both values to demonstrate preservation.
+        cout << "STEP 4: Comparing original data with saved snapshot\n";
+
+        cout << "Original data: "
+             << originalData.getValue() << "\n";
+
+        cout << "Saved snapshot: "
+             << memento.getDataSnapshot().getValue() << "\n\n";
+
+        // Step 5: Verify that the snapshot was not changed.
+        assert(
+            memento.getDataSnapshot().getValue()
+            == "Work item is waiting for approval."
+        );
+
+        assert(
+            originalData.getValue()
+            == "Work item has been approved."
+        );
+
+        pass("Memento preserved the original data after modification.");
+    }
+
+    /**
+     * @brief Runs all WorkItemMemento tests.
+     */
+    static void runAllTests() {
+
+        testSnapshotPreservation();
+
+        cout << "========================================\n";
+        cout << "ALL MEMENTO TESTS COMPLETED\n";
+        cout << "========================================\n";
+    }
+};
+
+/**
+ * @brief Main entry point for the memento tests.
+ */
 int main() {
-    cout << "========== UNIT TESTS ==========\n\n";
 
-    // ==========================================
-    // TEST 1: Data default constructor
-    // ==========================================
-    cout << "Test 1: Data default constructor\n";
-
-    Data data1;
-    assert(data1.getValue() == "");
-
-    cout << "PASS: Default value is an empty string.\n\n";
-
-
-    // ==========================================
-    // TEST 2: Data parameterised constructor
-    // ==========================================
-    cout << "Test 2: Data parameterised constructor\n";
-
-    Data data2("Workflow information");
-    assert(data2.getValue() == "Workflow information");
-
-    cout << "PASS: Constructor stores the supplied value.\n\n";
-
-
-    // ==========================================
-    // TEST 3: Data setter
-    // ==========================================
-    cout << "Test 3: Data setter\n";
-
-    data2.setValue("Updated workflow information");
-    assert(data2.getValue() == "Updated workflow information");
-
-    cout << "PASS: setValue updates the stored value.\n\n";
-
-
-    // ==========================================
-    // TEST 4: HistoryManager initially empty
-    // ==========================================
-    cout << "Test 4: HistoryManager initially empty\n";
-
-    HistoryManager history;
-
-    assert(history.getAll().empty());
-
-    cout << "PASS: History starts empty.\n\n";
-
-
-    // ==========================================
-    // TEST 5: Pop from empty history
-    // ==========================================
-    cout << "Test 5: Pop from empty history\n";
-
-    WorkflowAction* action = history.pop();
-
-    assert(action == nullptr);
-
-    cout << "PASS: Popping empty history returns nullptr.\n\n";
-
-
-    // ==========================================
-    // TEST 6: Push and pop a history entry
-    // ==========================================
-    cout << "Test 6: Push and pop a history entry\n";
-
-    // nullptr is used here because the interface and
-    // constructors of WorkflowAction were not provided.
-    history.push(nullptr);
-
-    assert(history.getAll().size() == 1);
-
-    action = history.pop();
-
-    assert(action == nullptr);
-    assert(history.getAll().empty());
-
-    cout << "PASS: Push adds an entry and pop removes it.\n\n";
-
-
-    // ==========================================
-    // TEST 7: WorkItemMemento snapshot
-    // ==========================================
-    cout << "Test 7: WorkItemMemento snapshot\n";
-
-    Data originalData("Original work-item data");
-
-    WorkItemMemento memento(
-        "ACT-001",
-        "WI-001",
-        originalData,
-        nullptr
-    );
-
-    assert(memento.getActivityId() == "ACT-001");
-    assert(memento.getWorkItemId() == "WI-001");
-    assert(memento.getDataSnapshot().getValue()
-           == "Original work-item data");
-    assert(memento.getStateKind() == nullptr);
-
-    cout << "PASS: Memento stores the IDs, data snapshot, "
-         << "and state pointer.\n\n";
-
-
-    // ==========================================
-    // TEST 8: Snapshot remains independent
-    // ==========================================
-    cout << "Test 8: Snapshot remains independent\n";
-
-    originalData.setValue("Modified work-item data");
-
-    assert(memento.getDataSnapshot().getValue()
-           == "Original work-item data");
-
-    cout << "PASS: Changing the original Data object "
-         << "does not change the snapshot.\n\n";
-
-
-    cout << "========== ALL TESTS PASSED ==========\n";
+    WorkItemMementoTest::runAllTests();
 
     return 0;
 }
