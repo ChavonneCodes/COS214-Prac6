@@ -17,10 +17,10 @@ class CreatedState: public WorkItemState{
      * @return true, the work item has successfully transitioned into AvailableState
      */
        bool makeAvailable(WorkItem* item)override;
-       /**
-     * @return copy of CreatedState object, used to store state in memento
+      /**
+     * @return copy of the CreatedState object
      */
-       WorkItemState* clone();
+       WorkItemState* clone()override;
        /**
      * @return name of CreatedState as a string
      */

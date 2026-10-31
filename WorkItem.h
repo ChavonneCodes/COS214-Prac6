@@ -11,6 +11,15 @@
 
 
 class WorkItem : public RuntimeComponent {
+    friend class StartCommand;
+    friend class CompleteCommand;
+    friend class RejectCommand;
+    friend class CancelCommand;
+    friend class EscalateCommand;
+    friend class AssignCommand;
+    friend class WorkItemState;
+    friend class FailCommand;
+    friend class makeAvailableCommand;
 private:
     std::string instanceId;
     ActivityDefinition* definition;
@@ -25,6 +34,65 @@ private:
      * @param payload   Detail text describing what changed.
      */
     void publish(const std::string& eventName, const std::string& payload);
+    /**
+     * @brief Transitions the work item to the Assigned state.
+     * @param p Pointer to the participant being assigned.
+     * @return true if the transition was successful, false otherwise.
+     */
+    void bindParticipant(Participant* p);
+    void releaseParticipant();
+
+    bool assign(Participant* p);
+
+    /**
+     * @brief Transitions the work item to the Started/Running state.
+     * @return true if the transition was successful, false otherwise.
+     */
+    bool start();
+
+    /**
+     * @brief Transitions the work item to the Completed/Success state.
+     * @return true if the transition was successful, false otherwise.
+     */
+    bool complete();
+
+    /**
+     * @brief Transitions the work item to the Rejected state.
+     * @return true if the transition was successful, false otherwise.
+     */
+    bool reject();
+
+    /**
+     * @brief Transitions the work item to the Cancelled state.
+     * @return true if the transition was successful, false otherwise.
+     */
+    bool cancel() ;
+
+    /**
+     * @brief Transitions the work item to the Escalated state.
+     * @return true if the transition was successful, false otherwise.
+     */
+    bool escalated();
+
+    /**
+     * @brief Transitions the work item to the Failed state.
+     * @return true if the transition was successful, false otherwise.
+     */
+    bool fail();
+
+    /**
+     * @brief Transitions the work item to the Available state.
+     * @return true if the transition was successful, false otherwise.
+     */
+    bool makeAvailable();
+    /**
+     * @brief Transitions the work item to a new state (State pattern).
+     * 
+     * Deletes the old state object and replaces it with the new one.
+     * @param newState Pointer to the new WorkItemState.
+     */
+    void changeState(WorkItemState* newState);
+
 
 public:
     /**
@@ -55,7 +123,7 @@ public:
      * @param participant Who to assign the item to (not owned).
      * @return true on success, false (and no change) if participant is nullptr.
      */
-    bool assignTo(Participant* participant);
+    //bool assignTo(Participant* participant);
 
     /**
      * @brief Restores the data and state from a saved memento.
@@ -114,62 +182,8 @@ public:
      */
     WorkItemState* getCurrentState();
 
-    /**
-     * @brief Transitions the work item to a new state (State pattern).
-     * 
-     * Deletes the old state object and replaces it with the new one.
-     * @param newState Pointer to the new WorkItemState.
-     */
-    void changeState(WorkItemState* newState);
+    
 
-    /**
-     * @brief Transitions the work item to the Assigned state.
-     * @param p Pointer to the participant being assigned.
-     * @return true if the transition was successful, false otherwise.
-     */
-    bool assign(Participant* p);
-
-    /**
-     * @brief Transitions the work item to the Started/Running state.
-     * @return true if the transition was successful, false otherwise.
-     */
-    bool start();
-
-    /**
-     * @brief Transitions the work item to the Completed/Success state.
-     * @return true if the transition was successful, false otherwise.
-     */
-    bool complete();
-
-    /**
-     * @brief Transitions the work item to the Rejected state.
-     * @return true if the transition was successful, false otherwise.
-     */
-    bool reject();
-
-    /**
-     * @brief Transitions the work item to the Cancelled state.
-     * @return true if the transition was successful, false otherwise.
-     */
-    bool cancel() ;
-
-    /**
-     * @brief Transitions the work item to the Escalated state.
-     * @return true if the transition was successful, false otherwise.
-     */
-    bool escalated();
-
-    /**
-     * @brief Transitions the work item to the Failed state.
-     * @return true if the transition was successful, false otherwise.
-     */
-    bool fail();
-
-    /**
-     * @brief Transitions the work item to the Available state.
-     * @return true if the transition was successful, false otherwise.
-     */
-    bool makeAvailable();
 
     /**
      * @brief Destructor that cleans up the current state object.

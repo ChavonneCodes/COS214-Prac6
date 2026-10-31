@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "WorkflowAction.h"
+#include "WorkItem.h"
 #include "InMemoryDefinitionRepository.h"
 #include "EventBus.h"
 #include "HistoryManager.h"
@@ -13,6 +14,8 @@
 #include "WorkflowInstance.h"
 #include "RuntimeVisitor.h"
 #include "RoutingStrategy.h"
+#include "makeAvailableCommand.h"
+#include "AssignCommand.h"
 
 /**
  * @brief Single entry point to TIVIDY (Facade pattern, role: Facade).
@@ -103,6 +106,7 @@ public:
      * @param action Command to execute.
      * @return true if the command succeeded.
      */
+     bool release(WorkItem* item);
     bool submit(WorkflowAction* action);
 
     /**

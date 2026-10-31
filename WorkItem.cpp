@@ -14,7 +14,7 @@ WorkItem::WorkItem(const std::string& instanceId, ActivityDefinition* def)
     : instanceId(instanceId), definition(def), assignedParticipant(nullptr), 
       currentState(new CreatedState()), eventBus(nullptr) {} // No more string state
 
-bool WorkItem::assignTo(Participant* participant) {
+/*bool WorkItem::assignTo(Participant* participant) {
     if (!participant) return false;
     if (assignedParticipant) assignedParticipant->closeOpenItem(); // reassignment
     
@@ -26,15 +26,26 @@ bool WorkItem::assignTo(Participant* participant) {
         currentState->makeAvailable(this); // Transitions to AvailableState
     }
     return currentState->assign(this, participant); // Transitions to AssignedState
+}*/
+void WorkItem::bindParticipant(Participant* p) {
+    if (assignedParticipant) assignedParticipant->closeOpenItem();  
+    assignedParticipant = p;                                        
+    p->addOpenItem();                                               
 }
-
+void WorkItem::releaseParticipant() {
+    if (assignedParticipant) {
+        assignedParticipant->closeOpenItem();
+        assignedParticipant = nullptr;
+    }
+}
 
 WorkItemMemento WorkItem::createMemento(){
     return WorkItemMemento(
                             definition->getId(),
                             getId(),
                             data,
-                            currentState
+                            currentState,
+                            assignedParticipant
                         );
 }
 
@@ -42,7 +53,8 @@ void WorkItem::restoreMemento(WorkItemMemento* memento){
     if(memento == nullptr){
         return;
     }
-
+    if (memento->getStateKind() == nullptr) {
+        return; }
     //make sure the snapshot belongs to this work item
     if(memento->getWorkItemId() != getId()){
         return;
@@ -51,7 +63,10 @@ void WorkItem::restoreMemento(WorkItemMemento* memento){
     if(memento->getActivityId() != definition->getId()){
         return;
     }
-
+     releaseParticipant();
+    if (memento->getCurrentParticipant()) {
+        bindParticipant(memento->getCurrentParticipant());
+    }
     WorkItemState* restoredState = memento->getStateKind()->clone();
 
     data = memento->getDataSnapshot();
@@ -97,7 +112,6 @@ bool WorkItem::complete() { return currentState->complete(this); }
 bool WorkItem::reject() { return currentState->reject(this); }
 bool WorkItem::cancel() { return currentState->cancel(this); }
 bool WorkItem::escalated() {
-    assignedParticipant = nullptr;
     return currentState->escalated(this); }
 bool WorkItem::fail() { return currentState->fail(this); }
 bool WorkItem::makeAvailable() { return currentState->makeAvailable(this); }

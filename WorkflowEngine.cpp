@@ -43,10 +43,24 @@ std::string WorkflowEngine::startWorkflow(const std::string& defId, int version)
     for (WorkItem* item : instance->getWorkItems()) {
         item->setEventBus(eventBus);                        // from now on, publish every change
     }
+   
 
     instances[instanceId] = instance;
     instance->setState("RUNNING");
+    std::vector<WorkItem*> items = instance->getWorkItems();
+    for (size_t i = 0; i < items.size(); ++i) {
+        release(items[i]);        
+    }
     return instanceId;
+}
+bool WorkflowEngine::release(WorkItem* item) {
+    if (!item) return false;
+    if (!submit(new makeAvailableCommand(item))) return false;     
+    if (assignment) {
+        Participant* chosen = assignment->assign(*item, candidates);
+        if (chosen) return submit(new AssignCommand(item, chosen)); 
+    }
+    return true;                                                    
 }
 
 WorkflowInstance* WorkflowEngine::getInstance(const std::string& instanceId){
@@ -218,7 +232,9 @@ void WorkflowEngine::advance(const std::string& instanceId) {
                 // changes flow into the shared Observer infrastructure.
                 for (WorkItem* item : child->getWorkItems()) {
                     item->setEventBus(eventBus);
+                    release(item); 
                 }
+                
 
                 // Register in the engine's instance map (engine owns it)
                 instances[childId] = child;

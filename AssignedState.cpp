@@ -8,28 +8,30 @@
 
 
 bool AssignedState::start(WorkItem* item){
-    item->changeState(new InProgressState());
+    transition(item, new InProgressState());
+    
     return true;
     
     
 }
 bool AssignedState::reject(WorkItem* item){
-   item->changeState(new RejectedState());
+   transition(item, new RejectedState());
    return true;
 }
 bool AssignedState::cancel(WorkItem* item) {
-
-   item->changeState(new CancelledState());
+   release(item);
+   transition(item, new CancelledState());
    return true;
 }
 bool AssignedState::escalated(WorkItem* item){
-   
-    item->changeState(new EscalatedState());
+    release(item);
+    transition(item, new EscalatedState());
     return true;
 }
- WorkItemState*AssignedState:: clone(){
-    return new AssignedState(*this);
- }
+WorkItemState* AssignedState::clone(){
+        return new AssignedState(*this);
+       }
+ 
  std::string AssignedState::getName(){
    return "Assigned";
  }

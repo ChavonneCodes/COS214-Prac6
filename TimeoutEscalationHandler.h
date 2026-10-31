@@ -3,6 +3,8 @@
 
 #include "ApprovalHandler.h"
 #include "WorkItem.h"
+#include "EscalateCommand.h"
+#include "WorkflowEngine.h" 
 
 class TimeoutEscalationHandler : public ApprovalHandler {
 public:
@@ -24,7 +26,7 @@ public:
      *
      * @param item Pointer to the work item to be escalated.
      */
-    TimeoutEscalationHandler(WorkItem*);
+    TimeoutEscalationHandler(WorkItem*,WorkflowEngine* engine);
 
     /**
      * @brief Constructs a TimeoutEscalationHandler without a work item.
@@ -65,6 +67,7 @@ protected:
 
 private:
     WorkItem* workItem;
+    WorkflowEngine* engine;
 };
 
 #endif
