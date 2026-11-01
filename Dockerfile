@@ -13,12 +13,18 @@ RUN apt-get update && apt-get install -y \
     clang \
     vim \
     nano \
+    libgtest-dev \
     && rm -rf /var/lib/apt/lists/*
+
+RUN cd /usr/src/googletest && \
+    cmake . && \
+    cmake --build . --target install && \
+    rm -rf /usr/src/googletest
 
 WORKDIR /usr/src/app
 
 COPY . .
 
-RUN make all
+RUN make main scenario1 run_tests
 
 CMD ["/bin/bash"]
