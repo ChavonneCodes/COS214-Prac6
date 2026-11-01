@@ -1,6 +1,7 @@
 #ifndef WORKFLOWENGINE_H
 #define WORKFLOWENGINE_H
 #include <map>
+#include <functional>
 #include <string>
 #include <vector>
 #include "WorkflowAction.h"
@@ -36,6 +37,7 @@ private:
 
     AssignmentStrategy* assignment = nullptr;           ///< Picks who gets each new work item (not owned, may be null).
     std::vector<Participant*> candidates;               ///< Participants the strategy chooses from (not owned).
+    std::function<RuntimeComponent*(RuntimeComponent*)> treeWrapper;  ///< Optional extra decorators for new runtime trees.
 
     std::map<std::string, WorkflowInstance*> instances; ///< Started instances by id (owned).
     std::vector<WorkflowAction*> submitted;             ///< Every command submitted (owned).
@@ -82,6 +84,12 @@ public:
      * @param candidates Participants the rule chooses from (not owned).
      */
     void setAssignment(AssignmentStrategy* strategy, const std::vector<Participant*>& candidates);
+
+    /**
+     * @brief Sets extra decorators to put around every runtime tree started after this call.
+     * @param wrapper Takes the new tree and returns it wrapped (may be empty for no extra wrapping).
+     */
+    void setTreeWrapper(const std::function<RuntimeComponent*(RuntimeComponent*)>& wrapper);
 
     /**
      * @brief Creates and starts a new instance of a workflow definition.

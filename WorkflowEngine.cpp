@@ -24,6 +24,10 @@ void WorkflowEngine::setAssignment(AssignmentStrategy* strategy, const std::vect
     this->candidates = candidates;
 }
 
+void WorkflowEngine::setTreeWrapper(const std::function<RuntimeComponent*(RuntimeComponent*)>& wrapper){
+    treeWrapper = wrapper;
+}
+
 std::string WorkflowEngine::startWorkflow(const std::string& defId, int version){
     if (!repository) return "";
     WorkflowDefinition* definition = repository->load(defId, version);
@@ -34,6 +38,7 @@ std::string WorkflowEngine::startWorkflow(const std::string& defId, int version)
     RuntimeComponent* tree = InstanceFactory::instantiateTree(instanceId, definition->getRoot(),
                                                               assignment, candidates);
     if (!tree) return "";
+    if (treeWrapper) tree = treeWrapper(tree);
 
     // Decorator: label the tree with the instance and the version it is pinned to
     RuntimeComponent* root = new LabelledRuntimeDecorator(
