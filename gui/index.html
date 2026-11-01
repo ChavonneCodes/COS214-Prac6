@@ -10,7 +10,7 @@
   --ink:#10201c; --ink2:#1a2f29; --body:#43544f; --soft:#74857f; --line:#e3e0d8; --paper:#f7f5f0; --white:#fff;
   --lime:#c6f06a; --campus:#0e7c6b; --campus-bg:#dff3ee; --project:#3355d8; --project-bg:#e4e9fc;
   --only:#e8590c; --only-bg:#fff0e6; --done:#16894f; --done-bg:#def4e7; --live:#2467d6; --live-bg:#e0ecfd;
-  --bad:#d02f45; --bad-bg:#fde6e9; --idle:#7b8a85; --idle-bg:#eef0ee;
+  --bad:#d02f45; --bad-bg:#fde6e9; --idle:#7b8a85; --idle-bg:#eef0ee; --card:#fff; --wait:#8a6a00; --wait-bg:#fbf3d6; --mono:ui-monospace,Consolas,monospace;
   --font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
 * { box-sizing:border-box; margin:0; padding:0; }
@@ -161,6 +161,79 @@ footer .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:
   .ghost { margin:10px 0 0; } section.block { padding:56px 0; }
 }
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } * { transition:none !important; } }
+
+/* Try it yourself: the live console */
+#console button, #console select, #console input { font:inherit; color:inherit; }
+#console .console-grid { max-width:1320px; margin:0 auto; padding:20px; display:grid; grid-template-columns:300px minmax(0,1fr); gap:18px; align-items:start; }
+#console aside, #console .stack { display:flex; flex-direction:column; gap:14px; min-width:0; }
+#console .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; min-width:0; }
+#console h2 { color:var(--ink); font-size:14px; font-weight:800; margin-bottom:8px; }
+#console .hint { color:var(--soft); font-size:12px; }
+#console label { display:block; font-size:12px; font-weight:600; color:var(--soft); margin:8px 0 3px; }
+#console select, #console input { width:100%; padding:7px 9px; border:1px solid var(--line); border-radius:8px; background:#fff; }
+#console .primary { background:var(--ink); color:#fff; font-weight:700; border-radius:8px; padding:9px 12px; width:100%; margin-top:12px; }
+#console .primary:hover { background:var(--ink2); }
+#console .row { display:flex; align-items:center; gap:8px; width:100%; padding:7px 8px; border-radius:8px; text-align:left; }
+#console .row:hover { background:var(--paper); }
+#console .row.on { background:var(--live-bg); }
+#console .grow { flex:1; min-width:0; overflow-wrap:anywhere; }
+#console .name { color:var(--ink); font-weight:600; }
+#console .sub { color:var(--soft); font-size:12px; }
+#console .pill { font-size:11px; font-weight:700; padding:2px 8px; border-radius:99px; white-space:nowrap; background:var(--idle-bg); color:var(--idle); }
+#console .pill.Completed, #console .pill.COMPLETED { background:var(--done-bg); color:var(--done); }
+#console .pill.In_Progress, #console .pill.RUNNING, #console .pill.Assigned { background:var(--live-bg); color:var(--live); }
+#console .pill.Available { background:var(--wait-bg); color:var(--wait); }
+#console .pill.Rejected, #console .pill.Failed, #console .pill.Cancelled, #console .pill.CANCELLED { background:var(--bad-bg); color:var(--bad); }
+#console .pill.Escalated { background:var(--only-bg); color:var(--only); }
+#console .head { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+#console .head h1 { color:var(--ink); font-size:20px; font-weight:800; }
+#console .lc-bar { height:8px; background:var(--idle-bg); border-radius:99px; overflow:hidden; margin-top:10px; }
+#console .lc-bar i { display:block; height:100%; background:var(--done); transition:width .25s; }
+#console .spacer { margin-left:auto; }
+#console .btn { border:1px solid var(--line); background:#fff; border-radius:8px; padding:7px 12px; font-weight:600; color:var(--ink); font-size:13px; }
+#console .btn:hover { border-color:var(--ink); }
+#console .btn:disabled { opacity:.4; cursor:not-allowed; border-color:var(--line); }
+#console .btn.warn { color:var(--bad); }
+#console .two { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:14px; }
+#console .node { display:flex; align-items:center; gap:8px; padding:5px 8px; border-radius:8px; width:100%; text-align:left; }
+#console button.node:hover { background:var(--paper); }
+#console .node.current { box-shadow:inset 3px 0 0 var(--live); }
+#console .node.on { background:var(--live-bg); }
+#console .node.stage { color:var(--ink); font-weight:800; font-size:13px; }
+#console .node.waiting .name { color:var(--soft); font-weight:500; }
+#console .dot { width:8px; height:8px; border-radius:50%; background:var(--live); flex:none; }
+#console .actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+#console .inline { display:flex; gap:6px; flex:1 1 220px; min-width:0; }
+#console .inline select { flex:1; min-width:0; }
+#console .edge { display:flex; align-items:center; gap:6px; padding:3px 0; font-size:13px; color:var(--soft); flex-wrap:wrap; }
+#console .edge.taken { color:var(--ink); font-weight:600; }
+#console .edge .lbl { font-size:11px; background:var(--idle-bg); padding:1px 6px; border-radius:6px; }
+#console .edge.taken .lbl { background:var(--done-bg); color:var(--done); }
+#console .tabs { display:flex; gap:4px; border-bottom:1px solid var(--line); margin-bottom:10px; flex-wrap:wrap; }
+#console .tabs button { padding:7px 10px; font-weight:700; color:var(--soft); border-bottom:2px solid transparent; font-size:13px; }
+#console .tabs button.on { color:var(--ink); border-color:var(--ink); }
+#console .log { max-height:320px; overflow:auto; display:flex; flex-direction:column; gap:6px; }
+#console .line { border-left:3px solid var(--idle-bg); padding:2px 0 2px 9px; overflow-wrap:anywhere; }
+#console .line.action { border-color:var(--live); }
+#console .line.refused { border-color:var(--bad); }
+#console .line.route { border-color:var(--done); }
+#console .line.undo { border-color:var(--only); }
+#console .line.approval { border-color:var(--wait); }
+#console .line.refused .text { color:var(--bad); font-weight:600; }
+#console .lc-pat { color:var(--soft); font-size:11px; font-weight:600; }
+#console .mono { font-family:var(--mono); font-size:12px; }
+#console .empty { color:var(--soft); padding:6px 0; }
+#console #notice { display:none; background:var(--bad-bg); color:var(--bad); font-weight:600; border-radius:10px; padding:9px 12px; grid-column:1/-1; }
+#console #welcome { padding:34px; text-align:center; }
+@media (max-width:980px) { #console .console-grid { grid-template-columns:minmax(0,1fr); }
+#console .two { grid-template-columns:minmax(0,1fr); } }
+#console { font-size:14px; line-height:1.5; }
+#console h2.title { font-size:clamp(30px,3.6vw,44px); margin:0; }
+#console .console-head { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap; margin-bottom:22px; }
+#console .console-grid { max-width:none; padding:0; }
+#console .card h1 { font-size:20px; letter-spacing:0; line-height:1.3; }
+#console .card h2 { font-size:14px; letter-spacing:0; line-height:1.5; margin-bottom:8px; }
+#console button { font-family:inherit; }
 </style>
 </head>
 <body>
@@ -171,6 +244,7 @@ footer .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:
     <a href="#run">Live run</a>
     <a href="#compare">Same engine</a>
     <a href="#inside">Under the hood</a>
+    <a href="#console">Try it live</a>
   </nav>
   <a class="cta" href="#run">Watch it run</a>
 </div></header>
@@ -212,6 +286,30 @@ footer .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:
     <label class="switch"><input type="checkbox" id="calls">Engine calls</label>
   </div>
   <p class="keys">Orange marks something only that process does. Use the arrow keys to step and space to play.</p>
+</div></section>
+
+<section class="block" id="console"><div class="wrap">
+  <div class="console-head">
+    <div><div class="eyebrow">Try it yourself</div><h2 class="title">Run it on the real engine</h2></div>
+    <button class="btn" id="reset">Start over</button>
+  </div>
+  <div class="console-grid">
+  <div id="notice"></div>
+  <aside>
+    <div class="card">
+      <h2>Start a case</h2>
+      <label for="process">Process</label><select id="process"></select>
+      <label for="version">Version</label><select id="version"></select>
+      <div id="budgetBox"><label for="budget">Budget (rand)</label><input id="budget" type="number" min="0" value="750000"></div>
+      <label for="rule">Who gets the work</label><select id="rule"></select>
+      <button class="primary" id="start">Start case</button>
+    </div>
+    <div class="card"><h2>Cases</h2><div id="lcCases"></div></div>
+    <div class="card"><h2>Available work</h2><div id="work"></div></div>
+    <div class="card"><h2>People</h2><div id="people"></div></div>
+  </aside>
+  <div class="stack" id="detail"></div>
+  </div>
 </div></section>
 
 <section class="block alt" id="compare"><div class="wrap">
@@ -486,6 +584,7 @@ footer .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:
   $('play').onclick = togglePlay;
   $('calls').onchange = function () { document.body.classList.toggle('calls', this.checked); };
   document.addEventListener('keydown', function (e) {
+    if (e.target.closest('#console')) return;
     if (e.key === 'ArrowRight') { stop(); go(frame + 1); }
     else if (e.key === 'ArrowLeft') { stop(); go(frame - 1); }
     else if (e.key === ' ' && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') { e.preventDefault(); togglePlay(); }
@@ -504,6 +603,201 @@ footer .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:
   }
 
   selectCase(0);
+})();
+</script>
+<script>
+// Try it yourself: every action here runs on the real engine through gui/live_server.cpp
+(function () {
+var data = null, focus = '', picked = null, tab = 'feed';
+var $ = function (id) { return document.getElementById(id); };
+var esc = function (text) {
+  return String(text).replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; });
+};
+var pill = function (state) { return state ? '<span class="pill ' + esc(state) + '">' + esc(state.replace('_', ' ')) + '</span>' : ''; };
+
+function call(path, params) {
+  var query = new URLSearchParams(params || {}).toString();
+  return fetch(path + '?' + query).then(function (response) {
+    return response.json().catch(function () {   // another web server answered with a page, not the engine
+      throw new TypeError('not the engine');
+    }).then(function (body) {
+      if (body.error) throw new Error(body.error);
+      return body;
+    });
+  }).then(function (body) {
+    $('notice').style.display = 'none';
+    data = body;
+    if (body.focus) focus = body.focus;
+    render();
+  }).catch(function (error) {
+    var offline = error instanceof TypeError;
+    $('notice').textContent = offline ? 'The engine is not connected. Run "make live" in the repo folder, then open http://localhost:8214' : error.message;
+    $('notice').style.display = 'block';
+  });
+}
+
+function act(caseId, item, action, extra) {
+  var params = {case: caseId, item: item, action: action};
+  Object.keys(extra || {}).forEach(function (key) { params[key] = extra[key]; });
+  call('/api/act', params);
+}
+
+function fillStartForm() {
+  if ($('process').options.length) return;
+  $('process').innerHTML = data.processes.map(function (p) { return '<option value="' + esc(p.id) + '">' + esc(p.name) + '</option>'; }).join('');
+  $('rule').innerHTML = data.rules.map(function (r) { return '<option' + (r === 'Least busy person' ? ' selected' : '') + '>' + esc(r) + '</option>'; }).join('');
+  syncProcess();
+}
+
+function syncProcess() {
+  var process = data.processes.filter(function (p) { return p.id === $('process').value; })[0];
+  $('version').innerHTML = process.versions.map(function (v) { return '<option value="' + v + '">v' + v + '</option>'; }).join('');
+  $('budgetBox').style.display = process.budget ? 'block' : 'none';
+}
+
+function renderSide() {
+  $('lcCases').innerHTML = data.cases.length ? data.cases.map(function (c) {
+    return '<button class="row' + (c.id === focus ? ' on' : '') + '" data-case="' + esc(c.id) + '"><span class="grow"><span class="name">' +
+      (c.child ? '&#8627; ' : '') + esc(c.title) + '</span><br><span class="sub">' + esc(c.id) + ', ' + c.percent + '% done</span></span>' + pill(c.state) + '</button>';
+  }).join('') : '<p class="empty">No cases yet.</p>';
+
+  $('work').innerHTML = data.work.length ? data.work.map(function (w) {
+    return '<button class="row" data-case="' + esc(w.case) + '" data-item="' + esc(w.item) + '"><span class="grow"><span class="name">' + esc(w.name) +
+      '</span><br><span class="sub">' + esc(w.who || 'nobody yet') + ', needs ' + esc(w.role) + '<br>' + esc(w.case) + '</span></span>' + pill(w.state) + '</button>';
+  }).join('') : '<p class="empty">Nothing is waiting.</p>';
+
+  $('people').innerHTML = data.people.map(function (p) {
+    return '<div class="row"><span class="grow"><span class="name">' + esc(p.name) + '</span> <span class="sub">' + esc(p.roles.join(', ')) + '</span></span><span class="sub">' + p.open + ' open</span></div>';
+  }).join('');
+}
+
+function treeHtml(tree) {
+  return tree.map(function (n, i) {
+    var pad = 'padding-left:' + (8 + n.depth * 18) + 'px';
+    if (n.kind === 'stage') return '<div class="node stage" style="' + pad + '">' + esc(n.name) + '</div>';
+    if (n.kind === 'sub') return '<div class="node" style="' + pad + '"><span class="grow name">Sub-process: ' + esc(n.name) + '</span>' + pill(n.state) + '</div>';
+    var chosen = picked && picked.case === n.case && picked.id === n.id;
+    return '<button class="node' + (chosen ? ' on' : '') + (n.active ? ' current' : ' waiting') + '" style="' + pad + '" data-node="' + i + '">' +
+      (n.active ? '<span class="dot" title="Routing is here"></span>' : '') + '<span class="grow"><span class="name">' + esc(n.name) + '</span> <span class="sub">' +
+      esc(n.who || 'unassigned') + '</span></span>' + pill(n.state) + '</button>';
+  }).join('');
+}
+
+function actionsHtml(node) {
+  if (!node) return '<h2>Actions</h2><p class="empty">Select a work item in the tree. You can try anything: the item&#39;s state decides.</p>';
+  var people = data.people.filter(function (p) { return p.roles.indexOf(node.role) >= 0; });
+  var html = '<h2>' + esc(node.name) + ' ' + pill(node.state) + '</h2><p class="hint">Needs ' + esc(node.role) + ', held by ' + esc(node.who || 'nobody') +
+    (node.active ? '. Routing is here.' : '. Routing has not reached this step.') + '</p><div class="actions">';
+  html += '<div class="inline"><select id="who">' + people.map(function (p) { return '<option value="' + esc(p.id) + '">' + esc(p.name) + ' (' + p.open + ' open)</option>'; }).join('') +
+    '</select><button class="btn" data-action="assign">Assign</button></div>';
+  [['available', 'Make available'], ['start', 'Start']].forEach(function (a) { html += '<button class="btn" data-action="' + a[0] + '">' + a[1] + '</button>'; });
+  if (node.options.length) node.options.forEach(function (o) { html += '<button class="btn" data-action="complete" data-outcome="' + esc(o) + '">Complete: ' + esc(o) + '</button>'; });
+  else html += '<button class="btn" data-action="complete">Complete</button>';
+  [['reject', 'Reject'], ['escalate', 'Escalate'], ['fail', 'Fail'], ['cancel', 'Cancel']].forEach(function (a) { html += '<button class="btn warn" data-action="' + a[0] + '">' + a[1] + '</button>'; });
+  if (node.deadline) html += '<button class="btn warn" id="deadline">Deadline missed</button>';
+  return html + '</div>';
+}
+
+function edgesHtml(edges) {
+  return edges.map(function (e) {
+    return '<div class="edge' + (e.taken ? ' taken' : '') + '"><span>' + esc(e.from) + '</span><span>&rarr;</span><span>' + esc(e.to) + '</span>' +
+      (e.label ? '<span class="lbl">' + esc(e.label) + '</span>' : '') + (e.taken ? '<span class="lbl">taken</span>' : '') + '</div>';
+  }).join('');
+}
+
+function logHtml(s) {
+  var plain = function (lines, mono) {
+    return lines.length ? lines.slice().reverse().map(function (l) { return '<div class="line' + (mono ? ' mono' : '') + '">' + esc(l) + '</div>'; }).join('') : '<p class="empty">Nothing yet.</p>';
+  };
+  var views = {
+    feed: function () { return s.feed.slice().reverse().map(function (f) {
+      return '<div class="line ' + esc(f.kind) + '"><div class="text">' + esc(f.text) + '</div><div class="lc-pat">' + esc(f.pattern) + '</div></div>'; }).join(''); },
+    commands: function () { return plain(s.commands); },
+    audit: function () { return plain(s.audit, true); },
+    workload: function () { return plain(s.workload); }
+  };
+  return views[tab]();
+}
+
+function guardHtml() {
+  var options = data.people.map(function (p) { return '<option value="' + esc(p.id) + '">' + esc(p.name) + '</option>'; }).join('');
+  return '<div class="card"><h2>Change the stage directly</h2><p class="hint">Goes through the Security, AllowedStates and Logging decorators. Try the student, or a state name that does not exist.</p>' +
+    '<div class="actions"><div class="inline"><select id="guardWho">' + options + '</select><input id="guardState" value="RUNNING" aria-label="State"><button class="btn" id="guardGo">Try it</button></div></div></div>';
+}
+
+function renderDetail() {
+  var s = data.selected;
+  if (!s) {
+    $('detail').innerHTML = '<div class="card" id="welcome"><h2>Start a case to begin</h2><p class="hint">Pick any process on the left. Each case gets its own tree, history and routing, and nothing here is scripted.</p></div>';
+    return;
+  }
+  var node = null;
+  s.tree.forEach(function (n) { if (picked && n.kind === 'item' && n.case === picked.case && n.id === picked.id) node = n; });
+  var scroll = document.querySelector('.log');
+  var top = scroll ? scroll.scrollTop : 0;
+  var tabs = [['feed', 'What happened'], ['commands', 'Command history (' + s.commands.length + ')'], ['audit', 'Audit trail (' + s.audit.length + ')'], ['workload', 'Workload']];
+
+  $('detail').innerHTML =
+    '<div class="card"><div class="head"><h1>' + esc(s.title) + '</h1>' + pill(s.state) +
+    '<button class="btn spacer" id="undo"' + (s.canUndo ? '' : ' disabled') + '>Undo last</button></div>' +
+    '<p class="hint">' + esc(s.id) + (s.budget ? ', budget R' + esc(Number(s.budget).toLocaleString('en-ZA')) : '') +
+    (s.parent ? ', sub-process of ' + esc(s.parent) : '') + ', ' + s.done + ' of ' + s.total + ' work items done</p>' +
+    '<div class="lc-bar"><i style="width:' + s.percent + '%"></i></div></div>' +
+    '<div class="two"><div class="card"><h2>Live tree</h2>' + treeHtml(s.tree) + '</div>' +
+    '<div class="stack"><div class="card">' + actionsHtml(node) + '</div><div class="card"><h2>Routing</h2>' + edgesHtml(s.edges) + '</div></div></div>' +
+    '<div class="card"><div class="tabs">' + tabs.map(function (t) { return '<button data-tab="' + t[0] + '" class="' + (t[0] === tab ? 'on' : '') + '">' + t[1] + '</button>'; }).join('') +
+    '</div><div class="log">' + logHtml(s) + '</div></div>' + (s.guarded ? guardHtml() : '');
+
+  var log = document.querySelector('.log');
+  if (log) log.scrollTop = top;
+}
+
+function render() {
+  if (!focus && data.cases.length) return open(data.cases[0].id);   // a refresh keeps showing the running cases
+  fillStartForm();
+  renderSide();
+  renderDetail();
+}
+
+function open(caseId, itemId) {
+  picked = itemId ? {case: caseId, id: itemId} : null;
+  focus = caseId;
+  call('/api/state', {case: caseId});
+}
+
+$('console').addEventListener('click', function (event) {
+  var el = event.target.closest('button');
+  if (!el) return;
+  if (el.dataset.case) return open(el.dataset.case, el.dataset.item);
+  if (el.dataset.node !== undefined) {
+    var node = data.selected.tree[Number(el.dataset.node)];
+    picked = {case: node.case, id: node.id};
+    return render();
+  }
+  if (el.dataset.tab) { tab = el.dataset.tab; return renderDetail(); }
+  if (el.dataset.action) {
+    var extra = {};
+    if (el.dataset.action === 'assign') extra.who = $('who').value;
+    if (el.dataset.outcome) extra.outcome = el.dataset.outcome;
+    return act(picked.case, picked.id, el.dataset.action, extra);
+  }
+  if (el.id === 'undo') return call('/api/undo', {case: focus});
+  if (el.id === 'deadline') return call('/api/deadline', {case: picked.case});
+  if (el.id === 'guardGo') return call('/api/guard', {case: focus, who: $('guardWho').value, state: $('guardState').value});
+});
+
+$('process').addEventListener('change', syncProcess);
+$('start').addEventListener('click', function () {
+  picked = null;
+  call('/api/start', {process: $('process').value, version: $('version').value, budget: $('budget').value, rule: $('rule').value});
+});
+$('reset').addEventListener('click', function () {
+  picked = null;
+  focus = '';
+  call('/api/reset');
+});
+
+call('/api/state');
 })();
 </script>
 </body>

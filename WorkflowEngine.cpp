@@ -87,6 +87,19 @@ void WorkflowEngine::undoLast(){
     if (last) last->undo();
 }
 
+bool WorkflowEngine::undoLast(const std::string& instanceId){
+    if (!history) return false;
+    std::vector<WorkflowAction*> newer;     // other instances' commands, kept in order
+    WorkflowAction* action = history->pop();
+    while (action && action->getInstanceId() != instanceId) {
+        newer.push_back(action);
+        action = history->pop();
+    }
+    if (action) action->undo();
+    for (auto kept = newer.rbegin(); kept != newer.rend(); ++kept) history->push(*kept);
+    return action != nullptr;
+}
+
 std::vector<WorkflowAction*> WorkflowEngine::getHistory(const std::string& instanceId){
     std::vector<WorkflowAction*> result;
     if (!history) return result;

@@ -32,16 +32,23 @@ TestStateAndCommand: TestStateAndCommand.cpp $(CORE_SRCS)
 run: main
 	./main
 
+# Build and run the live console (open http://localhost:8214)
+live_server: gui/live_server.cpp $(CORE_SRCS)
+	$(CXX) $(CXXFLAGS) -I. $^ -o $@
+
+live: live_server
+	./live_server
+
 clean:
-	rm -f main scenario1 BuilderComposite $(TESTS) run_tests
+	rm -f main scenario1 BuilderComposite live_server $(TESTS) run_tests
 
 # deep clean: executables + all .o files 
 deepclean:
 	rm -f *.o
-	rm -f main scenario1 BuilderComposite $(TESTS) run_tests
+	rm -f main scenario1 BuilderComposite live_server $(TESTS) run_tests
 
 # Phony targets (so "make clean" always works)
-.PHONY: all clean run
+.PHONY: all clean run live
 
 # ── GoogleTest config ──────────────────────────────────────
 GTEST_LIBS = -lgtest -lgtest_main -lpthread
