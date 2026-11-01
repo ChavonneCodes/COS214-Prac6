@@ -14,7 +14,7 @@
    
  }
  bool AvailableState::cancel(WorkItem* item){
-  release(item);
+  reduceParticipantCount(item);
    transition(item, new CancelledState());
    return true;
    

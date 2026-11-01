@@ -38,6 +38,10 @@ void WorkItem::releaseParticipant() {
         assignedParticipant = nullptr;
     }
 }
+void WorkItem::lowerWorkLoad(){
+    if (assignedParticipant) {
+        assignedParticipant->closeOpenItem();
+}}
 
 WorkItemMemento WorkItem::createMemento(){
     return WorkItemMemento(

@@ -6,12 +6,12 @@
 #include "WorkItem.h"
 
 bool InProgressState::complete(WorkItem* item){
-    release(item); // lowers open-item for workload-based assignment
+    reduceParticipantCount(item); // lowers open-item for workload-based assignment
     transition(item, new CompletedState());
     return true;
 }
 bool InProgressState::cancel(WorkItem* item){
-    release(item);
+    reduceParticipantCount(item);
     transition(item, new CancelledState());
     return true;
 }

@@ -19,7 +19,7 @@ bool AssignedState::reject(WorkItem* item){
    return true;
 }
 bool AssignedState::cancel(WorkItem* item) {
-   release(item);
+   reduceParticipantCount(item);
    transition(item, new CancelledState());
    return true;
 }

@@ -18,6 +18,7 @@ class WorkItemState{
     void transition(WorkItem* item, WorkItemState* next);
     void bind(WorkItem* item, Participant* p);
     void release(WorkItem* item);
+    void reduceParticipantCount(WorkItem* item);
     public: 
         /**
          * @brief default implementation when a state cannot transition to AssignedState

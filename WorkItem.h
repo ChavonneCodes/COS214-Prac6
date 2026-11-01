@@ -41,6 +41,7 @@ private:
      */
     void bindParticipant(Participant* p);
     void releaseParticipant();
+    void lowerWorkLoad();
 
     bool assign(Participant* p);
 
