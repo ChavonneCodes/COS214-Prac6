@@ -163,7 +163,7 @@ public:
      * @brief Sets the state string directly.
      * @param newState The new state string.
      */
-    void setState(const std::string& newState) override;
+    void setState(const std::string& newState);
 
     /**
      * @brief Prints the work item details to standard output.
