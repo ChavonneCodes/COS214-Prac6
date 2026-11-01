@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "ActivityDefinition.h"
+#include "AssignCommand.h"
 #include "AuditObserver.h"
 #include "EventBus.h"
 #include "NotificationObserver.h"
@@ -179,12 +180,15 @@ TEST_F(WorkItemEventsTest, InvalidOperationsPublishNothing) {
     EXPECT_TRUE(audit.getLog().empty());
 }
 
-TEST_F(WorkItemEventsTest, AssignToPublishesEachStepOfCreatedAvailableAssigned) {
+TEST_F(WorkItemEventsTest, AssigningThroughTheCommandPublishesEachStep) {
     connect();
     std::vector<std::string> roles(1, "proposer");
     Participant dana("p1", "Dana", roles, 1);
 
-    EXPECT_TRUE(item.assignTo(&dana));
+    item.makeAvailable();  // Created -> Available
+    AssignCommand command(&item, &dana);
+    EXPECT_TRUE(command.execute());  // Available -> Assigned
+
     std::vector<std::string> log = audit.getLog();
     ASSERT_EQ(log.size(), 2u);
     EXPECT_NE(log[0].find("Created -> Available"), std::string::npos);
