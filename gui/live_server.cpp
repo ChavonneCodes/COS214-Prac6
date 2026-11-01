@@ -2,9 +2,9 @@
  * @file live_server.cpp
  * @brief Live console: lets a person drive the real WorkflowEngine from a browser.
  *
- * gui/index.html replays a recorded run. This program serves gui/live.html and
- * answers its requests with the real engine, so nothing is scripted: a person
- * starts any process, inspects the live tree, and takes any action they like.
+ * gui/index.html replays a recorded run from a file. This program serves that page
+ * and answers its "Try it yourself" section with the real engine, so nothing there is
+ * scripted: a person starts any process, inspects the live tree, and takes any action.
  * The State objects allow or refuse each action, not this file or the page.
  *
  * Build and run from the repo folder: make live
@@ -769,8 +769,7 @@ void serve(int client, std::unique_ptr<Session>& session) {
     const Params params = parseQuery(mark == std::string::npos ? "" : target.substr(mark + 1));
 
     static const std::map<std::string, std::pair<std::string, std::string>> pages = {
-        {"/", {"gui/live.html", "text/html; charset=utf-8"}},
-        {"/replay", {"gui/index.html", "text/html; charset=utf-8"}},
+        {"/", {"gui/index.html", "text/html; charset=utf-8"}},
         {"/trace.js", {"gui/trace.js", "text/javascript"}},
     };
     auto page = pages.find(path);
