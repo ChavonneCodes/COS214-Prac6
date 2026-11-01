@@ -61,6 +61,10 @@
 #include "EscalateCommand.h"
 #include "ProgressReportVisitor.h"
 #include "WorkloadVisitor.h"
+#include "ApprovalChainDefinition.h"
+#include "ApprovalStepDefinition.h"
+#include "ApprovalHandler.h"
+#include <memory>
 
 namespace {
 
@@ -177,6 +181,11 @@ WorkflowBlueprint makeProjectApprovalBlueprint(int version) {
     blueprint.roles.push_back(RoleDefinition("finance", "Finance Officer", 2));
     blueprint.roles.push_back(RoleDefinition("executive", "Executive", 3));
 
+    ApprovalChainDefinition approvalChain("finance-executive-chain");
+    approvalChain.addStep(ApprovalStepDefinition("finance",   86400,  "escalate"));
+    approvalChain.addStep(ApprovalStepDefinition("executive", 259200, "escalate"));
+    blueprint.approvalChains.push_back(approvalChain);
+
     blueprint.activities.push_back(ActivityDefinition("submit", "Submit Proposal", "proposer"));
     blueprint.activities.push_back(ActivityDefinition("productReview", "Product Review", "product_manager"));
     blueprint.activities.push_back(ActivityDefinition("techReview", "Technical Review", "head_engineer"));
@@ -262,6 +271,46 @@ void startAndComplete(WorkflowEngine& engine, WorkItem* item) {
 }
 
 } // namespace
+
+/**
+ * @brief Builds a live Chain of Responsibility from an ApprovalChainDefinition.
+ *
+ * Creates one RoleApprovalHandler per step in the definition, appends a
+ * TimeoutEscalationHandler at the tail (if a work item is given), and links
+ * them head → tail with setNext().
+ *
+ * @param chainDef    The chain definition from the workflow blueprint.
+ * @param timeoutItem The work item the timeout handler watches (usually
+ *                    "execApproval"). Pass nullptr to skip the timeout handler.
+ * @return A vector owning every handler; head is at index 0.
+ *         Empty if the chain has no steps.
+ *
+ * @note Use handlers[0]->authorise(request) to invoke the chain.
+ *       The returned vector must outlive every use of the chain.
+ */
+std::vector<std::unique_ptr<ApprovalHandler>> buildApprovalChain(
+    const ApprovalChainDefinition& chainDef,
+    WorkItem* timeoutItem)
+{
+    std::vector<std::unique_ptr<ApprovalHandler>> handlers;
+
+    // 1. One RoleApprovalHandler per step, in declaration order
+    for (const ApprovalStepDefinition& step : chainDef.getSteps()) {
+        handlers.emplace_back(new RoleApprovalHandler(step.getRoleId()));
+    }
+
+    // 2. Append the timeout handler at the tail
+    if (timeoutItem != nullptr) {
+        handlers.emplace_back(new TimeoutEscalationHandler(timeoutItem));
+    }
+
+    // 3. Link them head to tail
+    for (size_t i = 0; i + 1 < handlers.size(); ++i) {
+        handlers[i]->setNext(handlers[i + 1].get());
+    }
+
+    return handlers;
+}
 
 int main() {
     heading("TIVIDY: A WORKFLOW ENGINE");
@@ -385,11 +434,21 @@ int main() {
     // ---------------------------------------------------------------
     // Chain of Responsibility: finance -> executive -> timeout escalation.
     // The timeout handler watches the executive approval work item.
-    RoleApprovalHandler financeApprover("finance");
-    RoleApprovalHandler executiveApprover("executive");
-    TimeoutEscalationHandler timeoutEscalation(instance->findWorkItem("execApproval"));
-    financeApprover.setNext(&executiveApprover);
-    executiveApprover.setNext(&timeoutEscalation);
+    // Build the approval chain from the definition (not hardcoded).
+    ApprovalChainDefinition* chainDef =
+        definition->getApprovalChainById("finance-executive-chain");
+    if (!chainDef) {
+        std::cerr << "ERROR: approval chain not found in the definition.\n";
+        return 1;
+    }
+
+    auto approvalHandlers = buildApprovalChain(*chainDef,
+                                              instance->findWorkItem("execApproval"));
+    if (approvalHandlers.empty()) {
+        std::cerr << "ERROR: approval chain is empty.\n";
+        return 1;
+    }
+    ApprovalHandler* approvalChain = approvalHandlers[0].get();
 
     // Routing strategies: sequential by default, budget check after finance review
     SequentialRouting sequential;
@@ -465,7 +524,7 @@ int main() {
         Request request("REQ-FIN-001", "APPROVE", item->getId(), instanceId, "finance",
                         "finance-reviewer", "Budget approval", item->getCurrentState()->getName(),
                         instance->getData());
-        HandlerResult financeResult = financeApprover.authorise(request);
+        HandlerResult financeResult =  approvalChain->authorise(request);
         pattern("Chain of Responsibility", "the request goes along a chain of handlers until one "
                                            "of them can approve it, so the sender does not need "
                                            "to know who approves what.");
@@ -492,7 +551,7 @@ int main() {
         Request timeout("REQ-TIMEOUT-001", "TIMEOUT", item->getId(), instanceId, "executive",
                         "system", "Executive approval deadline exceeded",
                         item->getCurrentState()->getName(), instance->getData());
-        financeApprover.authorise(timeout);
+        approvalChain->authorise(timeout);
         std::cout << "      Assigned -> " << item->getCurrentState()->getName() << "\n";
         pattern("Chain of Responsibility", "both approval handlers passed the timeout on; only the "
                                            "timeout handler deals with it, and it escalates the item.");
@@ -503,7 +562,7 @@ int main() {
         Request signOff("REQ-EXEC-001", "APPROVE", item->getId(), instanceId, "executive",
                         "executive-reviewer", "Executive project sign-off",
                         item->getCurrentState()->getName(), instance->getData());
-        if (financeApprover.authorise(signOff) != HandlerResult::Handled) {
+        if (approvalChain->authorise(signOff) != HandlerResult::Handled) {
             std::cout << "  The executive did not approve, so the case stops here.\n";
             return std::string("rejected");
         }
@@ -625,7 +684,7 @@ int main() {
         << "                                                                 SequentialRouting, ConditionalRouting\n"
         << "  Decorator                the label on the live tree            LabelledRuntimeDecorator\n"
         << "  Command                  every action in section 4, and undo   AssignCommand, StartCommand, ...,\n"
-        << "                                                                 HistoryManager\n"
+        << "   f                                                              HistoryManager\n"
         << "  State                    actions allowed or refused            WorkItemState and its subclasses\n"
         << "  Chain of Responsibility  steps 4 and 5, approvals and timeout  RoleApprovalHandler,\n"
         << "                                                                 TimeoutEscalationHandler\n"
