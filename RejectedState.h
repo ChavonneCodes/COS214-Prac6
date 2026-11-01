@@ -21,7 +21,7 @@ class RejectedState: public WorkItemState{
      
      * @return copy of RejectedState , used to store state in memento
      */
-       WorkItemState* clone();
+       WorkItemState* clone()override;
        /**
      * @return name of RejectedState as a string
      */

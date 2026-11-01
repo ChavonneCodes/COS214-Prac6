@@ -9,6 +9,16 @@ class Participant;
  * @brief State participant. Returns default values for invalid state transitions. states apply variable criteria 
  */
 class WorkItemState{
+    /**
+         * @brief helper to access changeState in context class
+         * @param item workItem that must undergo a state change
+         * @param next the next state it is transitioning to
+         */
+    protected:
+    void transition(WorkItem* item, WorkItemState* next);
+    void bind(WorkItem* item, Participant* p);
+    void release(WorkItem* item);
+    void reduceParticipantCount(WorkItem* item);
     public: 
         /**
          * @brief default implementation when a state cannot transition to AssignedState

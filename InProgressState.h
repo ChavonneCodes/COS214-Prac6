@@ -29,11 +29,10 @@ class InProgressState: public WorkItemState{
      * @return true, the work item has successfully transitioned into FailedState
      */
         bool fail(WorkItem* item)override;
-        /**
-     
-     * @return copy of InProgressState object, used to stre state in memento
+       /**
+     * @return copy of the InProgressState object
      */
-       WorkItemState* clone();
+       WorkItemState* clone()override;
        /**
      
      * @return name of InProgressState as a string

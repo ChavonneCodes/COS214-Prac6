@@ -18,9 +18,9 @@ class FailedState: public WorkItemState{
      */
        bool makeAvailable(WorkItem* item)override;
        /**
-     * @return tcopy of FailedState, used to store state in memento
+     * @return copy of the FailedState object
      */
-       WorkItemState* clone();
+       WorkItemState* clone()override;
        /**
      
      * @return name of FailedState as a string

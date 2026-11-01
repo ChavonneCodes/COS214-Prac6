@@ -3,8 +3,7 @@
  * @brief Functionality test for the Observer pattern (EventBus, observers, WorkItem events).
  */
 // Functionality test for the OBSERVER pattern (EventBus + observers + WorkItem).
-// Build from the repo folder (one line):
-// g++ -std=c++11 -o test_observer test_observer.cpp WorkItem.cpp ActivityDefinition.cpp EventBus.cpp WorkFlowEvent.cpp AuditObserver.cpp NotificationObserver.cpp
+// Build from the repo folder: make test_observer
 #include <iostream>
 #include <vector>
 
@@ -13,6 +12,11 @@
 #include "EventBus.h"
 #include "AuditObserver.h"
 #include "NotificationObserver.h"
+#include "Participant.h"
+#include "AssignCommand.h"
+#include "StartCommand.h"
+#include "CompleteCommand.h"
+#include "makeAvailableCommand.h"
 
 static int passed = 0;
 static int failed = 0;
@@ -33,9 +37,11 @@ int main() {
     AuditObserver audit;
     NotificationObserver notifier("STATE_CHANGED");
 
-    // 1. No bus attached: setState must still work and nothing is recorded
-    item.setState("RUNNING");
-    CHECK(item.getState() == "RUNNING", "item works with no bus attached");
+    Participant dana("p1", "Dana", std::vector<std::string>(1, "proposer"), 1);
+
+    // 1. No bus attached: commands must still work and nothing is recorded
+    makeAvailableCommand(&item).execute();
+    CHECK(item.getState() == "Available", "item works with no bus attached");
     CHECK(audit.getLog().empty(), "no events recorded before the item has a bus");
 
     // 2. Attach bus + observers
@@ -46,10 +52,10 @@ int main() {
     CHECK(bus.observerCount() == 2, "duplicate attach is ignored (2 observers)");
 
     // 3. One state change reaches BOTH observers
-    item.setState("SUCCESS");
+    AssignCommand(&item, &dana).execute();
     CHECK(audit.getLog().size() == 1, "audit observer received the event");
     CHECK(notifier.getNotifications().size() == 1, "notification observer received the event");
-    CHECK(audit.getLog()[0].find("RUNNING -> SUCCESS") != std::string::npos,
+    CHECK(audit.getLog()[0].find("Available -> Assigned") != std::string::npos,
           "event payload shows old -> new state");
     CHECK(audit.getLog()[0].find("instance=Claim-1001") != std::string::npos,
           "event carries the instance id");
@@ -58,21 +64,21 @@ int main() {
     // 4. Detach: the detached observer stops hearing events
     bus.detach(&notifier);
     CHECK(bus.observerCount() == 1, "detach removes the observer");
-    item.setState("FAILED");
+    StartCommand(&item).execute();
     CHECK(audit.getLog().size() == 2, "audit still receives events after the other observer detached");
     CHECK(notifier.getNotifications().size() == 1, "detached observer receives nothing new");
 
     // 5. Filtering: a NotificationObserver only reacts to the event it watches
     NotificationObserver other("ASSIGNED");
     bus.attach(&other);
-    item.setState("IDLE");  // STATE_CHANGED, ignored by 'other'
+    CompleteCommand(&item).execute();  // STATE_CHANGED, ignored by 'other'
     CHECK(other.getNotifications().empty(), "observer ignores events it does not watch");
 
     // 6. Ordering
     std::vector<std::string> log = audit.getLog();
-    CHECK(log.size() == 3 && log[0].find("SUCCESS") != std::string::npos &&
-          log[1].find("FAILED") != std::string::npos &&
-          log[2].find("-> IDLE") != std::string::npos,
+    CHECK(log.size() == 3 && log[0].find("-> Assigned") != std::string::npos &&
+          log[1].find("-> In_Progress") != std::string::npos &&
+          log[2].find("-> Completed") != std::string::npos,
           "audit log keeps events in the order they happened");
 
     // 7. An observer may detach itself while being notified (bus iterates over a copy)
@@ -82,8 +88,10 @@ int main() {
         void update(const WorkFlowEvent&) override { ++calls; b->detach(this); }
     } selfDetaching(&bus);
     bus.attach(&selfDetaching);
-    item.setState("RUNNING");
-    item.setState("SUCCESS");
+    WorkItem second("Claim-1002", &def);
+    second.setEventBus(&bus);
+    makeAvailableCommand(&second).execute();
+    AssignCommand(&second, &dana).execute();
     CHECK(selfDetaching.calls == 1, "observer can detach itself safely during notify");
 
     audit.printLog();

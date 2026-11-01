@@ -19,10 +19,9 @@ class EscalatedState: public WorkItemState{
      */
        bool cancel(WorkItem* item) override;
        /**
-     
-     * @return copy of EscalatedState object, used to store state in memento
+     * @return copy of the EscalatedState object
      */
-       WorkItemState* clone();
+       WorkItemState* clone()override;
        /**
 
      * @return name of EscalatedState as a string

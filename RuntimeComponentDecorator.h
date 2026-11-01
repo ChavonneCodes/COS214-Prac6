@@ -60,7 +60,7 @@ public:
      * @brief Forwards a state change to the wrapped component.
      * @param newState Requested state name.
      */
-    void setState(const std::string& newState) override {
+    void setState(const std::string& newState)  {
         wrapped->setState(newState);
     }
 

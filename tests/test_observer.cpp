@@ -10,10 +10,13 @@
 #include "ActivityDefinition.h"
 #include "AssignCommand.h"
 #include "AuditObserver.h"
+#include "CompleteCommand.h"
 #include "EventBus.h"
 #include "NotificationObserver.h"
 #include "Participant.h"
+#include "StartCommand.h"
 #include "WorkItem.h"
+#include "makeAvailableCommand.h"
 
 namespace {
 
@@ -121,21 +124,21 @@ protected:
 
 TEST_F(WorkItemEventsTest, WithoutABusTheStateStillChangesAndNothingIsPublished) {
     bus.attach(&audit);  // attached to the bus, but the item has no bus
-    item.setState("Available");
+    EXPECT_TRUE(makeAvailableCommand(&item).execute());
     EXPECT_EQ(item.getState(), "Available");
     EXPECT_TRUE(audit.getLog().empty());
 }
 
 TEST_F(WorkItemEventsTest, OneChangeReachesEveryObserver) {
     connect();
-    item.setState("Available");
+    EXPECT_TRUE(makeAvailableCommand(&item).execute());
     EXPECT_EQ(audit.getLog().size(), 1u);
     EXPECT_EQ(notifier.getNotifications().size(), 1u);
 }
 
 TEST_F(WorkItemEventsTest, EventSaysWhatChangedAndForWhichInstance) {
     connect();
-    item.setState("Available");
+    EXPECT_TRUE(makeAvailableCommand(&item).execute());
     ASSERT_EQ(audit.getLog().size(), 1u);
     const std::string line = audit.getLog()[0];
     EXPECT_NE(line.find("Created -> Available"), std::string::npos);
@@ -145,9 +148,11 @@ TEST_F(WorkItemEventsTest, EventSaysWhatChangedAndForWhichInstance) {
 
 TEST_F(WorkItemEventsTest, EventsArriveInTheOrderTheyHappened) {
     connect();
-    item.setState("Available");
-    item.setState("Assigned");
-    item.setState("In_Progress");
+    std::vector<std::string> roles(1, "proposer");
+    Participant dana("p1", "Dana", roles, 1);
+    EXPECT_TRUE(makeAvailableCommand(&item).execute());
+    EXPECT_TRUE(AssignCommand(&item, &dana).execute());
+    EXPECT_TRUE(StartCommand(&item).execute());
     std::vector<std::string> log = audit.getLog();
     ASSERT_EQ(log.size(), 3u);
     EXPECT_NE(log[0].find("Created -> Available"), std::string::npos);
@@ -158,7 +163,7 @@ TEST_F(WorkItemEventsTest, EventsArriveInTheOrderTheyHappened) {
 TEST_F(WorkItemEventsTest, DetachedObserverStopsHearingWhileOthersKeepHearing) {
     connect();
     bus.detach(&notifier);
-    item.setState("Available");
+    EXPECT_TRUE(makeAvailableCommand(&item).execute());
     EXPECT_TRUE(notifier.getNotifications().empty());
     EXPECT_EQ(audit.getLog().size(), 1u);
 }
@@ -167,15 +172,15 @@ TEST_F(WorkItemEventsTest, NotificationObserverIgnoresEventsItDoesNotWatch) {
     connect();
     NotificationObserver other("SOMETHING_ELSE");
     bus.attach(&other);
-    item.setState("Available");
+    EXPECT_TRUE(makeAvailableCommand(&item).execute());
     EXPECT_TRUE(other.getNotifications().empty());
 }
 
 TEST_F(WorkItemEventsTest, InvalidOperationsPublishNothing) {
     connect();
     // A brand new item is Created: it cannot be started or completed yet.
-    EXPECT_FALSE(item.start());
-    EXPECT_FALSE(item.complete());
+    EXPECT_FALSE(StartCommand(&item).execute());
+    EXPECT_FALSE(CompleteCommand(&item).execute());
     EXPECT_EQ(item.getState(), "Created");
     EXPECT_TRUE(audit.getLog().empty());
 }
@@ -185,7 +190,7 @@ TEST_F(WorkItemEventsTest, AssigningThroughTheCommandPublishesEachStep) {
     std::vector<std::string> roles(1, "proposer");
     Participant dana("p1", "Dana", roles, 1);
 
-    item.makeAvailable();  // Created -> Available
+    EXPECT_TRUE(makeAvailableCommand(&item).execute());  // Created -> Available
     AssignCommand command(&item, &dana);
     EXPECT_TRUE(command.execute());  // Available -> Assigned
 

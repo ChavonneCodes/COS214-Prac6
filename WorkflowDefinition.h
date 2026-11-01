@@ -32,17 +32,17 @@
  */
 class WorkflowDefinition {
 private:
-    std::string definitionId;       ///< The unique identifier for the workflow.
-    std::string name;               ///< The human-readable name of the workflow.
-    int version;                    ///< The version number of this blueprint.
-    std::string chainId;            ///< (Unused) The ID of the primary approval chain.
+    std::string definitionId;       //The unique identifier for the workflow.
+    std::string name;               // The human-readable name of the workflow.
+    int version;                    //The version number of this blueprint.
+    std::string chainId;            // (Unused) The ID of the primary approval chain.
 
-    std::vector<ActivityDefinition> activities;         ///< Flat list of all activities in the workflow.
-    std::vector<RoleDefinition> roles;                  ///< Flat list of all roles used in the workflow.
-    std::vector<ApprovalChainDefinition> approvalChains;///< Flat list of all approval chains.
-    std::vector<TransitionDefinition> transitions;      ///< Flat list of all routing connections.
+    std::vector<ActivityDefinition> activities;         //Flat list of all activities in the workflow.
+    std::vector<RoleDefinition> roles;                  // Flat list of all roles used in the workflow.
+    std::vector<ApprovalChainDefinition> approvalChains;// Flat list of all approval chains.
+    std::vector<TransitionDefinition> transitions;      // Flat list of all routing connections.
 
-    WorkflowComponent* root = nullptr; ///< Root of the Composite tree (stages, activities, subprocesses). The definition owns this.
+    WorkflowComponent* root = nullptr; // Root of the Composite tree (stages, activities, subprocesses). The definition owns this.
 
 public:
     /**
@@ -59,13 +59,13 @@ public:
      */
     ~WorkflowDefinition(); 
 
-    // --- Rule of 5: Memory Management ---
+    //Rule of 5: Memory Management
     // Since this class owns a raw pointer (root), we must disable copying 
     // to prevent double-free errors, and implement move semantics to safely 
     // transfer ownership.
 
-    WorkflowDefinition(const WorkflowDefinition&) = delete;            ///< Copy constructor disabled to prevent shallow copies.
-    WorkflowDefinition& operator=(const WorkflowDefinition&) = delete; ///< Copy assignment disabled.
+    WorkflowDefinition(const WorkflowDefinition&) = delete;            //Copy constructor disabled to prevent shallow copies.
+    WorkflowDefinition& operator=(const WorkflowDefinition&) = delete; // Copy assignment disabled.
 
     /**
      * @brief Move constructor that safely transfers the root pointer.
@@ -80,7 +80,7 @@ public:
      */
     WorkflowDefinition& operator=(WorkflowDefinition&& other) noexcept;
 
-    // --- Composite Tree Management ---
+    //Composite Tree Managemen
 
     /**
      * @brief Sets the root of the Composite tree. The definition takes ownership.

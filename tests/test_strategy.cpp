@@ -10,11 +10,13 @@
 
 #include "ActivityDefinition.h"
 #include "AssignCommand.h"
+#include "CancelCommand.h"
 #include "Participant.h"
 #include "RoleBasedAssignment.h"
 #include "RuleBasedAssignment.h"
 #include "WorkItem.h"
 #include "WorkloadBasedAssignment.h"
+#include "makeAvailableCommand.h"
 
 /** Alice has the wrong role; Bob (level 1) and Carol (level 2) are team leads. */
 class AssignmentTest : public ::testing::Test {
@@ -141,7 +143,7 @@ TEST_F(AssignmentTest, WorkItemExposesTheRoleItsActivityRequires) {
 
 TEST_F(AssignmentTest, StrategyChoiceIsAssignedThroughTheCommand) {
     RoleBasedAssignment strategy;
-    item.makeAvailable();
+    ASSERT_TRUE(makeAvailableCommand(&item).execute());
 
     Participant* chosen = strategy.assign(item, everyone);
     ASSERT_EQ(chosen, &bob);
@@ -166,7 +168,7 @@ TEST_F(AssignmentTest, EveryStrategyCanFeedTheCommand) {
     for (size_t i = 0; i < strategies.size(); ++i) {
         ActivityDefinition d("step", "Step", "team_lead");
         WorkItem w("Claim-" + std::to_string(i), &d);
-        w.makeAvailable();
+        ASSERT_TRUE(makeAvailableCommand(&w).execute());
         Participant* chosen = strategies[i]->assign(w, everyone);
         ASSERT_NE(chosen, nullptr);
         AssignCommand command(&w, chosen);
@@ -184,7 +186,7 @@ TEST_F(AssignmentTest, CommandRefusesAnItemThatIsNotAvailableYet) {
 }
 
 TEST_F(AssignmentTest, CommandRefusesToAssignNobody) {
-    item.makeAvailable();
+    ASSERT_TRUE(makeAvailableCommand(&item).execute());
     AssignCommand command(&item, nullptr);
     EXPECT_FALSE(command.execute());
     EXPECT_EQ(item.getState(), "Available");
@@ -192,7 +194,7 @@ TEST_F(AssignmentTest, CommandRefusesToAssignNobody) {
 }
 
 TEST_F(AssignmentTest, AnAlreadyAssignedItemKeepsItsParticipant) {
-    item.makeAvailable();
+    ASSERT_TRUE(makeAvailableCommand(&item).execute());
     AssignCommand first(&item, &bob);
     ASSERT_TRUE(first.execute());
 
@@ -203,7 +205,7 @@ TEST_F(AssignmentTest, AnAlreadyAssignedItemKeepsItsParticipant) {
 }
 
 TEST_F(AssignmentTest, ACancelledItemRefusesAssignmentAndStaysUntouched) {
-    item.setState("Cancelled");
+    ASSERT_TRUE(CancelCommand(&item).execute());
     AssignCommand command(&item, &bob);
     EXPECT_FALSE(command.execute());
     EXPECT_EQ(item.getState(), "Cancelled");
@@ -212,7 +214,7 @@ TEST_F(AssignmentTest, ACancelledItemRefusesAssignmentAndStaysUntouched) {
 }
 
 TEST_F(AssignmentTest, UndoingTheCommandPutsTheItemBackToAvailable) {
-    item.makeAvailable();
+    ASSERT_TRUE(makeAvailableCommand(&item).execute());
     AssignCommand command(&item, &bob);
     ASSERT_TRUE(command.execute());
     command.undo();
@@ -232,7 +234,7 @@ TEST_F(AssignmentTest, OpenItemCountNeverGoesBelowZero) {
 // so WorkloadBasedAssignment would never see anyone as busier. Once the count is updated
 // on the command path, remove the DISABLED_ prefix.
 TEST_F(AssignmentTest, DISABLED_AssigningThroughTheCommandRaisesTheOpenItemCount) {
-    item.makeAvailable();
+    ASSERT_TRUE(makeAvailableCommand(&item).execute());
     AssignCommand command(&item, &bob);
     ASSERT_TRUE(command.execute());
     EXPECT_EQ(bob.getOpenItems(), 1);
