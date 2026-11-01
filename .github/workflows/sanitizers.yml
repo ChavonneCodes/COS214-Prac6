@@ -1,0 +1,27 @@
+# Automated quality check: run the unit tests under AddressSanitizer + UndefinedBehaviorSanitizer.
+# Reproduce locally with: bash scripts/sanitize.sh
+name: Sanitizers
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: sanitizers-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  GTEST_PREFIX: /opt/gtest
+
+jobs:
+  sanitizers:
+    name: ASan + UBSan
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-gtest
+      - run: bash scripts/sanitize.sh
