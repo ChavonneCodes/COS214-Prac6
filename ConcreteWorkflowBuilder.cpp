@@ -70,6 +70,10 @@ WorkflowDefinition ConcreteWorkflowBuilder::build() {
     if (definitionId.empty()) throw std::runtime_error("definitionId is required");
     if (name.empty()) throw std::runtime_error("name is required");
 
+    if (activities.empty() && !hasRoot) {
+        throw std::runtime_error("at least one activity or a root tree is required");
+    }
+
     WorkflowDefinition def(definitionId, name, version);
     
     // Add flat data
