@@ -123,6 +123,15 @@ public:
     void undoLast();
 
     /**
+     * @brief Undoes the most recent command of one instance.
+     *
+     * Commands of other instances stay in the history, so running cases stay independent.
+     * @param instanceId Id of the instance.
+     * @return true if a command was undone.
+     */
+    bool undoLast(const std::string& instanceId);
+
+    /**
      * @brief Returns the commands executed on an instance.
      * @param instanceId Id of the instance.
      * @return The executed commands, oldest first.
