@@ -64,6 +64,7 @@ class WorkItemMemento{
     private:
         friend class WorkItem;
         friend class WorkItemMementoTest;
+        friend class WorkItemMementoTestAccess;
 
         //getters
         std::string getActivityId() const;
