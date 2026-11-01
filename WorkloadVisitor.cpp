@@ -3,6 +3,8 @@
  * @brief Implementation of WorkloadVisitor (Visitor pattern: ConcreteVisitor).
  */
 #include "WorkloadVisitor.h"
+#include "SubProcessInstance.h"
+#include "WorkflowInstance.h"
 #include "WorkItem.h"
 
 void WorkloadVisitor::visitWorkItem(WorkItem& item) {
@@ -22,7 +24,9 @@ void WorkloadVisitor::visitWorkItem(WorkItem& item) {
 
 void WorkloadVisitor::visitStage(StageInstance& /*stage*/) {}
 
-void WorkloadVisitor::visitSubProcess(SubProcessInstance& /*subProcess*/) {}
+void WorkloadVisitor::visitSubProcess(SubProcessInstance& subProcess) {
+    if (WorkflowInstance* child = subProcess.getChildInstance()) child->getRoot()->accept(*this);
+}
 
 std::vector<std::string> WorkloadVisitor::getParticipants() const { return participants; }
 

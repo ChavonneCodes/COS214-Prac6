@@ -80,12 +80,8 @@ public:
      * @return The state string (e.g., "RUNNING").
      */
     std::string getState() const;
-
-    /**
-     * @brief Sets the overall state of the workflow instance.
-     * @param newState The new state string.
-     */
     void setState(const std::string& newState);
+
 
     /**
      * @brief Retrieves the root of the runtime Composite tree.

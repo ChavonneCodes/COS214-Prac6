@@ -14,7 +14,7 @@ WorkItem::WorkItem(const std::string& instanceId, ActivityDefinition* def)
     : instanceId(instanceId), definition(def), assignedParticipant(nullptr), 
       currentState(new CreatedState()), eventBus(nullptr) {} // No more string state
 
-bool WorkItem::assignTo(Participant* participant) {
+/*bool WorkItem::assignTo(Participant* participant) {
     if (!participant) return false;
     if (assignedParticipant) assignedParticipant->closeOpenItem(); // reassignment
     
@@ -26,15 +26,30 @@ bool WorkItem::assignTo(Participant* participant) {
         currentState->makeAvailable(this); // Transitions to AvailableState
     }
     return currentState->assign(this, participant); // Transitions to AssignedState
+}*/
+void WorkItem::bindParticipant(Participant* p) {
+    if (assignedParticipant) assignedParticipant->closeOpenItem();  
+    assignedParticipant = p;                                        
+    p->addOpenItem();                                               
 }
-
+void WorkItem::releaseParticipant() {
+    if (assignedParticipant) {
+        assignedParticipant->closeOpenItem();
+        assignedParticipant = nullptr;
+    }
+}
+void WorkItem::lowerWorkLoad(){
+    if (assignedParticipant) {
+        assignedParticipant->closeOpenItem();
+}}
 
 WorkItemMemento WorkItem::createMemento(){
     return WorkItemMemento(
                             definition->getId(),
                             getId(),
                             data,
-                            currentState
+                            currentState,
+                            assignedParticipant
                         );
 }
 
@@ -42,7 +57,8 @@ void WorkItem::restoreMemento(WorkItemMemento* memento){
     if(memento == nullptr){
         return;
     }
-
+    if (memento->getStateKind() == nullptr) {
+        return; }
     //make sure the snapshot belongs to this work item
     if(memento->getWorkItemId() != getId()){
         return;
@@ -51,7 +67,10 @@ void WorkItem::restoreMemento(WorkItemMemento* memento){
     if(memento->getActivityId() != definition->getId()){
         return;
     }
-
+     releaseParticipant();
+    if (memento->getCurrentParticipant()) {
+        bindParticipant(memento->getCurrentParticipant());
+    }
     WorkItemState* restoredState = memento->getStateKind()->clone();
 
     data = memento->getDataSnapshot();
@@ -62,17 +81,6 @@ void WorkItem::restoreMemento(WorkItemMemento* memento){
 
 
 std::string WorkItem::getState() const { return currentState->getName(); }
-void WorkItem::setState(const std::string& newState) {
-    if (newState == "Created" || newState == "CREATED" || newState == "IDLE") changeState(new CreatedState());
-    else if (newState == "Available" || newState == "AVAILABLE") changeState(new AvailableState());
-    else if (newState == "Assigned" || newState == "ASSIGNED") changeState(new AssignedState());
-    else if (newState == "In_Progress" || newState == "RUNNING") changeState(new InProgressState());
-    else if (newState == "Completed" || newState == "SUCCESS") changeState(new CompletedState());
-    else if (newState == "Failed" || newState == "FAILED") changeState(new FailedState());
-    else if (newState == "Rejected" || newState == "REJECTED") changeState(new RejectedState());
-    else if (newState == "Cancelled" || newState == "CANCELLED") changeState(new CancelledState());
-    else if (newState == "Escalated" || newState == "ESCALATED") changeState(new EscalatedState());
-}
 
 void WorkItem::changeState(WorkItemState* newState) {
     if (newState == nullptr) return;
@@ -82,14 +90,14 @@ void WorkItem::changeState(WorkItemState* newState) {
     std::string newStateName = currentState->getName();
     
     // Publish the event here so we don't need the string member
-    publish("STATE_CHANGED", oldStateName + " -> " + newStateName);
+    if (oldStateName != newStateName) publish("STATE_CHANGED", oldStateName + " -> " + newStateName);
 }
 
 WorkItemState* WorkItem::getCurrentState() { 
     return currentState; 
 }
 
-// ---- Delegation to State Objects ----
+//  Delegation to State Objects
 
 bool WorkItem::assign(Participant* p) { return currentState->assign(this, p); }
 bool WorkItem::start() { return currentState->start(this); }
@@ -97,12 +105,11 @@ bool WorkItem::complete() { return currentState->complete(this); }
 bool WorkItem::reject() { return currentState->reject(this); }
 bool WorkItem::cancel() { return currentState->cancel(this); }
 bool WorkItem::escalated() {
-    assignedParticipant = nullptr;
     return currentState->escalated(this); }
 bool WorkItem::fail() { return currentState->fail(this); }
 bool WorkItem::makeAvailable() { return currentState->makeAvailable(this); }
 
-// ---- Standard Methods ----
+// Standard Methods
 
 std::string WorkItem::getRequiredRoleId() const { return definition->getRequiredRoleId(); }
 Participant* WorkItem::getAssignedParticipant() const { return assignedParticipant; }

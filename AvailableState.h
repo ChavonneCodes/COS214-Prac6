@@ -26,9 +26,10 @@ class AvailableState: public WorkItemState{
      */
         bool escalated(WorkItem* item)override;
         /**
-     * @return copy of AvailableState object, used to store state in memento (WorkItemMemento)
+     * @return copy of the AvailableState object
      */
-       WorkItemState* clone();
+       WorkItemState* clone()override;
+       
        /**
      * @return name of AvailableState as a string
      */

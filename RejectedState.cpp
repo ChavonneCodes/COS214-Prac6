@@ -3,11 +3,12 @@
 #include "AvailableState.h"
 #include "WorkItem.h"
 bool RejectedState::cancel(WorkItem* item) {
-    item->changeState(new CancelledState());
+    reduceParticipantCount(item);
+    transition(item, new CancelledState());
     return true;
 }
        bool RejectedState::makeAvailable(WorkItem* item){
-        item->changeState(new AvailableState());
+        transition(item, new AvailableState());
         return true;
        }
        WorkItemState* RejectedState::clone(){

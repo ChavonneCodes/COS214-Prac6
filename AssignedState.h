@@ -32,7 +32,8 @@ class AssignedState: public WorkItemState{
         /**
      * @return copy of the AssignedState object
      */
-       WorkItemState* clone();
+       WorkItemState* clone()override;
+       
        /**
      
      * @return returns name of state as a string
