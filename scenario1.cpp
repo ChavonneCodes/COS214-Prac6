@@ -30,6 +30,7 @@
 #include "StartCommand.h"
 #include "CompleteCommand.h"
 #include "EscalateCommand.h"
+#include "makeAvailableCommand.h"
 #include "ProgressReportVisitor.h"
 #include "WorkloadVisitor.h"
 #include "NotificationObserver.h"
@@ -227,10 +228,11 @@ int main() {
             require(actor != nullptr, "Assignment strategy finds an eligible participant");
             guard.setActor(actor);
             std::cout << "\n  NEXT: " << item.getName() << " -- " << actor->getName() << '\n';
-            // This client's failed verification reopens tasks explicitly. The engine
-            // does not automatically reset completed tasks on a routing loop.
-            if (item.getState() == "Completed") guard.setState("Created");
-            require(item.makeAvailable(), "Reached task becomes Available");
+            // This client's failed verification reopens tasks by undoing their commands.
+            // The engine does not automatically reset completed tasks on a routing loop.
+            while (item.getState() != "Created") engine.undoLast();
+            require(submit(engine, guard, item, std::unique_ptr<WorkflowAction>(
+                new makeAvailableCommand(&item))), "Reached task becomes Available");
             require(submit(engine, guard, item, std::unique_ptr<WorkflowAction>(
                 new AssignCommand(&item, actor))), "Assignment command succeeds");
             if (currentId == "diagnose") {
@@ -294,12 +296,11 @@ int main() {
         require(completed == std::vector<std::string>({"diagnose", "repair", "verify", "repair", "verify", "close"}),
                 "Failed verification loops back to repair; passed verification closes the case");
         require(progress.isComplete(), "All four task objects are completed");
-        require(engine.getHistory(instanceId).size() == 18, "History retains eighteen successful lifecycle commands");
-        // Snapshot restoration also publishes events, including the refused
-        // completion, command undo and explicit memento restoration above.
-        require(audit.getLog().size() == 30 && notifications.getNotifications().size() == 30,
-                "Both observers received all thirty task state notifications");
-        require(engine.getAuditTrail(instanceId).size() == 30, "Facade retrieves this case's audit trail");
+        require(engine.getHistory(instanceId).size() == 16, "History retains sixteen successful lifecycle commands");
+        // Undoing a command also publishes an event, so the reopened tasks add to the audit log.
+        require(audit.getLog().size() == 34 && notifications.getNotifications().size() == 34,
+                "Both observers received all thirty-four task state notifications");
+        require(engine.getAuditTrail(instanceId).size() == 34, "Facade retrieves this case's audit trail");
         stageGuard->setState("COMPLETED");
         instance.setState("COMPLETED");
         instance.print();

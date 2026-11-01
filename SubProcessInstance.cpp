@@ -7,6 +7,7 @@ SubProcessInstance::SubProcessInstance(const std::string& instanceId, SubProcess
 
 std::string SubProcessInstance::getId() const { return definition->getId(); }
 std::string SubProcessInstance::getState() const { return state; }
+void SubProcessInstance::setState(const std::string& newState) { state = newState; }
 
 void SubProcessInstance::print(int indentLevel) const {
     std::string indent(indentLevel * 2, ' ');

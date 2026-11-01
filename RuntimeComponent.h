@@ -7,6 +7,7 @@
 #define RUNTIME_COMPONENT_H
 
 #include "Iterator.h"
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -41,6 +42,9 @@ public:
 
     /** @brief Scheduling priority; larger values come first. Undecorated nodes use 0. */
     virtual int getPriority() const { return 0; }
+
+    /** @brief Sets a plain status on a container node. A WorkItem refuses: it only changes through commands. */
+    virtual void setState(const std::string&) { throw std::logic_error("Use a command to change a work item"); }
 
 
     /**

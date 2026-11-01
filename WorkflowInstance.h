@@ -80,6 +80,7 @@ public:
      * @return The state string (e.g., "RUNNING").
      */
     std::string getState() const;
+    void setState(const std::string& newState);
 
 
     /**

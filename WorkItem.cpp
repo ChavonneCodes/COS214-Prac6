@@ -80,18 +80,7 @@ void WorkItem::restoreMemento(WorkItemMemento* memento){
 }
 
 
-/*std::string WorkItem::getState() const { return currentState->getName(); }
-void WorkItem::setState(const std::string& newState) {
-    if (newState == "Created" || newState == "CREATED" || newState == "IDLE") changeState(new CreatedState());
-    else if (newState == "Available" || newState == "AVAILABLE") changeState(new AvailableState());
-    else if (newState == "Assigned" || newState == "ASSIGNED") changeState(new AssignedState());
-    else if (newState == "In_Progress" || newState == "RUNNING") changeState(new InProgressState());
-    else if (newState == "Completed" || newState == "SUCCESS") changeState(new CompletedState());
-    else if (newState == "Failed" || newState == "FAILED") changeState(new FailedState());
-    else if (newState == "Rejected" || newState == "REJECTED") changeState(new RejectedState());
-    else if (newState == "Cancelled" || newState == "CANCELLED") changeState(new CancelledState());
-    else if (newState == "Escalated" || newState == "ESCALATED") changeState(new EscalatedState());
-}*/
+std::string WorkItem::getState() const { return currentState->getName(); }
 
 void WorkItem::changeState(WorkItemState* newState) {
     if (newState == nullptr) return;
@@ -101,7 +90,7 @@ void WorkItem::changeState(WorkItemState* newState) {
     std::string newStateName = currentState->getName();
     
     // Publish the event here so we don't need the string member
-    publish("STATE_CHANGED", oldStateName + " -> " + newStateName);
+    if (oldStateName != newStateName) publish("STATE_CHANGED", oldStateName + " -> " + newStateName);
 }
 
 WorkItemState* WorkItem::getCurrentState() { 

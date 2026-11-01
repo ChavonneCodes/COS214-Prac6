@@ -14,6 +14,7 @@ std::string WorkflowInstance::getId() const { return instanceId; }
 std::string WorkflowInstance::getDefinitionId() const { return definitionId; }
 int WorkflowInstance::getDefinitionVersion() const { return definitionVersion; }
 std::string WorkflowInstance::getState() const { return state; }
+void WorkflowInstance::setState(const std::string& newState) { state = newState; }
 RuntimeComponent* WorkflowInstance::getRoot() const { return root; }
 Data& WorkflowInstance::getData() { return data; }
 

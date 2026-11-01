@@ -20,6 +20,7 @@
 #include "RoleBasedAssignment.h"
 #include "WorkloadBasedAssignment.h"
 #include "CompleteCommand.h"
+#include "makeAvailableCommand.h"
 
 // 1. Engine + HistoryManager (Command + Caretaker)
 TEST(IntegrationComponents, EngineAndHistoryUndo) {
@@ -31,7 +32,7 @@ TEST(IntegrationComponents, EngineAndHistoryUndo) {
     HistoryManager history;
     WorkflowEngine engine(nullptr, &bus, &history, nullptr);
 
-    item.makeAvailable();
+    makeAvailableCommand(&item).execute();
     engine.submit(new AssignCommand(&item, &alice));
     engine.submit(new StartCommand(&item));
     engine.submit(new CompleteCommand(&item));
@@ -57,7 +58,7 @@ TEST(IntegrationComponents, EngineAndObserverEventBus) {
 
     WorkflowEngine engine(nullptr, &bus, nullptr, &audit);
 
-    item.makeAvailable();
+    makeAvailableCommand(&item).execute();
     item.setEventBus(&bus); 
     engine.submit(new AssignCommand(&item, &alice));
     engine.submit(new StartCommand(&item));
@@ -77,7 +78,8 @@ TEST(IntegrationComponents, EngineAndObserverEventBus) {
 }
 
 //  3. InstanceFactory + Strategy (Factory + Strategy)
-TEST(IntegrationComponents, FactoryAppliesAssignmentStrategy) {
+// Assignment is a state change, so the engine does it with commands after the factory has built the tree.
+TEST(IntegrationComponents, FactoryLeavesAssignmentToTheEngine) {
     // 1. Build a Definition Tree with two activities
     StageDefinition root("root", "Root Stage");
     root.addChild(new ActivityDefinition("taskA", "Task A", "roleA"));
@@ -91,7 +93,7 @@ TEST(IntegrationComponents, FactoryAppliesAssignmentStrategy) {
     // 3. Setup the Strategy
     RoleBasedAssignment strategy;
 
-    // 4. Factory builds the tree and assigns
+    // 4. Factory builds the tree
     std::unique_ptr<RuntimeComponent> tree(
         InstanceFactory::instantiateTree("inst-1", &root, &strategy, candidates)
     );
@@ -101,13 +103,13 @@ TEST(IntegrationComponents, FactoryAppliesAssignmentStrategy) {
     ASSERT_NE(stage, nullptr);
     ASSERT_EQ(stage->getChildren().size(), 2);
 
-    // 5. Verify assignments
+    // 5. Nothing is assigned yet
     auto* taskA = dynamic_cast<WorkItem*>(stage->getChildren()[0]);
     auto* taskB = dynamic_cast<WorkItem*>(stage->getChildren()[1]);
 
     ASSERT_NE(taskA, nullptr);
     ASSERT_NE(taskB, nullptr);
 
-    EXPECT_EQ(taskA->getAssignedParticipant(), &p1);
-    EXPECT_EQ(taskB->getAssignedParticipant(), &p2);
+    EXPECT_EQ(taskA->getAssignedParticipant(), nullptr);
+    EXPECT_EQ(taskB->getAssignedParticipant(), nullptr);
 }

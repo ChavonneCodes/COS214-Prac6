@@ -47,6 +47,7 @@
 #include "AssignCommand.h"
 #include "StartCommand.h"
 #include "CompleteCommand.h"
+#include "makeAvailableCommand.h"
 #include "RejectCommand.h"
 #include "ProgressReportVisitor.h"
 #include "WorkloadVisitor.h"
@@ -111,7 +112,7 @@ WorkflowBlueprint makeProposalBlueprint() {
  * Handles whatever initial state the factory put the item in.
  */
 void driveToCompleted(WorkflowEngine& engine, WorkItem* item, Participant* actor) {
-    if (item->getState() == "Created")     item->makeAvailable();
+    if (item->getState() == "Created")     makeAvailableCommand(item).execute();
     if (item->getState() == "Available")   engine.submit(new AssignCommand(item, actor));
     if (item->getState() == "Assigned")    engine.submit(new StartCommand(item));
     if (item->getState() == "In_Progress") engine.submit(new CompleteCommand(item));
@@ -223,7 +224,7 @@ TEST(ProposalReviewE2E, FullPipelineWithRejectionRecoveryAndVisitors) {
     EXPECT_EQ(review->getState(), "Rejected") << "State must not change after refused command";
 
     // Proposal is re-offered (Deon clarifies scope)
-    review->makeAvailable();
+    makeAvailableCommand(review).execute();
     if (review->getState() == "Available") {
         driveToCompleted(engine, review, &lerato);
     }

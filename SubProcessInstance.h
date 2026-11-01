@@ -55,6 +55,7 @@ public:
      * @return The state as a string (e.g., "IDLE").
      */
     std::string getState() const override;
+    void setState(const std::string& newState) override;
 
 
     /**

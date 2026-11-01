@@ -160,12 +160,6 @@ public:
     std::string getState() const override;
 
     /**
-     * @brief Sets the state string directly.
-     * @param newState The new state string.
-     */
-    void setState(const std::string& newState);
-
-    /**
      * @brief Prints the work item details to standard output.
      * @param indentLevel The indentation level for hierarchical display.
      */
