@@ -21,8 +21,18 @@ private:
     const Participant* actor;
 
     void requireAccess() const {
-        if (!canModify()) {
-            throw std::runtime_error("Access denied: role required: " + requiredRoleId);
+        if (!actor) {
+            throw std::runtime_error("no participant assigned or selected; required role: " + requiredRoleId);
+        }
+        if (!actor->hasRole(requiredRoleId)) {
+            std::string roles;
+            for (const auto& role : actor->getRoleIds()) {
+                if (!roles.empty()) roles += ", ";
+                roles += role;
+            }
+            if (roles.empty()) roles = "none";
+            throw std::runtime_error("unauthorised participant " + actor->getName() +
+                " (roles: " + roles + "); required role: " + requiredRoleId);
         }
     }
 
@@ -35,13 +45,26 @@ public:
         if (requiredRoleId.empty()) {
             throw std::invalid_argument("Security role must not be empty");
         }
+        wrapped->setActor(actor);
     }
 
     /** @brief Sets the acting participant from the trusted calling context. */
-    void setActor(const Participant* participant) { actor = participant; }
+    void setActor(const Participant* participant) override {
+        actor = participant;
+        wrapped->setActor(participant);
+    }
 
     bool canModify() const {
         return actor && actor->hasRole(requiredRoleId);
+    }
+
+    std::string getName() const override {
+        return wrapped->getName() + " [requires role: " + requiredRoleId + "]";
+    }
+
+    void checkAccess() const override {
+        requireAccess();
+        wrapped->checkAccess();
     }
 
     /** @throws std::runtime_error Before changing state if access is denied. */

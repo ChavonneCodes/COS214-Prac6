@@ -9,8 +9,10 @@
 #include "Iterator.h"
 #include <string>
 #include <vector>
+#include <functional>
 
 class RuntimeVisitor;
+class Participant;
 
 /**
  * @class RuntimeComponent
@@ -32,6 +34,21 @@ public:
      * @return The component ID.
      */
     virtual std::string getId() const = 0;
+
+    /** Display name; decorators append their requirements without changing IDs. */
+    virtual std::string getName() const { return getId(); }
+
+    /** Trusted actor context; decorators forward it through the whole stack. */
+    virtual void setActor(const Participant*) {}
+
+    /** Check access before invoking a command that would otherwise bypass wrappers. */
+    virtual void checkAccess() const {}
+
+    /** The caller supplies an operation on this component, such as a WorkItem command. */
+    virtual bool execute(const std::function<bool()>& operation) {
+        checkAccess();
+        return operation();
+    }
 
     /**
      * @brief Gets the current execution state of the component.

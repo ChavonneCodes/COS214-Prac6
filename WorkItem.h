@@ -77,11 +77,6 @@ public:
      * @return A memento representing the current snapshot.
      */
     WorkItemMemento createMemento();
-
-    /**
-     * @brief Retrieves the current ID of the work item as a string.
-     * @return The current ID string.
-     */
     std::string getId() const override;
 
     /**
@@ -104,7 +99,7 @@ public:
 
     /**
      * @brief Sets the assigned participant directly without triggering state changes or events.
-     * @param p Pointer to the participant.
+     * @param p Pointer to the participant, or nullptr to clear the assignment.
      */
     void setParticipant(Participant* p);
 
@@ -192,7 +187,7 @@ public:
      * @brief Returns the display name of the activity this item performs.
      * @return The activity name.
      */
-    std::string getName() const;
+    std::string getName() const override;
 
     /**
      * @brief Calls the visitor's visitWorkItem() for this item (Visitor pattern).

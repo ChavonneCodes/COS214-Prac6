@@ -44,17 +44,17 @@ void WorkItem::restoreMemento(WorkItemMemento* memento){
     }
 
     //make sure the snapshot belongs to this work item
-    if(memento->getWorkItemId() != getId()){
+    if(memento->workItemId != getId()){
         return;
     }
 
-    if(memento->getActivityId() != definition->getId()){
+    if(memento->activityId != definition->getId()){
         return;
     }
 
-    WorkItemState* restoredState = memento->getStateKind()->clone();
+    WorkItemState* restoredState = memento->state->clone();
 
-    data = memento->getDataSnapshot();
+    data = memento->dataSnapshot;
 
     //restore the saved state
     changeState(restoredState);
@@ -96,9 +96,7 @@ bool WorkItem::start() { return currentState->start(this); }
 bool WorkItem::complete() { return currentState->complete(this); }
 bool WorkItem::reject() { return currentState->reject(this); }
 bool WorkItem::cancel() { return currentState->cancel(this); }
-bool WorkItem::escalated() {
-    assignedParticipant = nullptr;
-    return currentState->escalated(this); }
+bool WorkItem::escalated() { return currentState->escalated(this); }
 bool WorkItem::fail() { return currentState->fail(this); }
 bool WorkItem::makeAvailable() { return currentState->makeAvailable(this); }
 
@@ -128,7 +126,6 @@ void WorkItem::print(int indentLevel) const {
 }
 
 void WorkItem::setParticipant(Participant* p){
-    if (p == nullptr) return;
     assignedParticipant = p;
 }
 

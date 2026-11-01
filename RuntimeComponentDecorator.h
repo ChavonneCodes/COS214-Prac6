@@ -43,6 +43,12 @@ public:
         return wrapped->getId();
     }
 
+    std::string getName() const override { return wrapped->getName(); }
+
+    void setActor(const Participant* actor) override { wrapped->setActor(actor); }
+
+    void checkAccess() const override { wrapped->checkAccess(); }
+
     /**
      * @brief Returns the wrapped component's current state.
      * @return The state reported by the wrapped component.
@@ -61,6 +67,7 @@ public:
      * @param newState Requested state name.
      */
     void setState(const std::string& newState) override {
+        checkAccess();
         wrapped->setState(newState);
     }
 
@@ -79,6 +86,7 @@ public:
      * Wrapping a leaf does not give it support for children.
      */
     void addChild(RuntimeComponent* child) override {
+        checkAccess();
         wrapped->addChild(child);
     }
 

@@ -6,6 +6,11 @@
 #include "StageInstance.h"
 #include "Participant.h"
 #include "SecurityRuntimeDecorator.h"
+<<<<<<< HEAD
+#include "PasswordRuntimeDecorator.h"
+#include "DependencyRuntimeDecorator.h"
+=======
+>>>>>>> 66ddb2ab7c5301769e2aac6233190d45b7b28d31
 #include "AllowedStatesRuntimeDecorator.h"
 #include "LoggingRuntimeDecorator.h"
 #include "LabelledRuntimeDecorator.h"
@@ -158,6 +163,124 @@ void testStackedDecorators() {
           "An authorized, valid request updates the stage and is logged");
 }
 
+<<<<<<< HEAD
+void testPasswordAndNames() {
+    StageDefinition definition("protected", "Protected stage");
+    Participant admin("admin", "Admin", {"administrator"});
+    Participant otherAdmin("other", "Other admin", {"administrator"});
+    Participant guest("guest", "Guest", {"guest"});
+    auto* password = new PasswordRuntimeDecorator(new StageInstance("case", &definition), "demo-secret");
+    SecurityRuntimeDecorator stage(password, "administrator", &admin);
+    RuntimeComponent& component = stage;
+    check(component.getId() == "protected" && component.getName() ==
+          "Protected stage [requires access key] [requires role: administrator]",
+          "Polymorphic names compose requirements while IDs remain stable");
+    password->setActor(&admin);
+    bool ran = false, denied = false;
+    try { component.execute([&]() { ran = true; return true; }); }
+    catch (const std::runtime_error&) { denied = true; }
+    check(denied && !ran, "Locked decorator refuses commands before executing them");
+    check(!password->enterKey("wrong"), "Wrong key is refused");
+    denied = false;
+    try { component.setState("RUNNING"); }
+    catch (const std::runtime_error&) { denied = true; }
+    check(denied && component.getState() == "IDLE", "Wrong key leaves state unchanged");
+    check(password->enterKey("demo-secret"), "Correct key unlocks the current participant");
+    check(component.execute([&]() { ran = true; return true; }) && ran,
+          "Both requirements allow command execution");
+    component.setState("RUNNING");
+    check(component.getState() == "RUNNING", "Both requirements allow state changes");
+    stage.setActor(&guest);
+    denied = false;
+    try { component.setState("COMPLETED"); }
+    catch (const std::runtime_error&) { denied = true; }
+    check(denied && component.getState() == "RUNNING", "A key does not grant the required role");
+    password->setActor(&otherAdmin);
+    check(!password->canModify(), "Changing participants revokes the key grant");
+    password->enterKey("demo-secret");
+    check(!password->enterKey("wrong") && !password->canModify(), "Wrong key revokes an earlier grant");
+    password->enterKey("demo-secret");
+    password->lock();
+    denied = false;
+    std::unique_ptr<RuntimeComponent> child(new StageInstance("case", &definition));
+    try { password->addChild(child.get()); }
+    catch (const std::runtime_error&) { denied = true; }
+    check(denied && password->getChildren().empty(), "Locked insertion leaves ownership with the caller");
+    check(!admin.hasRole("demo-secret") && component.getName().find("demo-secret") == std::string::npos,
+          "Keys are neither roles nor part of the display name");
+
+    auto* security = new SecurityRuntimeDecorator(new StageInstance("case", &definition), "administrator", &guest);
+    PasswordRuntimeDecorator reversed(security, "another-secret");
+    reversed.setActor(&guest);
+    reversed.enterKey("another-secret");
+    denied = false;
+    try { reversed.execute([]() { return true; }); }
+    catch (const std::runtime_error&) { denied = true; }
+    check(denied, "Checks compose with the password decorator outside the role decorator");
+    reversed.setActor(&admin);
+    check(!reversed.canModify(), "Actor changes propagate through the full decorator stack");
+    reversed.enterKey("another-secret");
+    check(reversed.execute([]() { return true; }), "Reversed stack succeeds when both checks pass");
+
+    bool invalid = false;
+    try { PasswordRuntimeDecorator empty(new StageInstance("case", &definition), ""); }
+    catch (const std::invalid_argument&) { invalid = true; }
+    check(invalid, "Empty access keys are rejected");
+}
+
+void testLiveDependencies() {
+    StageDefinition definition("restore", "Restore service");
+    Participant admin("admin", "Admin", {"administrator"});
+    Participant guest("guest", "Guest", {"guest"});
+    bool prerequisiteComplete = false;
+    auto* password = new PasswordRuntimeDecorator(new StageInstance("case", &definition),
+                                                   "hidden-key", "recovery key");
+    DependencyRuntimeDecorator component(new SecurityRuntimeDecorator(password, "administrator"),
+        "complete Backup", [&]() { return prerequisiteComplete ? "" : "complete Backup first; its state is Created"; });
+    component.setActor(&guest);
+    bool ran = false;
+    std::string reason;
+    try { component.execute([&]() { ran = true; return true; }); }
+    catch (const std::runtime_error& error) { reason = error.what(); }
+    check(!ran && reason.find("Backup") != std::string::npos,
+          "Dependency failure names the actual prerequisite before running a command");
+    prerequisiteComplete = true;
+    reason.clear();
+    try { component.execute([&]() { ran = true; return true; }); }
+    catch (const std::runtime_error& error) { reason = error.what(); }
+    check(!ran && reason.find("roles: guest") != std::string::npos &&
+          reason.find("required role: administrator") != std::string::npos,
+          "A wrong role is explained by the security decorator");
+    component.setActor(&admin);
+    reason.clear();
+    try { component.execute([&]() { ran = true; return true; }); }
+    catch (const std::runtime_error& error) { reason = error.what(); }
+    check(!ran && reason.find("missing access key for Admin: recovery key") != std::string::npos,
+          "The password decorator identifies the participant and missing named key");
+    password->enterKey("hidden-key");
+    check(component.execute([&]() { ran = true; return true; }) && ran,
+          "Live dependency, role and password checks all permit the command");
+    component.setState("RUNNING");
+    prerequisiteComplete = false;
+    bool denied = false;
+    try { component.setState("COMPLETED"); }
+    catch (const std::runtime_error&) { denied = true; }
+    check(denied && component.getState() == "RUNNING",
+          "Changing a prerequisite revokes access without rebuilding the decorators");
+    check(component.getName().find("dependencies: complete Backup") != std::string::npos &&
+          component.getName().find("hidden-key") == std::string::npos,
+          "Names show the dependency and key requirement without revealing the secret");
+    prerequisiteComplete = true;
+    component.setActor(nullptr);
+    reason.clear();
+    try { component.execute([]() { return true; }); }
+    catch (const std::runtime_error& error) { reason = error.what(); }
+    check(reason.find("no participant assigned or selected") != std::string::npos,
+          "Missing participants receive an explicit explanation");
+}
+
+=======
+>>>>>>> 66ddb2ab7c5301769e2aac6233190d45b7b28d31
 void testNullComponent() {
     std::cout << "\n6. CONSTRUCTION: a decorator needs a component\n";
     bool rejected = false;
@@ -175,6 +298,11 @@ int main() {
         testLabel();
         testStackedDecorators();
         testNullComponent();
+<<<<<<< HEAD
+        testPasswordAndNames();
+        testLiveDependencies();
+=======
+>>>>>>> 66ddb2ab7c5301769e2aac6233190d45b7b28d31
     } catch (const std::exception& error) {
         check(false, std::string("Unexpected exception: ") + error.what());
     }

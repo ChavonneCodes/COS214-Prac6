@@ -4,3 +4,6 @@
 Makefile
 .gitignore
 *.swp
+build/
+tests/
+docs/

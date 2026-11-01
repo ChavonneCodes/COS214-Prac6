@@ -61,6 +61,9 @@ public:
      */
     bool hasRole(const std::string& roleId) const;
 
+    /** @brief Role IDs for display; callers cannot change the stored roles. */
+    const std::vector<std::string>& getRoleIds() const { return roleIds; }
+
     /**
 
      * @brief Returns how many work items are currently assigned.

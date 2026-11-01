@@ -32,6 +32,15 @@ public:
                                   const std::set<std::string>& states)
         : RuntimeComponentDecorator(component), allowedStates(states) {}
 
+    std::string getName() const override {
+        std::string names;
+        for (const auto& state : allowedStates) {
+            if (!names.empty()) names += ", ";
+            names += state;
+        }
+        return wrapped->getName() + " [allowed states: " + names + "]";
+    }
+
     /**
      * @brief Validates the requested name before forwarding the state change.
      * @param newState Requested state name, compared exactly against the allowed set.

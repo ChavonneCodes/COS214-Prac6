@@ -52,7 +52,7 @@ TEST_SRCS = $(wildcard tests/*.cpp)
 # ── Exclude files that have their own main() ──────────────
 # These are the executables you also build — main.cpp, BuilderComposite.cpp,
 # Scenario1.cpp, test_*.cpp, etc. We cannot link two mains.
-EXCLUDE_SRCS = $(shell grep -l "int main" *.cpp 2>/dev/null)
+EXCLUDE_SRCS = main.cpp scenario1.cpp BuilderComposite.cpp TestStateAndCommand.cpp $(wildcard test_*.cpp)
 
 # ── App sources: everything in root EXCEPT files with main() ──
 APP_SRCS = $(filter-out $(EXCLUDE_SRCS), $(wildcard *.cpp))

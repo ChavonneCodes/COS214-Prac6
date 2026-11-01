@@ -98,7 +98,7 @@ public:
      *
      * @return The stage name (delegated from the definition).
      */
-    std::string getName() const;
+    std::string getName() const override;
 
     /**
      * @brief Visits this stage, then every child in order, then leaves the stage.

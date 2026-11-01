@@ -49,6 +49,8 @@ public:
      */
     std::string getId() const override;
 
+    std::string getName() const override { return definition->getName(); }
+
     /**
      * @brief Retrieves the current runtime state of the sub-process.
      * 
