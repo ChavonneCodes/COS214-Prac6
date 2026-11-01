@@ -6,10 +6,9 @@ class CancelledState: public WorkItemState{
 
     public:
        /**
-
-     * @return copy of CancelledState object, used to store state in memento (WorkItemMemento)
+     * @return copy of the CancelledState object
      */
-       WorkItemState* clone();
+       WorkItemState* clone()override;
        /**
      
      * @return name of CancelledState as a string

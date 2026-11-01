@@ -6,24 +6,28 @@
 #include "WorkItem.h"
 
 bool InProgressState::complete(WorkItem* item){
-    item->changeState(new CompletedState());
+    reduceParticipantCount(item); // lowers open-item for workload-based assignment
+    transition(item, new CompletedState());
     return true;
 }
 bool InProgressState::cancel(WorkItem* item){
-    item->changeState(new CancelledState());
+    reduceParticipantCount(item);
+    transition(item, new CancelledState());
     return true;
 }
 bool InProgressState::escalated(WorkItem* item){
-    item->changeState(new EscalatedState());
+    release(item);
+    transition(item, new EscalatedState());
     return true;
 }
 bool InProgressState::fail(WorkItem* item){
-    item->changeState(new FailedState());
+    transition(item, new FailedState());
     return true;
 }
 WorkItemState* InProgressState::clone(){
-    return new InProgressState(*this);
-}
+        return new InProgressState(*this);
+       }
+
  std::string InProgressState::getName(){
    return "In_Progress";
  }

@@ -20,14 +20,7 @@ RuntimeComponent* InstanceFactory::instantiateTree(
     if (actDef) {
         WorkItem* workItem = new WorkItem(instanceId, actDef);
 
-        if (assignmentStrategy) {
-            Participant* assigned = assignmentStrategy->assign(*workItem, candidates);
-            if (assigned) {
-                workItem->assignTo(assigned);
-                std::cout << "  [Factory] Assigned " << actDef->getName() 
-                          << " to " << assigned->getName() << "\n";
-            }
-        }
+       
         return workItem; 
     }
 

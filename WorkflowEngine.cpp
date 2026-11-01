@@ -24,6 +24,10 @@ void WorkflowEngine::setAssignment(AssignmentStrategy* strategy, const std::vect
     this->candidates = candidates;
 }
 
+void WorkflowEngine::setTreeWrapper(const std::function<RuntimeComponent*(RuntimeComponent*)>& wrapper){
+    treeWrapper = wrapper;
+}
+
 std::string WorkflowEngine::startWorkflow(const std::string& defId, int version){
     if (!repository) return "";
     WorkflowDefinition* definition = repository->load(defId, version);
@@ -34,6 +38,7 @@ std::string WorkflowEngine::startWorkflow(const std::string& defId, int version)
     RuntimeComponent* tree = InstanceFactory::instantiateTree(instanceId, definition->getRoot(),
                                                               assignment, candidates);
     if (!tree) return "";
+    if (treeWrapper) tree = treeWrapper(tree);
 
     // Decorator: label the tree with the instance and the version it is pinned to
     RuntimeComponent* root = new LabelledRuntimeDecorator(
@@ -43,10 +48,24 @@ std::string WorkflowEngine::startWorkflow(const std::string& defId, int version)
     for (WorkItem* item : instance->getWorkItems()) {
         item->setEventBus(eventBus);                        // from now on, publish every change
     }
+   
 
     instances[instanceId] = instance;
     instance->setState("RUNNING");
+    std::vector<WorkItem*> items = instance->getWorkItems();
+    for (size_t i = 0; i < items.size(); ++i) {
+        release(items[i]);        
+    }
     return instanceId;
+}
+bool WorkflowEngine::release(WorkItem* item) {
+    if (!item) return false;
+    if (!submit(new makeAvailableCommand(item))) return false;     
+    if (assignment) {
+        Participant* chosen = assignment->assign(*item, candidates);
+        if (chosen) return submit(new AssignCommand(item, chosen)); 
+    }
+    return true;                                                    
 }
 
 WorkflowInstance* WorkflowEngine::getInstance(const std::string& instanceId){
@@ -66,6 +85,19 @@ void WorkflowEngine::undoLast(){
     if (!history) return;
     WorkflowAction* last = history->pop();
     if (last) last->undo();
+}
+
+bool WorkflowEngine::undoLast(const std::string& instanceId){
+    if (!history) return false;
+    std::vector<WorkflowAction*> newer;     // other instances' commands, kept in order
+    WorkflowAction* action = history->pop();
+    while (action && action->getInstanceId() != instanceId) {
+        newer.push_back(action);
+        action = history->pop();
+    }
+    if (action) action->undo();
+    for (auto kept = newer.rbegin(); kept != newer.rend(); ++kept) history->push(*kept);
+    return action != nullptr;
 }
 
 std::vector<WorkflowAction*> WorkflowEngine::getHistory(const std::string& instanceId){
@@ -218,7 +250,9 @@ void WorkflowEngine::advance(const std::string& instanceId) {
                 // changes flow into the shared Observer infrastructure.
                 for (WorkItem* item : child->getWorkItems()) {
                     item->setEventBus(eventBus);
+                    release(item); 
                 }
+                
 
                 // Register in the engine's instance map (engine owns it)
                 instances[childId] = child;

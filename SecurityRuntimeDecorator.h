@@ -45,7 +45,7 @@ public:
     }
 
     /** @throws std::runtime_error Before changing state if access is denied. */
-    void setState(const std::string& newState) override {
+    void setState(const std::string& newState)override  {
         requireAccess();
         RuntimeComponentDecorator::setState(newState);
     }

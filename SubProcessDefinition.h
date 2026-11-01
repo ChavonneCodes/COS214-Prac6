@@ -26,9 +26,9 @@
  */
 class SubProcessDefinition : public WorkflowComponent {
 private:
-    std::string subProcessId;       ///< Unique identifier for this node within the parent workflow.
-    std::string calledDefinitionId; ///< The ID of the external workflow definition being invoked.
-    int calledVersion;              ///< The specific version of the external workflow to run.
+    std::string subProcessId;       //Unique identifier for this node within the parent workflow.
+    std::string calledDefinitionId; //The ID of the external workflow definition being invoked.
+    int calledVersion;              // The specific version of the external workflow to run.
 
 public:
     /**

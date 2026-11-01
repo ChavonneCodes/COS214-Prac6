@@ -23,8 +23,8 @@
  */
 class ApprovalChainDefinition {
 private:
-    std::string chainId;                       ///< Unique identifier for this approval chain.
-    std::vector<ApprovalStepDefinition> steps; ///< The ordered list of approval steps.
+    std::string chainId;                       // Unique identifier for this approval chain.
+    std::vector<ApprovalStepDefinition> steps; // The ordered list of approval steps.
 
 public:
     /**

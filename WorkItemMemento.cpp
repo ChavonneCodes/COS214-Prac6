@@ -1,17 +1,19 @@
 #include "WorkItemMemento.h"
 using namespace std;
 
-WorkItemMemento::WorkItemMemento() : activityId("") , workItemId("") , state(nullptr) , dataSnapshot(""){
+WorkItemMemento::WorkItemMemento() : activityId("") , workItemId("") , state(nullptr),participant(nullptr) , dataSnapshot(""){
 }
 
-WorkItemMemento::WorkItemMemento(string activityId,string workItemId,Data& snapshot,WorkItemState* state) : activityId(activityId) , workItemId(workItemId) , state(state != nullptr ? state->clone() : nullptr) , dataSnapshot(snapshot){
+WorkItemMemento::WorkItemMemento(string activityId,string workItemId,Data& snapshot,WorkItemState* state,Participant* participant) : activityId(activityId) , workItemId(workItemId) , state(state != nullptr ? state->clone() : nullptr),participant(participant), dataSnapshot(snapshot){
 }
 
 WorkItemMemento::WorkItemMemento(const WorkItemMemento& other)
     : activityId(other.activityId),
       workItemId(other.workItemId),
       state(other.state != nullptr ? other.state->clone() : nullptr),
+      participant(other.participant),
       dataSnapshot(other.dataSnapshot)
+      
 {
 }
 
@@ -25,6 +27,7 @@ WorkItemMemento& WorkItemMemento::operator=(const WorkItemMemento& other){
         workItemId = other.workItemId;
         dataSnapshot = other.dataSnapshot;
         state = copiedState;
+        participant = other.participant;
     }
     
     return *this;
@@ -48,4 +51,7 @@ WorkItemState* WorkItemMemento::getStateKind() const{
 
 Data WorkItemMemento::getDataSnapshot() const{
     return dataSnapshot;
+}
+Participant* WorkItemMemento:: getCurrentParticipant()const{
+    return participant;
 }

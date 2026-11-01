@@ -4,6 +4,7 @@
 #include <iostream>
 #include "WorkItemState.h"
 #include "Data.h"
+#include "Participant.h"
 #include <string>
 
 /* enum StateKind {
@@ -34,7 +35,7 @@ class WorkItemMemento{
          * @param snapshot Data to preserve in the memento.
          * @param state Current state to snapshot. The memento clones this state.
          */
-        WorkItemMemento(std::string,std::string,Data&,WorkItemState*);
+        WorkItemMemento(std::string,std::string,Data&,WorkItemState*,Participant*);
 
         /**
          * @brief Copy constructor.
@@ -69,11 +70,13 @@ class WorkItemMemento{
         std::string getActivityId() const;
         std::string getWorkItemId() const;
         WorkItemState* getStateKind() const;
+        Participant* getCurrentParticipant()const;
         Data getDataSnapshot() const;
 
         std::string activityId;
         std::string workItemId;
         WorkItemState* state;
+        Participant* participant;
         Data dataSnapshot;
 
 };

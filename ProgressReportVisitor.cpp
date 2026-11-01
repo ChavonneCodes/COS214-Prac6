@@ -6,6 +6,7 @@
 #include "WorkItem.h"
 #include "StageInstance.h"
 #include "SubProcessInstance.h"
+#include "WorkflowInstance.h"
 
 void ProgressReportVisitor::addLine(const std::string& text) {
     lines.push_back(std::string(depth * 2, ' ') + text);
@@ -28,6 +29,11 @@ void ProgressReportVisitor::visitStage(StageInstance& stage) {
 
 void ProgressReportVisitor::visitSubProcess(SubProcessInstance& subProcess) {
     addLine("[" + subProcess.getState() + "] sub-process " + subProcess.getId());
+    if (WorkflowInstance* child = subProcess.getChildInstance()) {   // the child's work counts too
+        ++depth;
+        child->getRoot()->accept(*this);
+        --depth;
+    }
 }
 
 void ProgressReportVisitor::leaveStage(StageInstance& /*stage*/) {

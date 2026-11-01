@@ -6,10 +6,9 @@ class CompletedState: public WorkItemState{
 
     public:
     /**
-     
-     * @return copy of CompletedState object, used to stroe state in memento
+     * @return copy of the CompletedState object
      */
-       WorkItemState* clone();
+       WorkItemState* clone()override;
        /**
      * @return name of CompletedState as a string
      */

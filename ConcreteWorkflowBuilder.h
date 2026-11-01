@@ -26,17 +26,17 @@
  */
 class ConcreteWorkflowBuilder : public WorkflowBuilder {
 private:
-    std::string definitionId;       ///< The unique identifier for the workflow.
-    std::string name;               ///< The human-readable name of the workflow.
-    int version;                    ///< The version number of the workflow.
+    std::string definitionId;       //The unique identifier for the workflow.
+    std::string name;               // The human-readable name of the workflow.
+    int version;                    // The version number of the workflow.
     
-    std::vector<ActivityDefinition> activities;         ///< Flat list of activities.
-    std::vector<TransitionDefinition> transitions;      ///< Flat list of routing transitions.
-    std::vector<RoleDefinition> roles;                  ///< Flat list of roles.
-    std::vector<ApprovalChainDefinition> approvalChains;///< Flat list of approval chains.
+    std::vector<ActivityDefinition> activities;         // Flat list of activities.
+    std::vector<TransitionDefinition> transitions;      // Flat list of routing transitions.
+    std::vector<RoleDefinition> roles;                  // Flat list of roles.
+    std::vector<ApprovalChainDefinition> approvalChains;// Flat list of approval chains.
     
-    WorkflowNodeData rootTreeData;  ///< Raw data used to build the Composite tree.
-    bool hasRoot = false;           ///< Flag indicating if composite tree data was provided.
+    WorkflowNodeData rootTreeData;  // Raw data used to build the Composite tree.
+    bool hasRoot = false;           // Flag indicating if composite tree data was provided.
 
     /**
      * @brief Recursive helper function that builds the Composite tree.
