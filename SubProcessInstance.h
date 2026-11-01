@@ -28,9 +28,9 @@ class RuntimeVisitor;
  */
 class SubProcessInstance : public RuntimeComponent {
 private:
-    std::string instanceId;             ///< The ID of the parent workflow instance this sub-process belongs to.
-    SubProcessDefinition* definition;   ///< Pointer to the static blueprint (not owned by this class).
-    std::string state;                  ///< The current runtime state of the sub-process (e.g., "IDLE", "RUNNING").
+    std::string instanceId;             // The ID of the parent workflow instance this sub-process belongs to.
+    SubProcessDefinition* definition;   // Pointer to the static blueprint (not owned by this class).
+    std::string state;                  //  The current runtime state of the sub-process (e.g., "IDLE", "RUNNING").
     WorkflowInstance* childInstance=nullptr;
 
 public:
@@ -56,12 +56,6 @@ public:
      */
     std::string getState() const override;
 
-    /**
-     * @brief Sets the current runtime state of the sub-process.
-     * 
-     * @param newState The new state string.
-     */
-    void setState(const std::string& newState) override;
 
     /**
      * @brief Prints the sub-process instance details to standard output.

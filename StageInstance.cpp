@@ -13,7 +13,6 @@ StageInstance::~StageInstance() {
 
 std::string StageInstance::getId() const { return definition->getId(); }
 std::string StageInstance::getState() const { return state; }
-void StageInstance::setState(const std::string& newState) { state = newState; }
 
 void StageInstance::addChild(RuntimeComponent* child) {
     children.push_back(child);

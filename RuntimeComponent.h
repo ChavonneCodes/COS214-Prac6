@@ -42,11 +42,6 @@ public:
     /** @brief Scheduling priority; larger values come first. Undecorated nodes use 0. */
     virtual int getPriority() const { return 0; }
 
-    /**
-     * @brief Sets the current execution state of the component.
-     * @param newState The new state string.
-     */
-    virtual void setState(const std::string& newState) = 0;
 
     /**
      * @brief Prints the details of the component to standard output.

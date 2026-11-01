@@ -80,7 +80,7 @@ void WorkItem::restoreMemento(WorkItemMemento* memento){
 }
 
 
-std::string WorkItem::getState() const { return currentState->getName(); }
+/*std::string WorkItem::getState() const { return currentState->getName(); }
 void WorkItem::setState(const std::string& newState) {
     if (newState == "Created" || newState == "CREATED" || newState == "IDLE") changeState(new CreatedState());
     else if (newState == "Available" || newState == "AVAILABLE") changeState(new AvailableState());
@@ -91,7 +91,7 @@ void WorkItem::setState(const std::string& newState) {
     else if (newState == "Rejected" || newState == "REJECTED") changeState(new RejectedState());
     else if (newState == "Cancelled" || newState == "CANCELLED") changeState(new CancelledState());
     else if (newState == "Escalated" || newState == "ESCALATED") changeState(new EscalatedState());
-}
+}*/
 
 void WorkItem::changeState(WorkItemState* newState) {
     if (newState == nullptr) return;
@@ -108,7 +108,7 @@ WorkItemState* WorkItem::getCurrentState() {
     return currentState; 
 }
 
-// ---- Delegation to State Objects ----
+//  Delegation to State Objects
 
 bool WorkItem::assign(Participant* p) { return currentState->assign(this, p); }
 bool WorkItem::start() { return currentState->start(this); }
@@ -120,7 +120,7 @@ bool WorkItem::escalated() {
 bool WorkItem::fail() { return currentState->fail(this); }
 bool WorkItem::makeAvailable() { return currentState->makeAvailable(this); }
 
-// ---- Standard Methods ----
+// Standard Methods
 
 std::string WorkItem::getRequiredRoleId() const { return definition->getRequiredRoleId(); }
 Participant* WorkItem::getAssignedParticipant() const { return assignedParticipant; }

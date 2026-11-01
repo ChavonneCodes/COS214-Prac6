@@ -63,12 +63,6 @@ public:
      */
     std::string getState() const override;
 
-    /**
-     * @brief Sets the current runtime state of the stage.
-     * 
-     * @param newState The new state string.
-     */
-    void setState(const std::string& newState) override;
 
     /**
      * @brief Prints the stage instance and recursively prints all its children.
