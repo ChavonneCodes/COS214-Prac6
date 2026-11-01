@@ -1,4 +1,8 @@
 
+/**
+ * @file test_memento.cpp
+ * @brief GoogleTest unit tests for the Memento pattern.
+ */
 #include <gtest/gtest.h>
 #include <string>
 

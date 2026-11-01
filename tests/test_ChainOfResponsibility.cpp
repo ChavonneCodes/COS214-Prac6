@@ -1,4 +1,8 @@
 
+/**
+ * @file test_ChainOfResponsibility.cpp
+ * @brief GoogleTest unit tests for the Chain Of Responsibility pattern.
+ */
 #include <gtest/gtest.h>
 
 #include "ApprovalHandler.h"
