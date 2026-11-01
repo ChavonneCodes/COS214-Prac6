@@ -1,6 +1,6 @@
 # TIVIDY: Workflow Management System
 
-TIVIDY is a generic, robust workflow management system that controls process flows. By separating workflow definitions from runtime instances, it is highly adaptable for any industry.
+TIVIDY is a generic, robust workflow management system that controls process flows. By separating workflow definitions from runtime instances, it is highly adaptable for any industry. It demonstrates two distinct scenarios using the exact same engine. The  Campus Portal Recovery(Education) and  ProjectApproval(Technology)
 
 ## Team
 
@@ -15,27 +15,41 @@ TIVIDY is a generic, robust workflow management system that controls process flo
 | Deon-Moller Steenkamp | u25135742 |
 
 ## Dependencies
+C++ Compiler: g++
+Build the system: make
+Testing Framework: GoogleTest v1.12.1
+Documentation: Doxygen
+Containerisation:Doocker
 
 * Docker
 
 ## Build
+**Local Build**
+make clean
+make all
 
-```
-docker build -t [image_name] .
-```
+**Docker build**
+docker build -t tividy .
 
 ## Run
+Run the demo locally:
+make live
 
-Start the container interactively:
+**Run the demo with docker:**
+docker run --rm tividy ./main
 
-```
-docker run -it [image_name]
-```
+**Interactive Shell (for debugging/inspection):**
+If you want to explore the container, run GDB, or run Valgrind:
+
+docker run -it --rm tividy bash
+
 
 ## Test
+**Locally:**
+make tests
 
-Execute the test suite from inside the running container:
+**Execute the test suite from inside the running container:**
+docker run --rm tividy ./run_tests
 
-```
-./run_tests
-```
+##Documentation:
+doxygen Doxyfile
