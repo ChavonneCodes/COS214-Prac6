@@ -1,4 +1,8 @@
 
+/**
+ * @file test_memento.cpp
+ * @brief GoogleTest unit tests for the Memento pattern.
+ */
 #include <gtest/gtest.h>
 #include <string>
 
@@ -52,6 +56,7 @@ TEST(WorkItemMementoTest, PreservesOriginalDataSnapshot) {
         "ACT001",
         "WORK001",
         originalData,
+        nullptr,
         nullptr
     );
 
@@ -100,6 +105,7 @@ TEST(WorkItemMementoTest, PreservesActivityAndWorkItemIdentifiers) {
         "ACT002",
         "WORK002",
         data,
+        nullptr,
         nullptr
     );
 
@@ -126,6 +132,7 @@ TEST(WorkItemMementoTest, SnapshotRemainsUnchangedAfterMultipleUpdates) {
         "ACT003",
         "WORK003",
         originalData,
+        nullptr,
         nullptr
     );
 

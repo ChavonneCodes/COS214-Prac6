@@ -1,4 +1,8 @@
 
+/**
+ * @file test_ChainOfResponsibility.cpp
+ * @brief GoogleTest unit tests for the Chain Of Responsibility pattern.
+ */
 #include <gtest/gtest.h>
 
 #include "ApprovalHandler.h"
@@ -43,7 +47,7 @@ Request makeRequest(const string& action, const string& state) {
 // Fixture that creates and connects the approval chain.
 class ApprovalHandlerTest : public ::testing::Test {
 protected:
-    TimeoutEscalationHandler timeoutHandler{nullptr};
+    TimeoutEscalationHandler timeoutHandler{nullptr,nullptr};
     WorkflowStateApprovalHandler workflowHandler;
     TestFinalHandler finalHandler;
 
