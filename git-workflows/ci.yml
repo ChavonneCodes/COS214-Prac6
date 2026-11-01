@@ -1,0 +1,69 @@
+# TIVIDY CI/CD pipeline.
+#   CI (every push to main and every pull request): build the project and run the unit tests.
+#   CD (only after a merge to main, and only if CI passed): publish the tested build as a Docker image.
+# It uses the team's Dockerfile, so GitHub builds and tests in exactly the same environment we use locally.
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# If a newer commit is pushed to the same branch, cancel the older run that is still going.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------- CI
+  build-and-test:
+    name: CI - build and run tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      # The Dockerfile installs g++, make and GoogleTest, then runs `make main scenario1 run_tests`.
+      # If the application or any test fails to COMPILE, this step fails (red).
+      - name: Build the application and the test suite
+        run: docker build -t tividy .
+
+      # `./run_tests` exits with a non-zero code if any test fails, which makes this step fail (red).
+      - name: Run the unit tests
+        run: docker run --rm tividy ./run_tests
+
+      # Makes sure the full-system demo still runs from start to finish.
+      - name: Run the demo
+        run: docker run --rm tividy ./main
+
+  # ---------------------------------------------------------------- CD
+  deliver:
+    name: CD - publish Docker image
+    needs: build-and-test            # never runs if a CI step failed
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'   # not for pull requests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write                # lets this job publish to GitHub Packages (ghcr.io)
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      # Registry names must be lowercase, but the repository name has capital letters.
+      - name: Work out the image name
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      # Two tags: "latest" (newest version) and the commit id (so any past version can be pulled).
+      - name: Build the image
+        run: |
+          docker build \
+            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
+            -t "$IMAGE:latest" -t "$IMAGE:${{ github.sha }}" .
+
+      - name: Publish the image
+        run: docker push --all-tags "$IMAGE"
