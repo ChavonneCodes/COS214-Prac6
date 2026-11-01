@@ -34,7 +34,7 @@
 #include "ProgressReportVisitor.h"
 #include "RoleApprovalHandler.h"
 #include "RoutingHelper.h"
-#include "SequentialRouting.h"
+#include "SubProcessDefinition.h"
 #include "StartCommand.h"
 #include "TimeoutEscalationHandler.h"
 #include "WorkflowBlueprint.h"
@@ -43,9 +43,25 @@
 #include "WorkItem.h"
 #include "WorkloadVisitor.h"
 
-/** @brief One row of a process definition. An empty stage puts the activity directly under the root. */
+/** @brief One row of a process definition. An empty stage puts it directly under the root. */
 struct Step {
     std::string id, name, role, stage;
+    std::string calls;   ///< Definition this step runs as a sub-process (empty for a normal activity).
+};
+
+/** @brief Follows the fixed transitions like SequentialRouting, but can also reach a sub-process node. */
+class TreeRouting : public RoutingStrategy {
+public:
+    std::vector<const WorkflowComponent*> next(const WorkflowComponent& completed, const WorkflowDefinition& definition,
+                                               const std::string& /*outcome*/) override {
+        std::vector<const WorkflowComponent*> result;
+        for (const TransitionDefinition& transition : definition.getTransitions()) {
+            if (transition.getFrom() != completed.getId()) continue;
+            if (const WorkflowComponent* target = findNode(definition, transition.getTo())) result.push_back(target);
+        }
+        return result;
+    }
+    std::string getName() const override { return "Tree"; }
 };
 
 /** @brief Everything that differs between two processes. */
@@ -60,6 +76,7 @@ struct Scenario {
     std::map<std::string, std::function<std::string(WorkItem*)>> special; ///< Steps that differ. Returns the outcome.
     std::map<std::string, RoutingStrategy*> routers;                 ///< Steps that do not route sequentially.
     std::vector<Branch> branches;                                    ///< Those routers' arrows, for the GUI.
+    std::string calledDefinition;                                    ///< Definition run as a sub-process, if any.
 };
 
 /** @brief Makes a stage or activity node for the definition tree. */
@@ -93,9 +110,14 @@ inline WorkflowBlueprint makeBlueprint(const std::string& id, const std::string&
     std::set<std::string> roles;
     std::string openStage;
     for (const Step& step : steps) {
-        if (roles.insert(step.role).second) blueprint.roles.push_back(RoleDefinition(step.role, step.role, 1));
-        blueprint.activities.push_back(ActivityDefinition(step.id, step.name, step.role));
         WorkflowNodeData leaf = makeNode(NodeType::ACTIVITY, step.id, step.name, step.role);
+        if (step.calls.empty()) {
+            if (roles.insert(step.role).second) blueprint.roles.push_back(RoleDefinition(step.role, step.role, 1));
+            blueprint.activities.push_back(ActivityDefinition(step.id, step.name, step.role));
+        } else {
+            leaf = makeNode(NodeType::SUBPROCESS, step.id, step.name);
+            leaf.calledDefId = step.calls;
+        }
         std::vector<WorkflowNodeData>& top = blueprint.rootTreeData.children;
         if (step.stage.empty()) {
             top.push_back(leaf);
@@ -141,7 +163,7 @@ public:
     NotificationObserver decisions{"APPROVAL_DECISION"};
     DemoTrace trace;
     WorkflowEngine engine{&repository, &bus, &history, &audit};
-    SequentialRouting sequential;
+    TreeRouting sequential;
     std::string instanceId;
     std::vector<std::string> summary; ///< One line of results per finished case.
 
@@ -198,7 +220,8 @@ public:
         instanceId.clear();
         if (scenario.define) scenario.define();
         const WorkflowDefinition* definition = repository.load(scenario.definitionId, scenario.version);
-        trace.beginCase(scenario.number, scenario.title, *definition, scenario.branches);
+        trace.beginCase(scenario.number, scenario.title, *definition, scenario.branches,
+                        scenario.calledDefinition.empty() ? nullptr : repository.load(scenario.calledDefinition, 1));
         beat("define", false, "", "Definition", scenario.definitionId + " v" + std::to_string(scenario.version) +
              " stored in the repository", "Builder + Composite", "repository.load(id, version)");
 
@@ -214,16 +237,22 @@ public:
 
         std::string currentId = scenario.firstStep;
         while (!currentId.empty()) {
-            WorkItem* item = instance->findWorkItem(currentId);
-            // A Completed item has no way forward, so a routing loop rolls the commands back instead
-            while (item->getState() == "Completed" || item->getState() == "In_Progress") engine.undoLast();
-            auto step = scenario.special.find(currentId);
-            std::string outcome = step != scenario.special.end() ? step->second(item) : startAndComplete(item);
+            const WorkflowComponent* node = findNode(*definition, currentId);
+            std::string outcome = "approved";
+            if (auto* call = dynamic_cast<const SubProcessDefinition*>(node)) {
+                runSubProcess(*call);
+            } else {
+                WorkItem* item = instance->findWorkItem(currentId);
+                // A Completed item has no way forward, so a routing loop rolls the commands back instead
+                while (item->getState() == "Completed" || item->getState() == "In_Progress") engine.undoLast();
+                auto step = scenario.special.find(currentId);
+                outcome = step != scenario.special.end() ? step->second(item) : startAndComplete(item);
+            }
 
             auto router = scenario.routers.find(currentId);
             RoutingStrategy* routing = router != scenario.routers.end() ? router->second : &sequential;
             std::vector<const WorkflowComponent*> next =
-                routing->next(*findNode(*definition, currentId), *definition, outcome);
+                routing->next(*node, *definition, outcome);
             currentId = next.empty() ? "" : next[0]->getId();
         }
 
@@ -234,6 +263,19 @@ public:
     }
 
 private:
+    /** @brief Composite: a step that is a whole workflow. The parent waits while the child runs. */
+    void runSubProcess(const SubProcessDefinition& call) {
+        engine.advance(instanceId);
+        beat("run", true, call.getId(), "Sub-process", "The parent pauses while " + call.getCalledDefinitionId() +
+             " runs as its own workflow", "Composite", "engine.advance(instanceId)");
+        WorkflowInstance* child = engine.getInstance(instanceId + "-" + call.getId());
+        for (WorkItem* item : child->getWorkItems()) startAndComplete(item);
+        child->setState("COMPLETED");
+        engine.advance(instanceId);
+        beat("run", true, call.getId(), "Parent resumes", "The child workflow finished, so the parent carries on",
+             "Composite", "engine.advance(instanceId)");
+    }
+
     /** @brief The reports are the same for every case: only the data in them differs. */
     void report(const std::string& title) {
         std::unique_ptr<RuntimeComponentIterator> walk(
@@ -242,7 +284,7 @@ private:
         while (walk->hasNext()) {
             order += (order.empty() ? "" : " ") + dynamic_cast<const RuntimeComponent&>(walk->getNext()).getId();
         }
-        beat("report", false, "", "Walk", order, "Iterator", "root->createIterator(strategy)");
+        beat("report", false, "", "Iterator walk", order, "Iterator", "root->createIterator(strategy)");
 
         ProgressReportVisitor progress;
         WorkloadVisitor workload;

@@ -51,10 +51,10 @@ void runCampusRecovery(Demo& demo, Participant& bob) {
 
     scenario.define = [&]() {
         demo.store(makeBlueprint("campus-recovery", "Campus portal recovery", 1,
-            {{"diagnose", "Diagnose the outage", "technician", ""},
-             {"repair", "Restore the portal configuration", "administrator", ""},
-             {"verify", "Test student access", "technician", ""},
-             {"close", "Close the incident", "administrator", ""}},
+            {{"diagnose", "Diagnose the outage", "technician", "", ""},
+             {"repair", "Restore the portal configuration", "administrator", "", ""},
+             {"verify", "Test student access", "technician", "", ""},
+             {"close", "Close the incident", "administrator", "", ""}},
             {{"diagnose", "repair"}, {"repair", "verify"}}));
         demo.repository.save(demo.repository.load("campus-recovery", 1)->cloneWithVersion(2));
         demo.beat("define", true, "", "Versioning", "v2 is a deep clone of v1, with its own nodes", "Prototype",
@@ -118,20 +118,22 @@ void runProjectApproval(Demo& demo, Participant& lerato, Participant& mandla) {
     ConditionalRouting budgetCheck("over_limit", "execApproval", "kickoff");
 
     auto definitionFor = [](int version) {
-        std::vector<Step> steps = {{"submit", "Submit Proposal", "proposer", ""},
-                                   {"productReview", "Product Review", "product_manager", "Review Stage"},
-                                   {"techReview", "Technical Review", "head_engineer", "Review Stage"}};
+        std::vector<Step> steps = {{"submit", "Submit Proposal", "proposer", "", ""},
+                                   {"productReview", "Product Review", "product_manager", "Review Stage", ""},
+                                   {"techReview", "Technical Review", "head_engineer", "Review Stage", ""}};
         std::vector<std::pair<std::string, std::string>> links = {{"submit", "productReview"}, {"productReview", "techReview"}};
         if (version == 2) {
-            steps.push_back({"securityReview", "Security Review", "head_engineer", "Review Stage"});
+            steps.push_back({"securityReview", "Security Review", "head_engineer", "Review Stage", ""});
             links.push_back({"techReview", "securityReview"});
-            links.push_back({"securityReview", "financeReview"});
+            links.push_back({"securityReview", "budgetAudit"});
         } else {
-            links.push_back({"techReview", "financeReview"});
+            links.push_back({"techReview", "budgetAudit"});
         }
-        steps.push_back({"financeReview", "Budget Review", "finance", "Budget Stage"});
-        steps.push_back({"execApproval", "Executive Approval", "executive", "Budget Stage"});
-        steps.push_back({"kickoff", "Project Kickoff", "proposer", ""});
+        steps.push_back({"budgetAudit", "Budget Audit", "", "Budget Stage", "budget-audit"});
+        steps.push_back({"financeReview", "Budget Review", "finance", "Budget Stage", ""});
+        steps.push_back({"execApproval", "Executive Approval", "executive", "Budget Stage", ""});
+        steps.push_back({"kickoff", "Project Kickoff", "proposer", "", ""});
+        links.push_back({"budgetAudit", "financeReview"});
         links.push_back({"execApproval", "kickoff"});
         WorkflowBlueprint blueprint = makeBlueprint("project-approval", "Project Approval", version, steps, links);
         ApprovalChainDefinition chain("finance-executive-chain");
@@ -146,10 +148,15 @@ void runProjectApproval(Demo& demo, Participant& lerato, Participant& mandla) {
     big.title = "Scenario 2: project approval, R750 000 on v1";
     big.definitionId = "project-approval";
     big.firstStep = "submit";
+    big.calledDefinition = "budget-audit";
     big.version = 1;
     big.budget = 750000;
 
     big.define = [&]() {
+        demo.store(makeBlueprint("budget-audit", "Budget Audit", 1,   // runs as a sub-process of both versions
+            {{"compareProjects", "Compare past projects", "analyst", "", ""},
+             {"summaryReport", "Write summary report", "analyst", "", ""}},
+            {{"compareProjects", "summaryReport"}}));
         demo.store(definitionFor(1));
         demo.store(definitionFor(2));
         demo.beat("define", true, "", "Versioning", "two versions built with stages inside stages; v2 adds a Security Review",
@@ -251,10 +258,11 @@ int main(int argc, char* argv[]) {
     Participant deon("p1", "Deon", {"proposer"}, 0), lerato("p2", "Lerato", {"product_manager"}, 1);
     Participant sipho("p3", "Sipho", {"head_engineer"}, 2), thandi("p4", "Thandi", {"head_engineer"}, 2);
     Participant ayesha("p5", "Ayesha", {"finance"}, 2), naledi("p6", "Naledi", {"executive"}, 3), mandla("p7", "Mandla", {"executive"}, 4);
+    Participant zanele("p8", "Zanele", {"analyst"}, 1);
     for (Participant* busy : {&sam, &sipho}) { busy->addOpenItem(); busy->addOpenItem(); }
 
     WorkloadBasedAssignment assignment;
-    demo.engine.setAssignment(&assignment, {&sam, &alice, &bob, &deon, &lerato, &sipho, &thandi, &ayesha, &naledi, &mandla});
+    demo.engine.setAssignment(&assignment, {&sam, &alice, &bob, &deon, &lerato, &sipho, &thandi, &ayesha, &naledi, &mandla, &zanele});
 
     runCampusRecovery(demo, bob);
     runProjectApproval(demo, lerato, mandla);
@@ -267,6 +275,7 @@ int main(int argc, char* argv[]) {
         {"Rollback", "Undo restores the earlier state", "Undo restores the earlier state", true},
         {"Reports", "The same progress and workload reports", "The same progress and workload reports", true},
         {"Process shape", "Flat: four activities", "Nested: stages inside the root", false},
+        {"Sub-process", "None", "Budget Audit runs as its own workflow", false},
         {"Versioning", "Prototype: v2 cloned from v1", "Builder: v2 built with a Security Review", false},
         {"Tree decorators", "Security, AllowedStates, Logging, Label", "Label only", false},
         {"Routing branch", "Loop back to repair when a test fails", "Skip executive when the budget is small", false},

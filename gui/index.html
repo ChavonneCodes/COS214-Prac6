@@ -102,7 +102,7 @@ h2 { font-size:clamp(30px,3.6vw,44px); line-height:1.1; letter-spacing:-1.2px; f
 code { display:none; font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--ink); background:#ebe8e0; border-radius:6px; padding:2px 7px; overflow-wrap:anywhere; }
 body.calls code { display:inline-block; }
 svg.flow { display:block; width:100%; height:auto; }
-.feed { margin-top:6px; border-top:1px solid var(--line); padding-top:6px; min-height:82px; }
+.feed { margin-top:6px; border-top:1px solid var(--line); padding-top:6px; min-height:62px; }
 .feed h5 { font-size:12px; font-weight:700; color:var(--soft); margin-bottom:3px; }
 .feed div { font-size:13px; line-height:1.55; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--soft); }
 .feed div.new { color:var(--ink); font-weight:600; }
@@ -251,7 +251,8 @@ footer .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:
     Assigned: ['Assigned', '#7b8a85', '#eef0ee'], Available: ['Available', '#7b8a85', '#eef0ee'],
     Created: ['Created', '#7b8a85', '#eef0ee'], Rejected: ['Sent back', '#d02f45', '#fde6e9'],
     Escalated: ['Escalated', '#d02f45', '#fde6e9'], Failed: ['Failed', '#d02f45', '#fde6e9'],
-    Cancelled: ['Not needed', '#7b8a85', '#eef0ee']
+    Cancelled: ['Not needed', '#7b8a85', '#eef0ee'],
+    IDLE: ['Waiting', '#7b8a85', '#eef0ee'], RUNNING: ['Running', '#2467d6', '#e0ecfd'], COMPLETED: ['Done', '#16894f', '#def4e7']
   };
   var PATTERNS = [
     ['Facade', 'WorkflowEngine is the one front door to the whole system.'],
@@ -302,17 +303,24 @@ footer .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:
     });
   }
 
+  // The child workflow's own root stage would only repeat the sub-process row above it
+  function insideCall(rows) { return rows.length && rows[rows.length - 1].sub; }
+
   function rowsFor(c, index) {
     var lines = c.beats[index].tree, planned = !lines.length;
     if (planned) lines = c.beats.filter(function (b) { return b.tree.length; })[0].tree;
     var rows = [];
     lines.forEach(function (line) {
       var item = line.match(/^(\s*)\[(.+?)\] (.+) \((.+)\)$/), stage = line.match(/^(\s*)Stage: (.+)$/);
-      if (item) {
+      var sub = line.match(/^(\s*)\[(.+?)\] sub-process (\S+)$/);
+      if (sub) {
+        var label = sub[3].replace(/([A-Z])/g, ' $1').replace(/^./, function (m) { return m.toUpperCase(); });
+        rows.push({ depth: sub[1].length / 2 - 1, id: sub[3], name: label, sub: true, state: planned ? '' : sub[2], who: '' });
+      } else if (item) {
         var node = c.nodes.filter(function (n) { return n.name === item[3]; })[0];
         rows.push({ depth: item[1].length / 2 - 1, id: node && node.id, name: item[3],
                     state: planned ? '' : item[2], who: planned || item[4] === 'unassigned' ? '' : item[4] });
-      } else if (stage && stage[1].length) {
+      } else if (stage && stage[1].length && !insideCall(rows)) {
         rows.push({ stage: true, depth: stage[1].length / 2 - 1, name: stage[2] });
       }
     });
@@ -321,7 +329,8 @@ footer .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:
 
   function flow(c, index, colour) {
     var rows = rowsFor(c, index), beat = c.beats[index];
-    var H = 38, right = 480, W = 620, y = {}, arcs = '', labels = '', body = '', uid = c.scenario + '' + c.version;
+    var walk = beat.title === 'Iterator walk' ? beat.detail.split(' ') : [];
+    var H = 35, right = 480, W = 620, y = {}, arcs = '', labels = '', body = '', uid = c.scenario + '' + c.version;
     rows.forEach(function (r, i) { if (r.id) y[r.id] = i * H + H / 2; });
     c.edges.forEach(function (e) {
       if (y[e.from] === undefined || y[e.to] === undefined) return;
@@ -337,22 +346,26 @@ footer .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:
     rows.forEach(function (r, i) {
       var ry = i * H, x = r.depth * 18;
       if (r.stage) {
-        body += '<text x="' + (x + 2) + '" y="' + (ry + 25) + '" font-size="13" font-weight="700" fill="#74857f">' + esc(r.name) + '</text>';
+        body += '<text x="' + (x + 2) + '" y="' + (ry + 23) + '" font-size="13" font-weight="700" fill="#74857f">' + (walk.indexOf(r.name.replace(/ /g, '')) + 1 ? (walk.indexOf(r.name.replace(/ /g, '')) + 1) + '. ' : '') + esc(r.name) + '</text>';
         return;
       }
       var s = STATES[r.state] || ['Planned', '#7b8a85', '#fff'];
       var active = r.id && r.id === beat.current;
       body += '<rect x="' + x + '" y="' + (ry + 3) + '" width="' + (right - x) + '" height="' + (H - 6) + '" rx="10" fill="' + (active ? '#fff8f2' : '#fbfaf7') +
               '" stroke="' + (active ? colour : '#e3e0d8') + '" stroke-width="' + (active ? 2.5 : 1) + '"/>';
-      if (r.who) {
+      var visit = walk.indexOf(r.id) + 1;
+      if (visit) {
+        body += '<circle cx="' + (x + 21) + '" cy="' + (ry + H / 2) + '" r="12" fill="#e8590c"/>' +
+                '<text x="' + (x + 21) + '" y="' + (ry + H / 2 + 4) + '" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">' + visit + '</text>';
+      } else if (r.who) {
         body += '<circle cx="' + (x + 21) + '" cy="' + (ry + H / 2) + '" r="12" fill="' + colour + '"/>' +
                 '<text x="' + (x + 21) + '" y="' + (ry + H / 2 + 4) + '" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">' + esc(r.who.charAt(0)) + '</text>';
       }
-      body += '<text x="' + (x + 42) + '" y="' + (ry + 17) + '" font-size="13.5" font-weight="600" fill="#10201c">' + esc(r.name) + '</text>' +
-              '<text x="' + (x + 42) + '" y="' + (ry + 30) + '" font-size="11.5" fill="#74857f">' + esc(r.who || 'Not assigned yet') + '</text>';
+      body += '<text x="' + (x + 42) + '" y="' + (ry + 15) + '" font-size="13.5" font-weight="600" fill="#10201c">' + esc(r.name) + '</text>' +
+              '<text x="' + (x + 42) + '" y="' + (ry + 28) + '" font-size="11.5" fill="#74857f">' + esc(r.sub ? 'Runs its own workflow' : r.who || 'Not assigned yet') + '</text>';
       var w = s[0].length * 6.6 + 20;
-      body += '<rect x="' + (right - w - 8) + '" y="' + (ry + 9) + '" width="' + w + '" height="20" rx="10" fill="' + s[2] + '"' + (r.state ? '' : ' stroke="#e3e0d8"') + '/>' +
-              '<text x="' + (right - 8 - w / 2) + '" y="' + (ry + 23) + '" text-anchor="middle" font-size="11.5" font-weight="700" fill="' + s[1] + '">' + s[0] + '</text>';
+      body += '<rect x="' + (right - w - 8) + '" y="' + (ry + 8) + '" width="' + w + '" height="20" rx="10" fill="' + s[2] + '"' + (r.state ? '' : ' stroke="#e3e0d8"') + '/>' +
+              '<text x="' + (right - 8 - w / 2) + '" y="' + (ry + 22) + '" text-anchor="middle" font-size="11.5" font-weight="700" fill="' + s[1] + '">' + s[0] + '</text>';
     });
     return '<svg class="flow" viewBox="0 0 ' + W + ' ' + rows.length * H + '" font-family="\'Plus Jakarta Sans\',system-ui,sans-serif" role="img" aria-label="Steps of this case and their status">' +
       '<defs><marker id="g' + uid + '" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7z" fill="#c7cec9"/></marker>' +
@@ -383,11 +396,11 @@ footer .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:
       '<div class="count">' + beat.done + ' / ' + (beat.total || lastTree(c).total) + '<small>steps done</small></div></div>' +
       '<div class="bar"><div style="background:' + colour + ';width:' + (beat.total ? beat.done * 100 / beat.total : 0) + '%"></div></div>' +
       '<div class="now"><span class="tag">' + (wait ? 'Waiting for the other process' : only ? 'Only this process' : 'Shared engine') + '</span>' +
-      '<h4>' + esc(beat.title) + '</h4><p>' + esc((beat.detail.charAt(0).toUpperCase() + beat.detail.slice(1)).replace(/R(\d{3})(\d{3})/g, 'R$1 $2')) + '</p>' +
+      '<h4>' + esc(beat.title) + '</h4><p>' + esc(beat.title === 'Iterator walk' ? 'The numbers show the depth-first order through the tree' : (beat.detail.charAt(0).toUpperCase() + beat.detail.slice(1)).replace(/R(\d{3})(\d{3})/g, 'R$1 $2')) + '</p>' +
       '<div class="chips">' + (beat.pattern ? '<span class="pat">' + esc(beat.pattern) + '</span>' : '') + (beat.call ? '<code>' + esc(beat.call) + '</code>' : '') + '</div></div>' +
       flow(c, index, colour) +
       '<div class="feed"><h5>Activity (' + seen.length + ' events)</h5>' +
-      seen.slice(-3).map(function (e) { return '<div' + (e.fresh ? ' class="new"' : '') + '>' + esc(e.text) + '</div>'; }).join('') + '</div>';
+      seen.slice(-2).map(function (e) { return '<div' + (e.fresh ? ' class="new"' : '') + '>' + esc(e.text) + '</div>'; }).join('') + '</div>';
   }
 
   var ICON_PLAY = '<svg viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg>';

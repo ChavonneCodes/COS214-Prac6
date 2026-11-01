@@ -74,11 +74,14 @@ public:
      * @param title      Name of the case.
      * @param definition Definition the case uses (for the activities and arrows).
      * @param branches   Routing branches to draw as well as the fixed transitions.
+     * @param called     Definition run as a sub-process, so its steps can be named (may be null).
      */
     void beginCase(int scenario, const std::string& title, const WorkflowDefinition& definition,
-                   const std::vector<Branch>& branches) {
+                   const std::vector<Branch>& branches, const WorkflowDefinition* called = nullptr) {
         std::string nodes = "[", edges = "[";
-        for (const ActivityDefinition& activity : definition.getActivities()) {
+        std::vector<ActivityDefinition> activities = definition.getActivities();
+        if (called) activities.insert(activities.end(), called->getActivities().begin(), called->getActivities().end());
+        for (const ActivityDefinition& activity : activities) {
             nodes += (nodes.size() > 1 ? "," : "");
             nodes += "{\"id\":" + quote(activity.getId()) + ",\"name\":" + quote(activity.getName()) + "}";
         }
