@@ -26,12 +26,23 @@ protected:
 
     }
 
-    void TearDown() override {
+    /*void TearDown() override {
         // Clean up to prevent memory leaks during test runs
         delete stageInstanceRoot; 
         for (auto* def : definitions)
         delete def;
+    }*/
+   void TearDown() override {
+    // Delete the StageInstance tree
+    delete stageInstanceRoot;
+
+    // Delete all StageDefinitions separately
+    for (auto* def : definitions) {
+        delete def;
     }
+
+    definitions.clear();
+}
 };
 
 TEST_F(IteratorTest, DFSReturnsCorrectOrder) {
