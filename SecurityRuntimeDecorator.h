@@ -39,7 +39,9 @@ public:
 
     /** @brief Sets the acting participant from the trusted calling context. */
     void setActor(const Participant* participant) { actor = participant; }
-
+/** @brief Reports whether the wrapped component may be modified.
+ *  @return true if modification is allowed, false otherwise.
+  */
     bool canModify() const {
         return actor && actor->hasRole(requiredRoleId);
     }

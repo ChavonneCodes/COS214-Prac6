@@ -4,7 +4,7 @@ using namespace std;
 Data::Data(): value(""){
 }
 
-Data::Data(string value) : value(value){
+Data::Data(std::string value) : value(value){
 }
 
 string Data::getValue() const{

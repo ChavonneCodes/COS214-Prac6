@@ -1,8 +1,15 @@
+/**
+ * @file ValidationApprovalHandler.h
+ * @brief implements ValidationApprovalHandler
+ */
 #ifndef VALIDATIONAPPROVALHANDLER_H
 #define VALIDATIONAPPROVALHANDLER_H
 
 #include "ApprovalHandler.h"
-
+/**
+ * @class ValidationApprovalHandler
+ * @brief Moves a task along to be validated
+ */
 class ValidationApprovalHandler : public ApprovalHandler {
 public:
     /**

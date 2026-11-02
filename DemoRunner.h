@@ -45,13 +45,23 @@
 
 /** @brief One row of a process definition. An empty stage puts it directly under the root. */
 struct Step {
-    std::string id, name, role, stage;
+    std::string id;     ///< Unique id of the activity.
+    std::string name;   ///< Display name of the activity.
+    std::string role;   ///< Id of the role that performs the activity.
+    std::string stage;  ///< Stage the activity sits under (empty for directly under the root).
     std::string calls;   ///< Definition this step runs as a sub-process (empty for a normal activity).
 };
 
 /** @brief Follows the fixed transitions like SequentialRouting, but can also reach a sub-process node. */
 class TreeRouting : public RoutingStrategy {
 public:
+/**
+     * @brief Finds the nodes reached by the fixed transitions leaving a completed node.
+     * @param completed The node that has just finished.
+     * @param definition The definition whose transitions and tree are searched.
+     * 
+     * @return Non-owning pointers to the target nodes. 
+     */
     std::vector<const WorkflowComponent*> next(const WorkflowComponent& completed, const WorkflowDefinition& definition,
                                                const std::string& /*outcome*/) override {
         std::vector<const WorkflowComponent*> result;
@@ -61,14 +71,20 @@ public:
         }
         return result;
     }
+    /**
+     * @brief Names this strategy.
+     * @return The string "Tree".
+     */
     std::string getName() const override { return "Tree"; }
 };
 
 /** @brief Everything that differs between two processes. */
 struct Scenario {
-    int number;
-    std::string title, definitionId, firstStep;
-    int version;
+    int number;                  ///< Scenario number shown in the demo output.
+    std::string title;           ///< Human-readable scenario title.
+    std::string definitionId;    ///< Id of the process definition to run.
+    std::string firstStep;       ///< Id of the first activity to run.
+    int version;                 ///< Definition version the case is pinned to.
     int budget;   ///< Case data (0 if this process has no budget).
     std::function<void()> define;                                    ///< Stores the definition, if not stored yet.
     std::function<RuntimeComponent*(RuntimeComponent*)> treeWrapper; ///< Extra decorators on the live tree.
@@ -79,7 +95,14 @@ struct Scenario {
     std::string calledDefinition;                                    ///< Definition run as a sub-process, if any.
 };
 
-/** @brief Makes a stage or activity node for the definition tree. */
+/**
+ * @brief Makes a stage or activity node for the definition tree.
+ * @param type Kind of node (stage, activity or sub-process).
+ * @param id   Unique node id.
+ * @param name Display name.
+ * @param role Id of the responsible role (empty for stages).
+ * @return The node, by value.
+ */
 inline WorkflowNodeData makeNode(NodeType type, const std::string& id, const std::string& name, const std::string& role = "") {
     WorkflowNodeData node;
     node.type = type;
@@ -96,6 +119,7 @@ inline WorkflowNodeData makeNode(NodeType type, const std::string& id, const std
  * @param version  Definition version.
  * @param steps    Activities in order. Neighbours with the same stage share a stage node.
  * @param links    Fixed "always" transitions as from, to.
+ * @return The finished blueprint, by value.
  */
 inline WorkflowBlueprint makeBlueprint(const std::string& id, const std::string& name, int version,
                                 const std::vector<Step>& steps,
@@ -156,24 +180,33 @@ inline std::vector<std::unique_ptr<ApprovalHandler>> buildApprovalChain(const Ap
 /** @brief The parts shared by every case: one engine and one run loop. */
 class Demo {
 public:
-    InMemoryDefinitionRepository repository;
-    EventBus bus;
-    HistoryManager history;
-    AuditObserver audit;
-    NotificationObserver decisions{"APPROVAL_DECISION"};
-    DemoTrace trace;
-    WorkflowEngine engine{&repository, &bus, &history, &audit};
-    TreeRouting sequential;
-    std::string instanceId;
+    InMemoryDefinitionRepository repository;///< Stores the process definitions. Owns them.
+    EventBus bus; ///< Subject that notifies the attached observers.
+    HistoryManager history;///< Caretaker holding the executed commands for undo.
+    AuditObserver audit;///< Observer that records an audit trail.
+    NotificationObserver decisions{"APPROVAL_DECISION"};///< Observer for approval-decision events.
+    DemoTrace trace;///< Observer that records moments for the GUI.
+    WorkflowEngine engine{&repository, &bus, &history, &audit};///< The engine; uses, but does not own, the parts above.
+    TreeRouting sequential;///< Default routing strategy used when a step has no router.
+    std::string instanceId;///< Id of the case currently running (empty between cases).
     std::vector<std::string> summary; ///< One line of results per finished case.
-
+    /**
+     * @brief Constructs the demo and attaches its observers to the bus.
+     *
+     * The bus stores raw pointers to audit, decisions and trace. The Demo owns them
+     * as members and they are declared before use, so they outlive the bus's use of them.
+     * The bus never deletes them.
+     */
     Demo() {
         bus.attach(&audit);
         bus.attach(&decisions);
         bus.attach(&trace);   // the GUI is just one more observer
     }
 
-    /** @brief Director + Builder: stores a definition in the repository. */
+    /**
+     * @brief Director + Builder: stores a definition in the repository.
+     * @param blueprint The blueprint to build. Taken by value.
+     */
     void store(WorkflowBlueprint blueprint) {
         ConcreteWorkflowBuilder builder;
         WorkflowDirector director;
@@ -181,7 +214,16 @@ public:
         repository.save(new WorkflowDefinition(builder.build()));
     }
 
-    /** @brief Records a moment for the GUI and prints it. Moments unique to a scenario stand out with >>. */
+    /**
+     * @brief Records a moment for the GUI and prints it. Moments unique to a scenario stand out with >>.
+     * @param phase   Phase of the run (for example "define", "run", "report").
+     * @param differs True if this moment is unique to the scenario.
+     * @param current Id of the current step.
+     * @param title   Short title of the moment.
+     * @param detail  Description of what happened.
+     * @param pattern Design patterns on show (optional).
+     * @param call    Engine call that produced it (optional).
+     */
     void beat(const std::string& phase, bool differs, const std::string& current, const std::string& title,
               const std::string& detail, const std::string& pattern = "", const std::string& call = "") {
         trace.beat(engine, instanceId, phase, differs, current, title, detail, pattern, call);
@@ -189,13 +231,25 @@ public:
                   << (pattern.empty() || !differs ? "" : "  [" + pattern + "]") << "\n";
     }
 
-    /** @brief Marks a moment that only one scenario has, during a step. */
+    /**
+     * @brief Marks a moment that only one scenario has, during a step.
+     * @param current Id of the current step.
+     * @param title   Short title of the moment.
+     * @param detail  Description of what happened.
+     * @param pattern Design patterns on show.
+     * @param call    Engine call that produced it (optional).
+     */
     void unique(const std::string& current, const std::string& title, const std::string& detail,
                 const std::string& pattern, const std::string& call = "") {
         beat("run", true, current, title, detail, pattern, call);
     }
 
-    /** @brief The normal path of a step, which is the same in every process. */
+    /**
+     * @brief The normal path of a step, which is the same in every process.
+     * @param item    Non-owning pointer to the work item. The instance keeps ownership.
+     * @param outcome Outcome to report (defaults to "approved").
+     * @return The outcome, unchanged.
+     */
     std::string startAndComplete(WorkItem* item, const std::string& outcome = "approved") {
         engine.submit(new StartCommand(item));
         engine.submit(new CompleteCommand(item));
@@ -204,7 +258,10 @@ public:
         return outcome;
     }
 
-    /** @brief A mistaken escalation that is undone. The code is shared, only the step differs. */
+    /**
+     * @brief A mistaken escalation that is undone. The code is shared, only the step differs.
+     * @param item Non-owning pointer to the work item. The instance keeps ownership.
+     */
     void escalateAndUndo(WorkItem* item) {
         Participant* owner = item->getAssignedParticipant();
         engine.submit(new EscalateCommand(item));
@@ -214,7 +271,10 @@ public:
              "), undo restored " + item->getState(), "Command + Memento + Prototype", "engine.submit(EscalateCommand), engine.undoLast()");
     }
 
-    /** @brief Runs one case from start to reports. This is the same code for every scenario. */
+     /**
+     * @brief Runs one case from start to reports. This is the same code for every scenario.
+     * @param scenario The scenario to run. Not owned. It must stay valid for the whole call.
+     */
     void run(Scenario& scenario) {
         std::cout << "\n=== " << scenario.title << " ===\n";
         instanceId.clear();

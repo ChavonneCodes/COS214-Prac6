@@ -1,3 +1,7 @@
+/**
+ * @file makeAvailableCommand.h
+ * @brief Defines the makeAvailableCommand class.
+ */
 #ifndef MAKEAVAILABLECOMMAND_H
 #define MAKEAVAILABLECOMMAND_H
 #include "WorkflowAction.h"
@@ -5,11 +9,22 @@
 #include "WorkItem.h"
 #include <vector>
 #include <string>
+/**
+ * @class makeAvailableCommand
+ * @brief ConcreteCommand that releases a work item so it can be picked up, moving a
+ * Created, Rejected or Failed item to Available. It is refused in any other
+ * state. execute() saves a snapshot first and restores it if the action is
+ * refused; undo() restores the last snapshot.
+ */
 class makeAvailableCommand: public WorkflowAction{
     private:
         WorkItem* receiver;
         std::vector<WorkItemMemento> myHistory;
-    public:
+     public:
+     /**
+         * @brief creates makeAvailableCommand
+         * @param r pinter to workItem
+         */
         makeAvailableCommand(WorkItem* r);
          /**
          * @brief calls the appropriate method in WorkItem to execute the command

@@ -1,7 +1,19 @@
+/**
+ * @file RejectedState.h
+ * @brief Defines the RejectedState class.
+ */
 #ifndef REJECTEDSTATE_H
 #define REJECTEDSTATE_H
 
 #include "WorkItemState.h"
+/**
+ * @class RejectedState
+ * @brief ConcreteState for a work item whose assigned owner declined it. It allows
+ * makeAvailable (offers the item again; moves to AvailableState) and cancel
+ * (moves to CancelledState); every other action is refused. This is a task-
+ * level state meaning "declined by the assignee", not an approval outcome,
+ * which is carried by routing.
+ */
 class RejectedState: public WorkItemState{
 
     public:

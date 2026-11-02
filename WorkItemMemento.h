@@ -17,6 +17,10 @@
     REJECTED,
     ESCALATED};
 */
+/**
+ * @class WorkItemMemento
+ * @brief creates snapshot of WorkItem(originator)
+ */
 
 class WorkItemMemento{
     public:
@@ -30,10 +34,6 @@ class WorkItemMemento{
         /**
          * @brief Constructs a memento containing a snapshot of a work item.
          *
-         * @param activityId ID of the activity associated with the work item.
-         * @param workItemId ID of the work item being saved.
-         * @param snapshot Data to preserve in the memento.
-         * @param state Current state to snapshot. The memento clones this state.
          */
         WorkItemMemento(std::string,std::string,Data&,WorkItemState*,Participant*);
 

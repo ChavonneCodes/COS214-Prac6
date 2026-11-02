@@ -1,7 +1,18 @@
+/**
+ * @file FailedState.h
+ * @brief Defines the FailedState class.
+ */
 #ifndef FAILEDSTATE_H
 #define FAILEDSTATE_H
 
 #include "WorkItemState.h"
+/**
+ * @class FailedState
+ * @brief ConcreteState for a work item whose work went wrong while it was in
+ * progress. It allows makeAvailable (a retry; moves back to AvailableState)
+ * and cancel (moves to CancelledState); every other action is refused. The
+ * owner is kept, so a retry can go back to the same person.
+ */
 class FailedState: public WorkItemState{
 
     public:

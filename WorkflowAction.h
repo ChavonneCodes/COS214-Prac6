@@ -1,10 +1,20 @@
+/**
+ * @file WorkflowAction.h
+ * @brief implements command interface
+ */
 #ifndef WORKFLOWACTION_H
 #define WORKFLOWACTION_H
 #include <string>
 #include <iostream>
 /**
-         * @brief abstract interface for commands. Every command which inherits from WorkflowAction overrides these methods
-         */
+ * @class WorkflowAction
+ * @brief This is the Command participant. Every action performed on a work item is an
+ * object that can run itself (execute), reverse itself (undo) and describe
+ * itself (getDescription, getInstanceId). WorkflowEngine::submit is the
+ * invoker: it runs the command and, only if it succeeded, hands it to the
+ * HistoryManager so it can be undone. The receiver is the WorkItem, which
+ * passes the request on to its current state.
+ */
 class WorkflowAction{
 public:
 /**

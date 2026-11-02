@@ -1,15 +1,28 @@
+/**
+ * @file ApprovalHandler.h
+ * @brief implements ApprovalHandler
+ * 
+ *  
+ */
 #ifndef APPROVALHANDLER_H
 #define APPROVALHANDLER_H
 
 #include "Request.h"
 #include <string>
 
+ /** @brief Outcome of an approval handler's attempt to process a request.
+  */
 enum class HandlerResult{
     Continue,
     Handled,
     Rejected
 };
-
+/**
+ * @class ApprovalHandler
+ * @brief chain of responsibility, who handles a task?.
+ * 
+ *  
+ */
 class ApprovalHandler {
 public:
     virtual ~ApprovalHandler() = default;

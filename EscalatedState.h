@@ -1,7 +1,18 @@
+/**
+ * @file EscalatedState.h
+ * @brief Defines the EscalatedState class.
+ */
 #ifndef ESCALATEDSTATE_H
 #define ESCALATEDSTATE_H
 
 #include "WorkItemState.h"
+/**
+ * @class EscalatedState
+ * @brief ConcreteState for a work item that has been handed over for someone else to
+ * pick up, for example after a timeout. The previous owner has been released.
+ * It allows assign (a new owner takes it; moves to AssignedState) and cancel
+ * (moves to CancelledState); every other action is refused.
+ */
 class EscalatedState: public WorkItemState{
 
     public:

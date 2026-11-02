@@ -1,5 +1,4 @@
 /**
- * @file WorkflowNodeData.h
  * @brief Defines the raw data structures used to build the Composite tree.
  * 
  * This file provides a Data Transfer Object (DTO) that allows users to define

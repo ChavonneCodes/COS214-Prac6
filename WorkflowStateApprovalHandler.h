@@ -2,6 +2,10 @@
 #define WORKFLOWSTATEAPPROVALHANDLER_H
 
 #include "ApprovalHandler.h"
+/**
+ * @class WorkflowStateApprovalHandler
+ * @brief approves workflow states
+ */
 
 class WorkflowStateApprovalHandler : public ApprovalHandler {
 public:

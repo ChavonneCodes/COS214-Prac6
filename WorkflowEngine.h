@@ -106,7 +106,13 @@ public:
      */
     WorkflowInstance* getInstance(const std::string& instanceId);
 
-    /**
+    
+     /**
+ * @brief Releases a work item from its current participant.
+ * @param item Non-owning pointer to the work item. Caller retains ownership.
+ */
+     bool release(WorkItem* item);
+     /**
      * @brief Executes a command (Command pattern, role: Invoker).
      *
      * The engine takes ownership of the command. Commands that succeed are
@@ -114,7 +120,6 @@ public:
      * @param action Command to execute.
      * @return true if the command succeeded.
      */
-     bool release(WorkItem* item);
     bool submit(WorkflowAction* action);
 
     /**

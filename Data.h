@@ -1,8 +1,16 @@
+/**
+ * @file Data.h
+ * @brief Defines the Dataclass.
+ */
 #ifndef DATA_H
 #define DATA_H
 
 #include <iostream>
 #include <string>
+/**
+ * @class Data
+ * @brief Stores system Data
+ */
 
 class Data{
     public:
@@ -13,7 +21,6 @@ class Data{
 
         /**
         *@brief Constructs a Data object with an initial value.
-        *@param value The initial string value to store.
         */
         Data(std::string);
 
@@ -25,7 +32,6 @@ class Data{
 
         /**
         *@brief Updates the stored value.
-        *@param value The new string value to store.
         */
         void setValue(std::string);
 
