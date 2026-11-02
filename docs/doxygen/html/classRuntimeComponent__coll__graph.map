@@ -1,0 +1,5 @@
+<map id="RuntimeComponent" name="RuntimeComponent">
+<area shape="rect" id="Node000001" title="The base Component in the Composite pattern for running workflow instances." alt="" coords="45,81,197,109"/>
+<area shape="rect" id="Node000002" href="$classIterable.html" title=" " alt="" coords="5,5,237,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="123,47,123,82,119,79,119,51"/>
+</map>

@@ -1,0 +1,13 @@
+<map id="SubProcessDefinition.h" name="SubProcessDefinition.h">
+<area shape="rect" id="Node000001" title="Defines the SubProcessDefinition class." alt="" coords="60,5,230,33"/>
+<area shape="rect" id="Node000002" href="$DemoRunner_8h.html" title="The code both demo scenarios share: one engine and one run loop." alt="" coords="5,81,123,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="118,46,80,82,77,79,121,41"/>
+<area shape="rect" id="Node000004" href="$SubProcessInstance_8h.html" title="Defines the SubProcessInstance class." alt="" coords="147,81,309,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="172,41,216,80,211,81,171,46"/>
+<area shape="rect" id="Node000003" href="$main_8cpp.html" title="TIVIDY demo: one engine runs two unrelated processes." alt="" coords="23,157,105,184"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="66,123,67,157,61,155,62,126"/>
+<area shape="rect" id="Node000005" href="$ProgressReportVisitor_8cpp.html" title="Implementation of ProgressReportVisitor (Visitor pattern: ConcreteVisitor)." alt="" coords="131,157,320,184"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="229,123,228,158,224,155,225,126"/>
+<area shape="rect" id="Node000006" href="$WorkloadVisitor_8cpp.html" title="Implementation of WorkloadVisitor (Visitor pattern: ConcreteVisitor)." alt="" coords="344,157,494,184"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="277,112,388,156,382,157,276,117"/>
+</map>

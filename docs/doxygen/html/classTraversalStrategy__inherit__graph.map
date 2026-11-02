@@ -1,0 +1,7 @@
+<map id="TraversalStrategy&lt; T &gt;" name="TraversalStrategy&lt; T &gt;">
+<area shape="rect" id="Node000001" title="Abstract strategy interface defining how nodes are buffered and retrieved during iteration." alt="" coords="128,5,301,33"/>
+<area shape="rect" id="Node000002" href="$classBFSTraversalStrategy.html" title="Breadth&#45;First Search (BFS) implementation of TraversalStrategy using FIFO (std::queue)." alt="" coords="5,81,203,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="185,41,125,83,122,78,180,42"/>
+<area shape="rect" id="Node000003" href="$classDFSTraversalStrategy.html" title="Depth&#45;First Search (DFS) implementation of TraversalStrategy using LIFO (std::stack)." alt="" coords="226,81,424,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="248,39,308,81,303,80,246,44"/>
+</map>

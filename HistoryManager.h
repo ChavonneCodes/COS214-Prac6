@@ -1,10 +1,18 @@
+/**
+ * @file HistoryManager.h
+ * @brief Defines the HistoryManager class.
+ */
+
 #ifndef HISTORYMANAGER_H
 #define HISTORYMANAGER_H
 
 #include "WorkflowAction.h"
 #include <iostream>
 #include <vector>
-
+/**
+ * @class HistoryManager
+ * @brief stores mementos
+ */
 class HistoryManager{
     public:
         /**

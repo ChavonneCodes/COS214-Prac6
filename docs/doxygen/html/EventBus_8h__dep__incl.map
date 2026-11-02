@@ -1,0 +1,65 @@
+<map id="EventBus.h" name="EventBus.h">
+<area shape="rect" id="Node000001" title="Central publisher that forwards workflow events to attached observers." alt="" coords="143,5,237,33"/>
+<area shape="rect" id="Node000002" href="$DemoRunner_8h.html" title="The code both demo scenarios share: one engine and one run loop." alt="" coords="762,384,879,411"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="126,33,78,51,54,65,33,83,18,103,11,122,9,169,9,247,14,283,30,305,55,317,87,323,166,325,210,327,253,333,395,359,537,377,664,387,764,394,759,395,663,392,536,382,394,365,252,338,209,332,166,330,86,328,53,322,27,309,9,285,3,248,3,169,6,121,13,100,29,79,51,61,75,46,129,28"/>
+<area shape="rect" id="Node000004" href="$EventBus_8cpp.html" title="Implementation of EventBus (Observer pattern: Subject)." alt="" coords="43,81,153,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="160,45,116,82,112,79,163,40"/>
+<area shape="rect" id="Node000005" href="$WorkItem_8h_source.html" title=" " alt="" coords="1050,81,1146,109"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="252,23,1050,87,1048,92,253,28"/>
+<area shape="rect" id="Node000007" href="$WorkflowEngine_8h_source.html" title=" " alt="" coords="1020,232,1157,260"/>
+<area shape="poly" id="edge40_Node000001_Node000007" title=" " alt="" coords="194,46,204,80,218,117,238,153,267,182,300,190,370,198,582,215,1022,240,1017,243,582,220,369,204,299,195,265,187,234,157,213,120,199,82,194,51"/>
+<area shape="rect" id="Node000019" href="$WorkflowInstance_8h.html" title="Defines the WorkflowInstance class." alt="" coords="1756,157,1904,184"/>
+<area shape="poly" id="edge41_Node000001_Node000019" title=" " alt="" coords="252,20,635,39,894,56,1158,78,1492,117,1758,157,1753,158,1492,123,1158,84,894,62,635,45,253,26"/>
+<area shape="rect" id="Node000003" href="$main_8cpp.html" title="TIVIDY demo: one engine runs two unrelated processes." alt="" coords="1371,459,1452,487"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="895,405,1373,466,1368,467,894,411"/>
+<area shape="poly" id="edge17_Node000005_Node000002" title=" " alt="" coords="1031,96,837,100,584,107,463,114,358,125,279,140,254,149,238,159,222,181,214,204,214,227,220,250,231,272,248,294,293,333,329,351,379,365,441,375,509,383,647,392,764,396,759,397,647,397,508,388,440,381,378,370,327,356,290,338,244,298,227,275,215,252,208,228,209,203,217,179,235,155,251,144,278,135,357,120,462,109,584,102,837,94,1036,95"/>
+<area shape="rect" id="Node000006" href="$AssignCommand_8h.html" title="Defines the AssignCommand class." alt="" coords="1340,157,1483,184"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="1162,108,1358,156,1352,156,1161,114"/>
+<area shape="poly" id="edge30_Node000005_Node000007" title=" " alt="" coords="1077,119,1066,139,1058,157,1056,177,1061,197,1080,233,1075,231,1056,199,1051,178,1053,156,1061,136,1073,123"/>
+<area shape="rect" id="Node000009" href="$TimeoutEscalationHandler_8h.html" title="Defines the TimeoutEscalationHandler class." alt="" coords="718,308,923,336"/>
+<area shape="poly" id="edge29_Node000005_Node000009" title=" " alt="" coords="1073,118,838,310,835,305,1068,120"/>
+<area shape="rect" id="Node000010" href="$CancelCommand_8h.html" title="Defines the CancelCommand class." alt="" coords="1767,384,1911,411"/>
+<area shape="poly" id="edge13_Node000005_Node000010" title=" " alt="" coords="1161,94,1353,97,1598,106,1716,114,1819,124,1897,137,1924,145,1941,155,1962,178,1972,203,1971,230,1962,261,1941,301,1913,336,1858,386,1856,381,1909,332,1936,298,1957,259,1966,229,1966,204,1958,181,1938,159,1922,150,1896,143,1818,129,1716,119,1598,111,1353,102,1162,99"/>
+<area shape="rect" id="Node000011" href="$CompleteCommand_8h.html" title="Defines the CompleteCommand class." alt="" coords="1147,308,1310,336"/>
+<area shape="poly" id="edge15_Node000005_Node000011" title=" " alt="" coords="1160,111,1235,134,1263,145,1279,155,1288,175,1291,197,1289,219,1282,240,1262,280,1241,310,1238,306,1257,277,1277,238,1283,217,1286,197,1283,177,1275,158,1261,150,1233,139,1160,116"/>
+<area shape="rect" id="Node000012" href="$EscalateCommand_8h.html" title="Defines the EscalateCommand class." alt="" coords="603,232,758,260"/>
+<area shape="poly" id="edge18_Node000005_Node000012" title=" " alt="" coords="1032,97,843,100,600,108,483,116,382,126,307,141,282,149,268,158,262,170,268,183,289,199,322,212,410,230,511,239,605,244,600,246,510,245,409,235,321,217,287,203,264,186,257,170,264,155,280,144,306,135,381,121,483,110,600,103,843,95,1037,95"/>
+<area shape="rect" id="Node000013" href="$FailCommand_8h.html" title="Defines the FailCommand class." alt="" coords="1609,157,1731,184"/>
+<area shape="poly" id="edge21_Node000005_Node000013" title=" " alt="" coords="1161,101,1590,154,1611,159,1606,159,1590,159,1161,106"/>
+<area shape="rect" id="Node000014" href="$ProgressReportVisitor_8cpp.html" title="Implementation of ProgressReportVisitor (Visitor pattern: ConcreteVisitor)." alt="" coords="1568,232,1756,260"/>
+<area shape="poly" id="edge22_Node000005_Node000014" title=" " alt="" coords="1161,93,1240,96,1336,105,1440,123,1491,137,1540,154,1573,171,1604,191,1651,232,1646,231,1601,196,1571,175,1538,159,1489,142,1438,128,1335,110,1240,101,1162,98"/>
+<area shape="rect" id="Node000015" href="$RejectCommand_8h.html" title="Defines the RejectCommand class." alt="" coords="1449,384,1590,411"/>
+<area shape="poly" id="edge23_Node000005_Node000015" title=" " alt="" coords="1161,107,1245,112,1344,115,1392,119,1435,126,1471,138,1497,155,1517,182,1529,213,1536,245,1538,279,1534,340,1525,385,1521,381,1529,339,1533,279,1531,246,1524,214,1512,184,1493,159,1469,142,1434,131,1391,124,1343,120,1245,117,1162,112"/>
+<area shape="rect" id="Node000016" href="$RoleBasedAssignment_8cpp.html" title="Implementation of RoleBasedAssignment (Strategy pattern: ConcreteStrategy)." alt="" coords="278,157,472,184"/>
+<area shape="poly" id="edge25_Node000005_Node000016" title=" " alt="" coords="1033,104,485,159,474,160,472,155,484,154,1036,100"/>
+<area shape="rect" id="Node000017" href="$RuleBasedAssignment_8cpp.html" title="Implementation of RuleBasedAssignment (Strategy pattern: ConcreteStrategy)." alt="" coords="497,157,691,184"/>
+<area shape="poly" id="edge26_Node000005_Node000017" title=" " alt="" coords="1032,107,685,159,684,153,1036,104"/>
+<area shape="rect" id="Node000018" href="$StartCommand_8h.html" title="Defines the StartCommand class." alt="" coords="303,308,434,336"/>
+<area shape="poly" id="edge27_Node000005_Node000018" title=" " alt="" coords="1032,97,841,100,594,108,475,115,372,126,296,140,270,149,256,158,245,177,245,197,253,218,268,238,309,277,350,307,345,308,306,281,264,242,249,220,240,198,240,176,252,155,268,144,294,135,371,121,475,110,594,102,841,95,1037,95"/>
+<area shape="poly" id="edge31_Node000005_Node000019" title=" " alt="" coords="1162,98,1416,120,1744,154,1758,158,1753,158,1743,159,1416,125,1162,104"/>
+<area shape="rect" id="Node000020" href="$WorkloadVisitor_8cpp.html" title="Implementation of WorkloadVisitor (Visitor pattern: ConcreteVisitor)." alt="" coords="1797,232,1948,260"/>
+<area shape="poly" id="edge36_Node000005_Node000020" title=" " alt="" coords="1161,93,1350,95,1589,103,1704,111,1803,121,1878,136,1903,145,1918,155,1925,165,1926,176,1920,197,1905,217,1889,234,1886,230,1901,214,1915,195,1921,175,1920,167,1915,159,1901,149,1876,141,1803,127,1704,116,1589,108,1350,101,1162,99"/>
+<area shape="rect" id="Node000021" href="$WorkloadBasedAssignment_8cpp.html" title="Implementation of WorkloadBasedAssignment (Strategy pattern: ConcreteStrategy)." alt="" coords="715,157,942,184"/>
+<area shape="poly" id="edge35_Node000005_Node000021" title=" " alt="" coords="1033,114,878,159,876,154,1038,112"/>
+<area shape="rect" id="Node000022" href="$makeAvailableCommand_8h.html" title="Defines the makeAvailableCommand class." alt="" coords="1068,157,1264,184"/>
+<area shape="poly" id="edge37_Node000005_Node000022" title=" " alt="" coords="1121,118,1156,157,1151,156,1120,123"/>
+<area shape="poly" id="edge12_Node000006_Node000003" title=" " alt="" coords="1413,198,1413,460,1409,457,1409,202"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="1341,188,1147,234,1146,229,1336,189"/>
+<area shape="poly" id="edge7_Node000007_Node000002" title=" " alt="" coords="1090,274,1085,308,1078,324,1068,338,1036,356,988,371,880,391,879,386,986,366,1034,351,1064,334,1074,321,1080,306,1087,277"/>
+<area shape="rect" id="Node000008" href="$DemoTrace_8h.html" title="Records a demo run so the GUI (gui/index.html) can replay what the engine really did." alt="" coords="947,308,1054,336"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="1064,269,1017,310,1015,305,1059,271"/>
+<area shape="poly" id="edge10_Node000007_Node000009" title=" " alt="" coords="1029,264,869,310,868,305,1024,265"/>
+<area shape="poly" id="edge9_Node000008_Node000002" title=" " alt="" coords="957,341,853,386,852,381,952,342"/>
+<area shape="poly" id="edge11_Node000009_Node000002" title=" " alt="" coords="822,350,823,385,818,382,819,353"/>
+<area shape="poly" id="edge14_Node000010_Node000003" title=" " alt="" coords="1754,414,1453,467,1452,462,1749,414"/>
+<area shape="poly" id="edge16_Node000011_Node000002" title=" " alt="" coords="1143,339,880,388,879,383,1138,339"/>
+<area shape="poly" id="edge19_Node000012_Node000002" title=" " alt="" coords="684,273,693,305,708,334,723,349,741,362,781,383,775,383,738,367,720,353,704,337,688,307,681,277"/>
+<area shape="poly" id="edge20_Node000012_Node000009" title=" " alt="" coords="720,265,798,308,793,307,719,270"/>
+<area shape="poly" id="edge24_Node000015_Node000003" title=" " alt="" coords="1490,420,1431,461,1430,456,1485,421"/>
+<area shape="poly" id="edge28_Node000018_Node000002" title=" " alt="" coords="450,334,764,386,759,388,450,339"/>
+<area shape="poly" id="edge33_Node000019_Node000007" title=" " alt="" coords="1737,185,1410,221,1158,242,1157,237,1409,216,1743,184"/>
+<area shape="poly" id="edge32_Node000019_Node000014" title=" " alt="" coords="1789,190,1692,234,1691,229,1784,192"/>
+<area shape="poly" id="edge34_Node000019_Node000020" title=" " alt="" coords="1846,195,1867,233,1863,231,1844,200"/>
+<area shape="poly" id="edge39_Node000022_Node000003" title=" " alt="" coords="1198,191,1260,241,1293,272,1324,306,1353,347,1377,390,1408,460,1404,458,1372,393,1348,350,1320,310,1290,276,1256,245,1196,196"/>
+<area shape="poly" id="edge38_Node000022_Node000007" title=" " alt="" coords="1143,194,1104,234,1101,230,1139,196"/>
+</map>

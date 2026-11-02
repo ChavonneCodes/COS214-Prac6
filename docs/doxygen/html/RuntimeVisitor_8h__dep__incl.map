@@ -1,0 +1,26 @@
+<map id="RuntimeVisitor.h" name="RuntimeVisitor.h">
+<area shape="rect" id="Node000001" title="Operation that can be run over every node of a runtime tree." alt="" coords="318,5,448,33"/>
+<area shape="rect" id="Node000002" href="$ProgressReportVisitor_8h.html" title="Visitor that builds a progress / completion report of a runtime tree." alt="" coords="75,81,248,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="327,40,202,83,200,78,331,36"/>
+<area shape="rect" id="Node000007" href="$WorkflowEngine_8h_source.html" title=" " alt="" coords="314,81,452,109"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="384,47,385,82,381,79,382,51"/>
+<area shape="rect" id="Node000009" href="$WorkloadVisitor_8h.html" title="Visitor that groups the work items of a runtime tree by participant." alt="" coords="595,81,731,109"/>
+<area shape="poly" id="edge12_Node000001_Node000009" title=" " alt="" coords="447,35,615,80,610,81,447,40"/>
+<area shape="rect" id="Node000003" href="$DemoRunner_8h.html" title="The code both demo scenarios share: one engine and one run loop." alt="" coords="324,232,442,260"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="84,115,50,128,22,144,13,153,9,162,9,172,16,183,36,198,66,210,149,228,242,237,327,243,321,245,241,243,148,233,65,215,33,202,12,186,4,173,3,161,9,150,19,140,48,123,87,111"/>
+<area shape="rect" id="Node000005" href="$DemoTrace_8h.html" title="Records a demo run so the GUI (gui/index.html) can replay what the engine really did." alt="" coords="239,157,345,184"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="198,114,272,155,267,157,198,119"/>
+<area shape="rect" id="Node000006" href="$ProgressReportVisitor_8cpp.html" title="Implementation of ProgressReportVisitor (Visitor pattern: ConcreteVisitor)." alt="" coords="26,157,214,184"/>
+<area shape="poly" id="edge6_Node000002_Node000006" title=" " alt="" coords="148,120,130,158,125,155,145,125"/>
+<area shape="rect" id="Node000004" href="$main_8cpp.html" title="TIVIDY demo: one engine runs two unrelated processes." alt="" coords="342,308,424,336"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="385,274,385,309,381,306,381,278"/>
+<area shape="poly" id="edge5_Node000005_Node000003" title=" " alt="" coords="321,192,370,232,364,232,320,197"/>
+<area shape="poly" id="edge8_Node000007_Node000003" title=" " alt="" coords="385,122,385,233,381,231,381,126"/>
+<area shape="poly" id="edge9_Node000007_Node000005" title=" " alt="" coords="357,117,310,158,307,154,353,120"/>
+<area shape="rect" id="Node000008" href="$TimeoutEscalationHandler_8h.html" title="Defines the TimeoutEscalationHandler class." alt="" coords="421,157,625,184"/>
+<area shape="poly" id="edge10_Node000007_Node000008" title=" " alt="" coords="422,114,501,156,495,156,421,119"/>
+<area shape="poly" id="edge11_Node000008_Node000003" title=" " alt="" coords="487,191,409,234,407,229,482,193"/>
+<area shape="poly" id="edge13_Node000009_Node000003" title=" " alt="" coords="664,122,658,157,650,173,639,186,606,205,555,220,443,240,442,235,554,215,604,200,636,182,646,170,653,155,660,126"/>
+<area shape="rect" id="Node000010" href="$WorkloadVisitor_8cpp.html" title="Implementation of WorkloadVisitor (Visitor pattern: ConcreteVisitor)." alt="" coords="700,157,850,184"/>
+<area shape="poly" id="edge14_Node000009_Node000010" title=" " alt="" coords="696,115,758,156,752,156,695,120"/>
+</map>

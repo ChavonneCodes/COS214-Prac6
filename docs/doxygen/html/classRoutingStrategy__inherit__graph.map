@@ -1,0 +1,9 @@
+<map id="RoutingStrategy" name="RoutingStrategy">
+<area shape="rect" id="Node000001" title="Decides what happens next in a workflow once an activity is complete." alt="" coords="182,5,308,33"/>
+<area shape="rect" id="Node000002" href="$classConditionalRouting.html" title="Goes to one activity if the outcome matches a condition, otherwise to another." alt="" coords="5,81,151,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="204,40,109,83,107,78,199,39"/>
+<area shape="rect" id="Node000003" href="$classSequentialRouting.html" title="Moves on to the activities linked by an &quot;always&quot; transition, ignoring the outcome." alt="" coords="174,81,315,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="247,47,247,82,242,79,243,51"/>
+<area shape="rect" id="Node000004" href="$classTreeRouting.html" title="Follows the fixed transitions like SequentialRouting, but can also reach a sub&#45;process node." alt="" coords="340,81,438,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="285,38,366,81,360,81,283,43"/>
+</map>

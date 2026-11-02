@@ -1,9 +1,17 @@
+/**
+ * @file RoleApprovalHandler.h
+ * @brief Defines the RoleApprovalHandler class.
+ */
 #ifndef ROLEAPPROVALHANDLER_H
 #define ROLEAPPROVALHANDLER_H
 
 #include "ApprovalHandler.h"
 #include <iostream>
 #include <string>
+/**
+ * @class RoleApprovalHandler
+ * @brief Determines who can handle approval chain of responsibility
+ */
 
 class RoleApprovalHandler : public ApprovalHandler {
     public:
@@ -13,7 +21,7 @@ class RoleApprovalHandler : public ApprovalHandler {
          * Initialises the handler with the role ID it is responsible
          * for matching against approval requests.
          *
-         * @param roleId The ID of the role this handler is responsible for.
+         * 
          */
         RoleApprovalHandler(const std::string&);
 

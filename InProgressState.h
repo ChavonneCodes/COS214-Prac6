@@ -1,7 +1,19 @@
+/**
+ * @file InProgressState.h
+ * @brief Defines the InProgressState class.
+ */
 #ifndef INPROGRESSSTATE_H
 #define INPROGRESSSTATE_H
 
 #include "WorkItemState.h"
+/**
+ * @class InProgressState
+ * @brief ConcreteState for a work item that its owner is currently working on. It
+ * allows complete (moves to CompletedState, ending the owner's workload but
+ * keeping them on record), fail (moves to FailedState and the owner is kept so
+ * they can retry), escalate (the owner is released; moves to EscalatedState)
+ * and cancel (moves to CancelledState).
+ */
 class InProgressState: public WorkItemState{
 
     public:

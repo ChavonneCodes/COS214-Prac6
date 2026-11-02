@@ -1,0 +1,12 @@
+<map id="AuditObserver.h" name="AuditObserver.h">
+<area shape="rect" id="Node000001" title="Observer that keeps a permanent audit trail of workflow events." alt="" coords="5,5,131,33"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="23,232,81,260"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="54,36,41,56,28,82,22,118,25,154,33,188,43,217,37,218,28,190,20,155,17,117,23,80,36,53,56,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="37,81,99,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="68,31,71,66,65,65,68,36"/>
+<area shape="rect" id="Node000004" href="$WorkFlowObserver_8h.html" title="Abstract observer interface for workflow events." alt="" coords="124,81,279,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="92,31,167,72,163,75,92,36"/>
+<area shape="rect" id="Node000005" href="$WorkFlowEvent_8h.html" title="Message published on the EventBus when something happens to a work item." alt="" coords="85,157,219,184"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="194,107,171,145,167,142,191,111"/>
+<area shape="poly" id="edge5_Node000005_Node000002" title=" " alt="" coords="137,184,83,225,80,221,132,186"/>
+</map>

@@ -1,3 +1,7 @@
+/**
+ * @file TimeoutEscalationHandler.h
+ * @brief Defines the TimeoutEscalationHandler class.
+ */
 #ifndef TIMEOUTESCALATIONHANDLER_H
 #define TIMEOUTESCALATIONHANDLER_H
 
@@ -5,6 +9,10 @@
 #include "WorkItem.h"
 #include "EscalateCommand.h"
 #include "WorkflowEngine.h" 
+/**
+ * @class TimeoutEscalationHandler
+ * @brief Moves a task along after a certain amount of time.
+ */
 
 class TimeoutEscalationHandler : public ApprovalHandler {
 public:
@@ -24,9 +32,8 @@ public:
      * Stores a pointer to the work item that this handler will
      * attempt to escalate when a matching timeout request is received.
      *
-     * @param item Pointer to the work item to be escalated.
      */
-    TimeoutEscalationHandler(WorkItem*,WorkflowEngine* engine);
+    TimeoutEscalationHandler(WorkItem*,WorkflowEngine* );
 
     /**
      * @brief Constructs a TimeoutEscalationHandler without a work item.

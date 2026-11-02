@@ -1,0 +1,10 @@
+<map id="RoutingHelper.h" name="RoutingHelper.h">
+<area shape="rect" id="Node000001" title="Small lookup helper shared by the routing strategies." alt="" coords="101,5,227,33"/>
+<area shape="rect" id="Node000002" href="$ConditionalRouting_8h.html" title="Routing that branches on the outcome of the finished activity." alt="" coords="5,81,163,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="137,46,100,82,96,79,140,42"/>
+<area shape="rect" id="Node000004" href="$DemoRunner_8h.html" title="The code both demo scenarios share: one engine and one run loop." alt="" coords="187,81,304,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="190,41,234,80,228,81,189,46"/>
+<area shape="rect" id="Node000003" href="$main_8cpp.html" title="TIVIDY demo: one engine runs two unrelated processes." alt="" coords="123,157,205,184"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="111,117,152,156,147,157,109,122"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="222,118,180,158,177,154,217,120"/>
+</map>

@@ -1,0 +1,19 @@
+<map id="WorkflowInstance.h" name="WorkflowInstance.h">
+<area shape="rect" id="Node000001" title="Defines the WorkflowInstance class." alt="" coords="212,5,360,33"/>
+<area shape="rect" id="Node000002" href="$ProgressReportVisitor_8cpp.html" title="Implementation of ProgressReportVisitor (Visitor pattern: ConcreteVisitor)." alt="" coords="5,81,194,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="237,41,134,83,131,78,240,37"/>
+<area shape="rect" id="Node000003" href="$WorkflowEngine_8h_source.html" title=" " alt="" coords="218,81,355,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="287,46,289,82,284,80,285,51"/>
+<area shape="rect" id="Node000008" href="$WorkloadVisitor_8cpp.html" title="Implementation of WorkloadVisitor (Visitor pattern: ConcreteVisitor)." alt="" coords="379,81,529,109"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="330,37,427,80,422,81,330,42"/>
+<area shape="rect" id="Node000004" href="$DemoRunner_8h.html" title="The code both demo scenarios share: one engine and one run loop." alt="" coords="228,232,345,260"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="255,116,237,137,223,158,221,178,231,198,248,215,267,232,262,232,244,219,227,201,216,179,218,156,233,134,251,120"/>
+<area shape="rect" id="Node000006" href="$DemoTrace_8h.html" title="Records a demo run so the GUI (gui/index.html) can replay what the engine really did." alt="" coords="233,157,339,184"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="288,122,289,157,284,155,285,127"/>
+<area shape="rect" id="Node000007" href="$TimeoutEscalationHandler_8h.html" title="Defines the TimeoutEscalationHandler class." alt="" coords="364,157,568,184"/>
+<area shape="poly" id="edge7_Node000003_Node000007" title=" " alt="" coords="332,112,437,156,432,157,332,118"/>
+<area shape="rect" id="Node000005" href="$main_8cpp.html" title="TIVIDY demo: one engine runs two unrelated processes." alt="" coords="246,308,327,336"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="288,274,288,309,284,306,284,278"/>
+<area shape="poly" id="edge6_Node000006_Node000004" title=" " alt="" coords="288,198,288,233,284,231,285,202"/>
+<area shape="poly" id="edge8_Node000007_Node000004" title=" " alt="" coords="423,190,319,234,317,229,418,191"/>
+</map>

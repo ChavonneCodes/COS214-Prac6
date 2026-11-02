@@ -1,0 +1,64 @@
+<map id="makeAvailableCommand.h" name="makeAvailableCommand.h">
+<area shape="rect" id="Node000001" title="Defines the makeAvailableCommand class." alt="" coords="431,5,628,33"/>
+<area shape="rect" id="Node000002" href="$WorkflowAction_8h.html" title="implements command interface" alt="" coords="680,232,814,260"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="543,31,591,79,727,221,721,221,587,83,542,36"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="554,384,612,411"/>
+<area shape="poly" id="edge42_Node000001_Node000003" title=" " alt="" coords="429,30,301,47,162,74,101,93,52,115,19,140,11,154,8,169,8,247,12,266,25,283,44,299,70,313,139,338,221,357,310,371,397,381,540,394,535,394,397,386,309,376,220,362,137,343,68,318,41,303,21,287,7,268,3,248,3,169,6,152,15,137,49,110,99,88,160,69,300,42,433,27"/>
+<area shape="rect" id="Node000005" href="$WorkItemMemento_8h_source.html" title=" " alt="" coords="224,157,382,184"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="508,35,336,150,333,146,512,32"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="946,308,1008,336"/>
+<area shape="poly" id="edge41_Node000001_Node000009" title=" " alt="" coords="587,31,670,56,769,96,819,122,869,153,914,189,954,231,970,261,977,294,973,291,965,263,950,234,911,193,865,158,817,127,766,101,668,61,587,36"/>
+<area shape="rect" id="Node000010" href="$WorkItem_8h_source.html" title=" " alt="" coords="481,81,578,109"/>
+<area shape="poly" id="edge16_Node000001_Node000010" title=" " alt="" coords="531,31,532,66,527,64,528,36"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="738,260,663,338,614,377,612,372,660,334,733,262"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="350,308,429,336"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="680,261,445,312,444,307,685,260"/>
+<area shape="poly" id="edge15_Node000005_Node000003" title=" " alt="" coords="221,177,164,186,110,202,91,212,80,225,76,240,84,259,95,272,112,285,159,309,219,330,286,348,426,374,541,391,535,392,425,379,285,353,217,335,157,314,109,290,92,276,79,261,71,241,75,223,88,208,108,197,162,181,225,174"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="311,182,377,294,371,294,309,187"/>
+<area shape="rect" id="Node000006" href="$WorkItemState_8h.html" title="implements WorkItemState" alt="" coords="94,232,224,260"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="275,187,199,227,196,223,279,183"/>
+<area shape="rect" id="Node000007" href="$Data_8h.html" title="Defines the Dataclass." alt="" coords="248,232,312,260"/>
+<area shape="poly" id="edge9_Node000005_Node000007" title=" " alt="" coords="300,183,291,219,286,216,297,187"/>
+<area shape="rect" id="Node000008" href="$Participant_8h.html" title="A person (or system) who can perform work items." alt="" coords="838,232,940,260"/>
+<area shape="poly" id="edge12_Node000005_Node000008" title=" " alt="" coords="382,176,578,197,825,231,820,233,578,202,382,182"/>
+<area shape="poly" id="edge8_Node000006_Node000003" title=" " alt="" coords="177,258,234,296,308,333,369,354,431,369,541,391,535,391,430,375,367,359,306,338,231,300,176,263"/>
+<area shape="poly" id="edge7_Node000006_Node000004" title=" " alt="" coords="200,258,337,302,332,304,200,263"/>
+<area shape="poly" id="edge11_Node000007_Node000003" title=" " alt="" coords="286,258,306,297,321,317,339,333,388,360,441,377,493,387,541,395,535,395,492,393,440,383,386,365,336,338,317,320,302,300,284,263"/>
+<area shape="poly" id="edge10_Node000007_Node000004" title=" " alt="" coords="300,258,360,299,355,299,299,263"/>
+<area shape="poly" id="edge13_Node000008_Node000003" title=" " alt="" coords="865,260,624,379,622,374,860,261"/>
+<area shape="poly" id="edge14_Node000008_Node000009" title=" " alt="" coords="906,258,953,299,948,297,904,263"/>
+<area shape="poly" id="edge39_Node000010_Node000005" title=" " alt="" coords="487,111,359,154,356,149,491,108"/>
+<area shape="poly" id="edge32_Node000010_Node000006" title=" " alt="" coords="478,102,334,123,262,139,234,148,214,159,199,172,187,187,170,220,166,217,183,184,195,168,210,154,232,144,260,134,333,118,483,99"/>
+<area shape="poly" id="edge40_Node000010_Node000007" title=" " alt="" coords="513,108,395,187,321,227,318,222,392,182,508,111"/>
+<area shape="poly" id="edge24_Node000010_Node000008" title=" " alt="" coords="561,106,847,225,841,227,560,112"/>
+<area shape="rect" id="Node000011" href="$RuntimeComponent_8h.html" title="Defines the RuntimeComponent abstract base class." alt="" coords="1065,232,1228,260"/>
+<area shape="poly" id="edge17_Node000010_Node000011" title=" " alt="" coords="578,105,1080,227,1075,230,578,110"/>
+<area shape="rect" id="Node000016" href="$ActivityDefinition_8h.html" title="Defines the ActivityDefinition class." alt="" coords="456,157,602,184"/>
+<area shape="poly" id="edge25_Node000010_Node000016" title=" " alt="" coords="531,107,532,142,527,140,528,111"/>
+<area shape="rect" id="Node000018" href="$EventBus_8h.html" title="Central publisher that forwards workflow events to attached observers." alt="" coords="1204,157,1298,184"/>
+<area shape="poly" id="edge33_Node000010_Node000018" title=" " alt="" coords="578,98,1190,161,1186,165,578,104"/>
+<area shape="poly" id="edge22_Node000011_Node000003" title=" " alt="" coords="1135,260,1087,301,1055,322,1021,338,968,356,913,370,803,389,703,397,627,399,627,394,703,392,802,383,912,365,967,351,1019,333,1052,317,1084,297,1130,262"/>
+<area shape="poly" id="edge23_Node000011_Node000009" title=" " alt="" coords="1119,260,1022,304,1020,299,1114,261"/>
+<area shape="rect" id="Node000012" href="$Iterator_8h.html" title="Header file defining template interfaces and concrete classes for the Iterator and Strategy design pa..." alt="" coords="1397,308,1478,336"/>
+<area shape="poly" id="edge18_Node000011_Node000012" title=" " alt="" coords="1199,258,1385,307,1379,307,1199,263"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="1104,308,1189,336"/>
+<area shape="poly" id="edge21_Node000011_Node000015" title=" " alt="" coords="1148,259,1149,294,1145,291,1145,263"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="1450,384,1507,411"/>
+<area shape="poly" id="edge19_Node000012_Node000013" title=" " alt="" coords="1446,334,1466,371,1461,369,1443,339"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="1365,384,1427,411"/>
+<area shape="poly" id="edge20_Node000012_Node000014" title=" " alt="" coords="1432,335,1412,372,1409,368,1428,338"/>
+<area shape="poly" id="edge31_Node000016_Node000003" title=" " alt="" coords="563,182,595,202,609,215,620,231,627,249,629,268,626,306,615,341,600,372,597,368,610,340,621,305,624,268,621,250,615,234,605,219,591,206,562,188"/>
+<area shape="poly" id="edge30_Node000016_Node000004" title=" " alt="" coords="497,184,460,206,427,234,409,263,397,295,394,291,404,261,423,231,457,202,493,186"/>
+<area shape="rect" id="Node000017" href="$WorkflowComponent_8h.html" title="Defines the WorkflowComponent abstract base class." alt="" coords="437,232,606,260"/>
+<area shape="poly" id="edge26_Node000016_Node000017" title=" " alt="" coords="530,183,527,218,522,215,526,187"/>
+<area shape="poly" id="edge27_Node000017_Node000003" title=" " alt="" coords="528,258,574,370,569,368,525,262"/>
+<area shape="poly" id="edge29_Node000017_Node000004" title=" " alt="" coords="500,260,427,303,425,298,495,261"/>
+<area shape="poly" id="edge28_Node000017_Node000009" title=" " alt="" coords="604,258,934,312,928,314,603,263"/>
+<area shape="poly" id="edge34_Node000018_Node000009" title=" " alt="" coords="1206,178,1131,200,1091,215,1055,235,1021,264,995,298,992,293,1017,261,1052,230,1089,210,1129,195,1201,179"/>
+<area shape="rect" id="Node000019" href="$WorkFlowObserver_8h.html" title="Abstract observer interface for workflow events." alt="" coords="1253,232,1408,260"/>
+<area shape="poly" id="edge35_Node000018_Node000019" title=" " alt="" coords="1266,182,1308,222,1303,221,1264,187"/>
+<area shape="rect" id="Node000020" href="$WorkFlowEvent_8h.html" title="Message published on the EventBus when something happens to a work item." alt="" coords="1238,308,1372,336"/>
+<area shape="poly" id="edge38_Node000018_Node000020" title=" " alt="" coords="1298,172,1331,178,1365,188,1397,205,1422,231,1428,243,1428,254,1416,274,1392,291,1363,305,1362,300,1389,287,1412,271,1423,253,1423,244,1418,234,1393,210,1363,193,1330,183,1298,177"/>
+<area shape="poly" id="edge36_Node000019_Node000020" title=" " alt="" coords="1328,259,1317,295,1313,291,1324,262"/>
+<area shape="poly" id="edge37_Node000020_Node000003" title=" " alt="" coords="1240,331,1202,338,628,395,627,389,1201,333,1235,332"/>
+</map>

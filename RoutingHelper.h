@@ -22,7 +22,11 @@ inline const ActivityDefinition* findActivity(const WorkflowDefinition& definiti
     }
     return nullptr;
 }
-
+/** @brief Recursively searches a workflow tree for a node with the given id.
+ *  @param node Root of the (sub)tree to search. Non-owning.
+ *  @param id   Id of the node to find.
+ *  @return Pointer to the matching node, or nullptr if not found. Non-owning. 
+ */
 inline const WorkflowComponent* findNodeInTree(const WorkflowComponent* node,
                                                const std::string& id) {
     if (!node) return nullptr;

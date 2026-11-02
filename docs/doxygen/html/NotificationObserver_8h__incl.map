@@ -1,0 +1,12 @@
+<map id="NotificationObserver.h" name="NotificationObserver.h">
+<area shape="rect" id="Node000001" title="Observer that sends a notification for one chosen kind of event." alt="" coords="5,5,172,33"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="43,232,102,260"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="74,36,61,56,48,82,43,118,45,154,53,188,63,218,58,218,48,190,40,155,37,117,43,80,57,53,77,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="57,81,120,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="89,31,91,66,86,65,88,36"/>
+<area shape="rect" id="Node000004" href="$WorkFlowObserver_8h.html" title="Abstract observer interface for workflow events." alt="" coords="144,81,300,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="112,31,188,72,183,75,112,36"/>
+<area shape="rect" id="Node000005" href="$WorkFlowEvent_8h.html" title="Message published on the EventBus when something happens to a work item." alt="" coords="105,157,240,184"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="215,107,192,145,188,142,211,111"/>
+<area shape="poly" id="edge5_Node000005_Node000002" title=" " alt="" coords="157,184,104,225,101,221,152,186"/>
+</map>

@@ -1,0 +1,11 @@
+<map id="Participant.cpp" name="Participant.cpp">
+<area shape="rect" id="Node000001" title="Implementation of Participant (used by the Strategy pattern)." alt="" coords="76,5,193,33"/>
+<area shape="rect" id="Node000002" href="$Participant_8h.html" title="A person (or system) who can perform work items." alt="" coords="25,81,127,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="122,36,98,70,94,67,126,31"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="151,81,235,109"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="146,31,176,69,171,69,144,36"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,157,64,184"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="71,108,52,144,47,141,66,111"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="87,157,150,184"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="85,107,106,143,101,143,82,112"/>
+</map>

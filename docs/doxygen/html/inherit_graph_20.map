@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classRuntimeVisitor.html" title="Declares one visit method per concrete runtime node." alt="" coords="5,32,124,60"/>
+<area shape="rect" id="Node000001" href="$classProgressReportVisitor.html" title="Lists every stage and work item with its state, and counts progress." alt="" coords="172,5,334,33"/>
+<area shape="poly" id="edge22_Node000000_Node000001" title=" " alt="" coords="139,33,174,30,168,31,140,38"/>
+<area shape="rect" id="Node000002" href="$classWorkloadVisitor.html" title="Shows who holds which work items and how many are still open." alt="" coords="191,57,315,85"/>
+<area shape="poly" id="edge23_Node000000_Node000002" title=" " alt="" coords="139,53,193,62,188,63,139,59"/>
+</map>

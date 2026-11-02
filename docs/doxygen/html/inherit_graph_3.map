@@ -1,0 +1,9 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classAssignmentStrategy.html" title="Decides which participant should receive a work item." alt="" coords="5,57,159,85"/>
+<area shape="rect" id="Node000001" href="$classRoleBasedAssignment.html" title="Picks the first candidate who holds the role the activity requires." alt="" coords="223,5,390,33"/>
+<area shape="poly" id="edge5_Node000000_Node000001" title=" " alt="" coords="159,51,246,32,241,35,161,56"/>
+<area shape="rect" id="Node000002" href="$classRuleBasedAssignment.html" title="Uses a predicate to decide who may take a work item." alt="" coords="223,57,390,85"/>
+<area shape="poly" id="edge6_Node000000_Node000002" title=" " alt="" coords="174,69,225,71,219,72,174,74"/>
+<area shape="rect" id="Node000003" href="$classWorkloadBasedAssignment.html" title="Among candidates who hold the required role, picks the one with the fewest open work items." alt="" coords="207,109,406,137"/>
+<area shape="poly" id="edge7_Node000000_Node000003" title=" " alt="" coords="160,86,246,108,241,109,160,92"/>
+</map>

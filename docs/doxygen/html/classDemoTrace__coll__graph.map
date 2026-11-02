@@ -1,0 +1,5 @@
+<map id="DemoTrace" name="DemoTrace">
+<area shape="rect" id="Node000001" title="Observer that collects the run as JSON and writes it to a script the GUI loads." alt="" coords="30,81,125,109"/>
+<area shape="rect" id="Node000002" href="$classWorkFlowObserver.html" title="Anything that wants to react to workflow events implements this interface." alt="" coords="5,5,150,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="79,47,80,81,75,80,76,51"/>
+</map>

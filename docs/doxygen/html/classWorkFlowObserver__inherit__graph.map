@@ -1,0 +1,9 @@
+<map id="WorkFlowObserver" name="WorkFlowObserver">
+<area shape="rect" id="Node000001" title="Anything that wants to react to workflow events implements this interface." alt="" coords="118,5,263,33"/>
+<area shape="rect" id="Node000002" href="$classAuditObserver.html" title="Records every event it receives, in order, as one text line each." alt="" coords="5,81,120,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="157,41,86,83,84,78,152,41"/>
+<area shape="rect" id="Node000003" href="$classDemoTrace.html" title="Observer that collects the run as JSON and writes it to a script the GUI loads." alt="" coords="143,81,238,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="192,47,193,82,188,79,189,51"/>
+<area shape="rect" id="Node000004" href="$classNotificationObserver.html" title="Reacts only to the event name it watches and &quot;notifies&quot; someone." alt="" coords="262,81,418,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="232,38,316,80,311,81,230,43"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="SequentialRouting" name="SequentialRouting">
+<area shape="rect" id="Node000001" title="Moves on to the activities linked by an &quot;always&quot; transition, ignoring the outcome." alt="" coords="5,81,146,109"/>
+<area shape="rect" id="Node000002" href="$classRoutingStrategy.html" title="Decides what happens next in a workflow once an activity is complete." alt="" coords="12,5,139,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,47,78,81,73,80,74,51"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="PriorityRuntimeDecorator" name="PriorityRuntimeDecorator">
+<area shape="rect" id="Node000001" title=" " alt="" coords="27,232,215,260"/>
+<area shape="rect" id="Node000002" href="$classRuntimeComponentDecorator.html" title="Base decorator for runtime leaves, composites, and other decorators." alt="" coords="13,157,229,184"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="123,198,123,233,119,231,119,202"/>
+<area shape="rect" id="Node000003" href="$classRuntimeComponent.html" title="The base Component in the Composite pattern for running workflow instances." alt="" coords="45,81,197,109"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="122,122,124,157,118,155,120,127"/>
+<area shape="rect" id="Node000004" href="$classIterable.html" title=" " alt="" coords="5,5,237,33"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="122,46,124,81,118,80,120,51"/>
+</map>

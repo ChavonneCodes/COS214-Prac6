@@ -1,7 +1,19 @@
+/**
+ * @file AssignedState.h
+ * @brief Defines the AssignedState class.
+ */
 #ifndef ASSIGNEDSTATE_H
 #define ASSIGNEDSTATE_H
 
 #include "WorkItemState.h"
+/**
+ * @class AssignedState
+ * @brief ConcreteState for a work item that has an owner but has not been started. It
+ * allows start (moves to InProgressState), reject (the owner declines; moves
+ * to RejectedState and the owner is kept), escalate (the owner is released;
+ * moves to EscalatedState) and cancel (moves to CancelledState, ending the
+ * owner's workload but keeping them on record).
+ */
 class AssignedState: public WorkItemState{
 
     public:

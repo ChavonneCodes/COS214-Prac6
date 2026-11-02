@@ -1,0 +1,18 @@
+<map id="ApprovalHandler.h" name="ApprovalHandler.h">
+<area shape="rect" id="Node000001" title="implements ApprovalHandler" alt="" coords="253,5,395,33"/>
+<area shape="rect" id="Node000002" href="$DemoRunner_8h.html" title="The code both demo scenarios share: one engine and one run loop." alt="" coords="136,157,253,184"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="236,27,173,35,107,46,51,61,30,71,17,83,9,98,11,110,21,122,37,132,84,148,138,160,134,163,83,154,35,137,17,126,6,113,4,97,13,79,27,67,49,56,106,40,172,29,240,24"/>
+<area shape="rect" id="Node000004" href="$RoleApprovalHandler_8h.html" title="Defines the RoleApprovalHandler class." alt="" coords="27,81,197,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="270,41,151,83,149,78,273,36"/>
+<area shape="rect" id="Node000005" href="$TimeoutEscalationHandler_8h.html" title="Defines the TimeoutEscalationHandler class." alt="" coords="222,81,426,109"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="325,47,326,82,322,79,323,51"/>
+<area shape="rect" id="Node000006" href="$ValidationApprovalHandler_8h.html" title="implements ValidationApprovalHandler" alt="" coords="318,157,524,184"/>
+<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="388,37,418,54,441,80,447,100,446,121,431,158,427,154,440,120,442,101,436,82,414,59,387,42"/>
+<area shape="rect" id="Node000007" href="$WorkflowStateApprovalHandler_8h_source.html" title=" " alt="" coords="501,81,736,109"/>
+<area shape="poly" id="edge9_Node000001_Node000007" title=" " alt="" coords="392,35,568,79,563,81,392,40"/>
+<area shape="rect" id="Node000003" href="$main_8cpp.html" title="TIVIDY demo: one engine runs two unrelated processes." alt="" coords="246,232,327,260"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="224,192,273,232,268,232,222,197"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="139,117,183,156,177,157,137,122"/>
+<area shape="poly" id="edge6_Node000005_Node000002" title=" " alt="" coords="290,115,219,159,216,154,285,118"/>
+<area shape="poly" id="edge8_Node000006_Node000003" title=" " alt="" coords="387,191,311,234,310,229,382,193"/>
+</map>

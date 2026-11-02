@@ -237,7 +237,11 @@ void runProjectApproval(Demo& demo, Participant& lerato, Participant& mandla) {
 }
 
 } // namespace
-
+/** @brief Entry point; runs the EventFlow demo.
+ *  @param argc Argument count.
+ *  @param argv Argument values.
+ *  @return 0 on success. 
+ */
 int main(int argc, char* argv[]) {
     std::cout << "TIVIDY: one workflow engine, any process\n\n"
               << "How it works\n"

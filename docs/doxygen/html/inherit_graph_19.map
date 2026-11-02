@@ -1,0 +1,9 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classRoutingStrategy.html" title="Decides what happens next in a workflow once an activity is complete." alt="" coords="5,57,132,85"/>
+<area shape="rect" id="Node000001" href="$classConditionalRouting.html" title="Goes to one activity if the outcome matches a condition, otherwise to another." alt="" coords="180,5,325,33"/>
+<area shape="poly" id="edge19_Node000000_Node000001" title=" " alt="" coords="134,50,203,32,199,35,136,55"/>
+<area shape="rect" id="Node000002" href="$classSequentialRouting.html" title="Moves on to the activities linked by an &quot;always&quot; transition, ignoring the outcome." alt="" coords="182,57,322,85"/>
+<area shape="poly" id="edge20_Node000000_Node000002" title=" " alt="" coords="147,69,184,70,179,72,148,74"/>
+<area shape="rect" id="Node000003" href="$classTreeRouting.html" title="Follows the fixed transitions like SequentialRouting, but can also reach a sub&#45;process node." alt="" coords="203,109,302,137"/>
+<area shape="poly" id="edge21_Node000000_Node000003" title=" " alt="" coords="135,87,205,109,200,110,134,92"/>
+</map>

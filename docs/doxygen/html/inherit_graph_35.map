@@ -1,0 +1,9 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classWorkFlowObserver.html" title="Anything that wants to react to workflow events implements this interface." alt="" coords="5,57,150,85"/>
+<area shape="rect" id="Node000001" href="$classAuditObserver.html" title="Records every event it receives, in order, as one text line each." alt="" coords="218,5,332,33"/>
+<area shape="poly" id="edge38_Node000000_Node000001" title=" " alt="" coords="147,50,222,32,217,35,149,55"/>
+<area shape="rect" id="Node000002" href="$classDemoTrace.html" title="Observer that collects the run as JSON and writes it to a script the GUI loads." alt="" coords="228,57,322,85"/>
+<area shape="poly" id="edge39_Node000000_Node000002" title=" " alt="" coords="164,69,230,70,225,72,165,74"/>
+<area shape="rect" id="Node000003" href="$classNotificationObserver.html" title="Reacts only to the event name it watches and &quot;notifies&quot; someone." alt="" coords="198,109,353,137"/>
+<area shape="poly" id="edge40_Node000000_Node000003" title=" " alt="" coords="148,87,222,108,217,109,148,92"/>
+</map>

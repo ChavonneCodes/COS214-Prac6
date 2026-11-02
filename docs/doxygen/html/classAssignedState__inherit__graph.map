@@ -1,0 +1,5 @@
+<map id="AssignedState" name="AssignedState">
+<area shape="rect" id="Node000001" title="ConcreteState for a work item that has an owner but has not been started. It allows start (moves to I..." alt="" coords="7,81,122,109"/>
+<area shape="rect" id="Node000002" href="$classWorkItemState.html" title="This is the State participant for a work item&#39;s life cycle. Every action a work item can be asked to ..." alt="" coords="5,5,124,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="66,47,67,81,62,80,63,51"/>
+</map>

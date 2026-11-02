@@ -1,0 +1,5 @@
+<map id="WorkloadVisitor" name="WorkloadVisitor">
+<area shape="rect" id="Node000001" title="Shows who holds which work items and how many are still open." alt="" coords="5,81,130,109"/>
+<area shape="rect" id="Node000002" href="$classRuntimeVisitor.html" title="Declares one visit method per concrete runtime node." alt="" coords="8,5,127,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="69,47,70,81,65,80,66,51"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="WorkflowComponent" name="WorkflowComponent">
+<area shape="rect" id="Node000001" title="The base class for all nodes in the workflow definition tree." alt="" coords="146,5,303,33"/>
+<area shape="rect" id="Node000002" href="$classActivityDefinition.html" title="Represents a single leaf node (activity) in the static Workflow Definition tree." alt="" coords="5,81,140,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="186,41,101,83,98,78,181,39"/>
+<area shape="rect" id="Node000003" href="$classStageDefinition.html" title="Represents a grouping of work (a stage) within the static workflow blueprint." alt="" coords="164,81,285,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="226,47,227,82,222,79,223,51"/>
+<area shape="rect" id="Node000004" href="$classSubProcessDefinition.html" title="Represents a call to another workflow definition within the current blueprint." alt="" coords="309,81,468,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="268,37,362,80,357,81,267,42"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classWorkflowComponent.html" title="The base class for all nodes in the workflow definition tree." alt="" coords="5,57,162,85"/>
+<area shape="rect" id="Node000001" href="$classActivityDefinition.html" title="Represents a single leaf node (activity) in the static Workflow Definition tree." alt="" coords="222,5,356,33"/>
+<area shape="poly" id="edge35_Node000000_Node000001" title=" " alt="" coords="155,50,233,32,229,35,157,55"/>
+<area shape="rect" id="Node000002" href="$classStageDefinition.html" title="Represents a grouping of work (a stage) within the static workflow blueprint." alt="" coords="228,57,350,85"/>
+<area shape="poly" id="edge36_Node000000_Node000002" title=" " alt="" coords="177,69,230,71,225,72,177,74"/>
+<area shape="rect" id="Node000003" href="$classSubProcessDefinition.html" title="Represents a call to another workflow definition within the current blueprint." alt="" coords="210,109,368,137"/>
+<area shape="poly" id="edge37_Node000000_Node000003" title=" " alt="" coords="156,87,234,108,228,109,156,92"/>
+</map>

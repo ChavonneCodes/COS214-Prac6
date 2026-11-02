@@ -1,7 +1,19 @@
+/**
+ * @file AvailableState.h
+ * @brief Defines the AvailableState class.
+ */
 #ifndef AVAILABLESTATE_H
 #define AVAILABLESTATE_H
 
 #include "WorkItemState.h"
+/**
+ * @class AvailableState
+ * @brief ConcreteState for a work item that has been released and is waiting for an
+ * owner. It allows assign (binds the participant, counts the item in their
+ * workload and moves to AssignedState), escalate (moves to EscalatedState) and
+ * cancel (moves to CancelledState). assign is refused when no participant is
+ * given.
+ */
 class AvailableState: public WorkItemState{
 
     public:

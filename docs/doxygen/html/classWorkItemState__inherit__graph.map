@@ -1,0 +1,21 @@
+<map id="WorkItemState" name="WorkItemState">
+<area shape="rect" id="Node000001" title="This is the State participant for a work item&#39;s life cycle. Every action a work item can be asked to ..." alt="" coords="5,213,124,241"/>
+<area shape="rect" id="Node000002" href="$classAssignedState.html" title="ConcreteState for a work item that has an owner but has not been started. It allows start (moves to I..." alt="" coords="178,5,292,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="73,198,109,122,136,81,170,44,192,32,188,36,173,48,141,84,114,125,78,200"/>
+<area shape="rect" id="Node000003" href="$classAvailableState.html" title="ConcreteState for a work item that has been released and is waiting for an owner. It allows assign (b..." alt="" coords="177,57,292,85"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="80,199,118,147,142,120,170,96,194,83,191,87,173,100,146,124,122,151,85,202"/>
+<area shape="rect" id="Node000004" href="$classCancelledState.html" title="ConcreteState for a work item that was abandoned before it finished. It is a final state: it override..." alt="" coords="175,109,294,137"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="93,202,129,174,170,148,198,136,194,140,173,152,132,179,97,205"/>
+<area shape="rect" id="Node000005" href="$classCompletedState.html" title="ConcreteState for a work item that has finished successfully. It is a final state: it overrides no ac..." alt="" coords="172,161,298,189"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="125,206,189,188,185,191,128,211"/>
+<area shape="rect" id="Node000006" href="$classCreatedState.html" title="ConcreteState for a work item that exists in a running workflow but has not been released yet...." alt="" coords="182,213,288,241"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="138,225,183,226,179,229,140,230"/>
+<area shape="rect" id="Node000007" href="$classEscalatedState.html" title="ConcreteState for a work item that has been handed over for someone else to pick up,..." alt="" coords="176,265,294,293"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="126,243,189,263,185,266,127,249"/>
+<area shape="rect" id="Node000008" href="$classFailedState.html" title="ConcreteState for a work item whose work went wrong while it was in progress. It allows makeAvailable..." alt="" coords="188,317,282,345"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="95,248,132,276,173,302,199,316,194,317,170,307,129,280,95,254"/>
+<area shape="rect" id="Node000009" href="$classInProgressState.html" title="ConcreteState for a work item that its owner is currently working on. It allows complete (moves to Co..." alt="" coords="173,369,296,397"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="83,251,122,304,146,331,173,354,195,369,190,369,170,359,142,334,118,307,82,257"/>
+<area shape="rect" id="Node000010" href="$classRejectedState.html" title="ConcreteState for a work item whose assigned owner declined it. It allows makeAvailable (offers the i..." alt="" coords="179,421,291,449"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="77,253,114,329,141,370,173,406,193,421,187,420,170,411,136,374,109,332,75,258"/>
+</map>

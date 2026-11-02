@@ -4,7 +4,7 @@ using namespace std;
 WorkItemMemento::WorkItemMemento() : activityId("") , workItemId("") , state(nullptr),participant(nullptr) , dataSnapshot(""){
 }
 
-WorkItemMemento::WorkItemMemento(string activityId,string workItemId,Data& snapshot,WorkItemState* state,Participant* participant) : activityId(activityId) , workItemId(workItemId) , state(state != nullptr ? state->clone() : nullptr),participant(participant), dataSnapshot(snapshot){
+WorkItemMemento::WorkItemMemento(std::string activityId,std::string workItemId,Data& snapshot,WorkItemState* state,Participant* participant) : activityId(activityId) , workItemId(workItemId) , state(state != nullptr ? state->clone() : nullptr),participant(participant), dataSnapshot(snapshot){
 }
 
 WorkItemMemento::WorkItemMemento(const WorkItemMemento& other)

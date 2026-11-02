@@ -1,7 +1,19 @@
+/**
+ * @file CreatedState.h
+ * @brief Defines the CreatedState class.
+ */
 #ifndef CREATEDSTATE_H
 #define CREATEDSTATE_H
 
 #include "WorkItemState.h"
+/**
+ * @class CreatedState
+ * @brief ConcreteState for a work item that exists in a running workflow but has not
+ * been released yet. It allows makeAvailable (moves to AvailableState) and
+ * cancel (moves to CancelledState); every other action is refused. A created
+ * item has no owner, so cancelling it changes nobody's workload.
+ */
+
 class CreatedState: public WorkItemState{
 
     public:

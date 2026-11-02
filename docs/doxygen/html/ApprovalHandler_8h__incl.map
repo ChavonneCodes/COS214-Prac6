@@ -1,0 +1,14 @@
+<map id="ApprovalHandler.h" name="ApprovalHandler.h">
+<area shape="rect" id="Node000001" title="implements ApprovalHandler" alt="" coords="81,5,222,33"/>
+<area shape="rect" id="Node000002" href="$Request_8h_source.html" title=" " alt="" coords="68,81,155,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="146,31,128,69,124,66,143,36"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="132,232,190,260"/>
+<area shape="poly" id="edge7_Node000001_Node000005" title=" " alt="" coords="157,31,169,81,171,154,167,218,162,216,166,154,164,81,155,36"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,232,85,260"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="89,111,69,131,50,158,43,188,43,218,38,217,38,187,45,156,65,128,92,107"/>
+<area shape="rect" id="Node000004" href="$Data_8h.html" title="Defines the Dataclass." alt="" coords="60,157,124,184"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="109,107,102,143,97,141,107,112"/>
+<area shape="poly" id="edge6_Node000002_Node000005" title=" " alt="" coords="118,107,138,156,156,218,151,217,133,158,116,111"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="86,183,63,221,59,218,81,186"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="105,182,141,221,136,221,103,187"/>
+</map>

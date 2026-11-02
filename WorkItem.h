@@ -8,6 +8,10 @@
 #include "EventBus.h"      // Observer: WorkItem publishes events to the bus
 #include "WorkItemMemento.h"
 #include "Data.h"
+/**
+ * @class WorkItem
+ * @brief represents a single task
+ */
 
 
 class WorkItem : public RuntimeComponent {
@@ -116,15 +120,7 @@ public:
      */
     Participant* getAssignedParticipant() const;
 
-    /**
-     * @brief Assigns the item to a participant and sets its state to "ASSIGNED".
-     *
-     * If the item was already assigned, the previous participant loses one
-     * open item and the new participant gains one.
-     * @param participant Who to assign the item to (not owned).
-     * @return true on success, false (and no change) if participant is nullptr.
-     */
-    //bool assignTo(Participant* participant);
+    
 
     /**
      * @brief Restores the data and state from a saved memento.
@@ -133,8 +129,7 @@ public:
      * and its associated activity. The state is cloned before replacing
      * the current state.
      *
-     * @param memento Pointer to the memento to restore.
-     *        If nullptr, no action is performed.
+     * 
      */
     void restoreMemento(WorkItemMemento*);
     /**

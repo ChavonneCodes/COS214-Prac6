@@ -1,0 +1,5 @@
+<map id="AssignCommand" name="AssignCommand">
+<area shape="rect" id="Node000001" title="Defines the AssignCommand class." alt="" coords="5,81,137,109"/>
+<area shape="rect" id="Node000002" href="$classWorkflowAction.html" title="This is the Command participant. Every action performed on a work item is an object that can run itse..." alt="" coords="10,5,132,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="73,47,74,81,68,80,69,51"/>
+</map>

@@ -52,7 +52,7 @@ public:
      *
      * Does nothing by default. Override it when the visitor needs to know where
      * a stage ends, e.g. to indent a report.
-     * @param stage The stage that has just been left.
+     *
      */
     virtual void leaveStage(StageInstance& /*stage*/) {}
 };

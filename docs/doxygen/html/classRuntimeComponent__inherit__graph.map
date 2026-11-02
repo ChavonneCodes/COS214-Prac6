@@ -1,0 +1,23 @@
+<map id="RuntimeComponent" name="RuntimeComponent">
+<area shape="rect" id="Node000001" title="The base Component in the Composite pattern for running workflow instances." alt="" coords="285,188,436,216"/>
+<area shape="rect" id="Node000003" href="$classRuntimeComponentDecorator.html" title="Base decorator for runtime leaves, composites, and other decorators." alt="" coords="484,109,699,137"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="404,179,483,147,528,137,523,138,485,152,406,184"/>
+<area shape="rect" id="Node000009" href="$classStageInstance.html" title="Represents a live, running instance of a workflow stage." alt="" coords="535,161,648,189"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="451,189,537,181,532,182,452,194"/>
+<area shape="rect" id="Node000010" href="$classSubProcessInstance.html" title="Represents a live, running instance of a sub&#45;process call." alt="" coords="516,213,667,241"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="452,209,519,219,513,219,452,214"/>
+<area shape="rect" id="Node000011" href="$classWorkItem.html" title="represents a single task" alt="" coords="550,265,634,293"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="407,220,485,250,552,270,546,270,483,255,406,225"/>
+<area shape="rect" id="Node000002" href="$classIterable.html" title=" " alt="" coords="5,188,237,216"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="252,199,287,201,282,202,253,204"/>
+<area shape="rect" id="Node000004" href="$classAllowedStatesRuntimeDecorator.html" title="Restricts state names requested through this wrapper." alt="" coords="747,5,981,33"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="629,99,684,70,746,43,791,33,786,34,748,48,686,75,631,104"/>
+<area shape="rect" id="Node000005" href="$classLabelledRuntimeDecorator.html" title="Prints a label above a leaf or an entire composite subtree." alt="" coords="766,57,962,85"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="682,103,790,85,785,86,683,108"/>
+<area shape="rect" id="Node000006" href="$classLoggingRuntimeDecorator.html" title="Logs state&#45;change calls that return normally through this wrapper." alt="" coords="768,109,960,137"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="715,121,771,123,765,124,715,126"/>
+<area shape="rect" id="Node000007" href="$classPriorityRuntimeDecorator.html" title=" " alt="" coords="770,161,958,189"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="683,138,790,161,785,161,683,143"/>
+<area shape="rect" id="Node000008" href="$classSecurityRuntimeDecorator.html" title=" " alt="" coords="767,213,961,241"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="687,140,701,148,716,160,725,174,734,186,749,198,778,213,773,213,746,203,730,190,721,177,712,164,698,152,686,146"/>
+</map>

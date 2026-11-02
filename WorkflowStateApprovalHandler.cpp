@@ -3,7 +3,6 @@
 
 using namespace std;
 
-
 string WorkflowStateApprovalHandler::getName() const {
     return "WorkflowStateApprovalHandler";
 }

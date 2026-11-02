@@ -67,7 +67,7 @@ public:
     /**
      * @brief Adds a child component. Only valid for composite nodes.
      * @note By default, this does nothing and prints an error, as leaves cannot have children.
-     * @param child Pointer to the child component to add (unused in the base class).
+     * 
      */
     virtual void addChild(RuntimeComponent* /*child*/);
 

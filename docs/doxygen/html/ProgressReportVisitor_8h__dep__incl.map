@@ -1,0 +1,12 @@
+<map id="ProgressReportVisitor.h" name="ProgressReportVisitor.h">
+<area shape="rect" id="Node000001" title="Visitor that builds a progress / completion report of a runtime tree." alt="" coords="23,5,196,33"/>
+<area shape="rect" id="Node000002" href="$DemoRunner_8h.html" title="The code both demo scenarios share: one engine and one run loop." alt="" coords="5,157,123,184"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="75,45,60,61,46,82,43,101,45,121,59,156,53,156,40,122,37,101,42,80,56,58,77,40"/>
+<area shape="rect" id="Node000004" href="$DemoTrace_8h.html" title="Records a demo run so the GUI (gui/index.html) can replay what the engine really did." alt="" coords="56,81,162,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="110,46,112,81,107,80,109,51"/>
+<area shape="rect" id="Node000005" href="$ProgressReportVisitor_8cpp.html" title="Implementation of ProgressReportVisitor (Visitor pattern: ConcreteVisitor)." alt="" coords="187,81,376,109"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="154,37,253,79,248,82,154,42"/>
+<area shape="rect" id="Node000003" href="$main_8cpp.html" title="TIVIDY demo: one engine runs two unrelated processes." alt="" coords="23,232,105,260"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="66,198,67,233,61,231,62,202"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="95,120,74,158,70,155,92,124"/>
+</map>

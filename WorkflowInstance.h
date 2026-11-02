@@ -80,6 +80,10 @@ public:
      * @return The state string (e.g., "RUNNING").
      */
     std::string getState() const;
+    // WorkflowInstance.h
+/** @brief Sets the instance's current state.
+ * @param newState Name of the new state.
+  */ 
     void setState(const std::string& newState);
 
 

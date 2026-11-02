@@ -1,0 +1,16 @@
+<map id="makeAvailableCommand.h" name="makeAvailableCommand.h">
+<area shape="rect" id="Node000001" title="Defines the makeAvailableCommand class." alt="" coords="139,5,336,33"/>
+<area shape="rect" id="Node000002" href="$WorkflowEngine_8h_source.html" title=" " alt="" coords="100,81,237,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="213,47,183,82,179,79,216,43"/>
+<area shape="rect" id="Node000004" href="$main_8cpp.html" title="TIVIDY demo: one engine runs two unrelated processes." alt="" coords="197,308,278,336"/>
+<area shape="poly" id="edge8_Node000001_Node000004" title=" " alt="" coords="271,39,328,88,355,120,375,156,380,181,376,205,364,228,347,249,305,284,264,310,262,305,302,280,343,245,360,225,371,203,375,181,370,158,350,123,324,91,270,45"/>
+<area shape="rect" id="Node000003" href="$DemoRunner_8h.html" title="The code both demo scenarios share: one engine and one run loop." alt="" coords="110,232,227,260"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="83,111,46,129,29,142,15,158,9,172,10,184,18,195,31,204,68,221,111,233,107,236,66,226,28,209,14,198,5,186,3,171,10,155,25,138,43,125,86,107"/>
+<area shape="rect" id="Node000005" href="$DemoTrace_8h.html" title="Records a demo run so the GUI (gui/index.html) can replay what the engine really did." alt="" coords="24,157,131,184"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="139,121,96,158,92,154,142,117"/>
+<area shape="rect" id="Node000006" href="$TimeoutEscalationHandler_8h.html" title="Defines the TimeoutEscalationHandler class." alt="" coords="155,157,360,184"/>
+<area shape="poly" id="edge6_Node000002_Node000006" title=" " alt="" coords="196,116,244,156,239,157,196,121"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="192,269,228,308,223,307,190,274"/>
+<area shape="poly" id="edge5_Node000005_Node000003" title=" " alt="" coords="106,192,155,231,150,233,105,197"/>
+<area shape="poly" id="edge7_Node000006_Node000003" title=" " alt="" coords="232,193,186,234,183,230,228,196"/>
+</map>

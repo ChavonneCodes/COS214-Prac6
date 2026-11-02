@@ -1,0 +1,26 @@
+<map id="SecurityRuntimeDecorator.h" name="SecurityRuntimeDecorator.h">
+<area shape="rect" id="Node000001" title="ConcreteDecorator authorizing runtime mutations by participant role." alt="" coords="186,5,390,33"/>
+<area shape="rect" id="Node000002" href="$RuntimeComponentDecorator_8h.html" title="Owning wrapper that forwards runtime component operations." alt="" coords="100,81,326,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="273,36,239,72,236,68,276,32"/>
+<area shape="rect" id="Node000011" href="$Participant_8h.html" title="A person (or system) who can perform work items." alt="" coords="366,157,468,184"/>
+<area shape="poly" id="edge11_Node000001_Node000011" title=" " alt="" coords="300,31,399,144,393,145,298,36"/>
+<area shape="rect" id="Node000003" href="$RuntimeComponent_8h.html" title="Defines the RuntimeComponent abstract base class." alt="" coords="78,157,242,184"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="206,107,180,146,176,142,202,111"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="5,232,91,260"/>
+<area shape="poly" id="edge10_Node000002_Node000007" title=" " alt="" coords="144,111,104,130,85,142,69,158,55,187,50,218,45,216,50,185,65,155,82,138,102,125,148,107"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="266,157,342,184"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="230,107,279,146,273,147,229,112"/>
+<area shape="rect" id="Node000004" href="$Iterator_8h.html" title="Header file defining template interfaces and concrete classes for the Iterator and Strategy design pa..." alt="" coords="120,232,200,260"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="161,183,163,218,157,216,159,187"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="138,187,82,226,79,222,141,183"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="264,232,322,260"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="184,182,259,224,254,226,183,188"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="366,232,428,260"/>
+<area shape="poly" id="edge8_Node000003_Node000009" title=" " alt="" coords="203,182,354,229,349,232,202,188"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="90,308,147,336"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="155,259,135,296,132,292,150,262"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="171,308,232,336"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="169,258,189,295,184,294,166,263"/>
+<area shape="poly" id="edge12_Node000011_Node000008" title=" " alt="" coords="398,184,330,227,327,222,393,186"/>
+<area shape="poly" id="edge13_Node000011_Node000009" title=" " alt="" coords="416,183,407,219,403,216,412,187"/>
+</map>

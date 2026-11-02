@@ -94,13 +94,12 @@ class Request{
         //setters
         /**
         *@brief Updates the requested action.
-        *@param action The new action to assign to the request.
         */
         void setAction(const std::string&);
 
         /**
         *@brief Updates the current workflow state.
-        *@param currentState The new workflow state.
+        *
         */
         void setCurrentState(const std::string&);
 
@@ -112,13 +111,13 @@ class Request{
 
         /**
         *@brief Updates the reason for the request.
-        *@param reason The new reason for submitting the request.
+        *
         */
         void setReason(const std::string&);
         
         /**
         *@brief Updates the role required to authorize the request.
-        *@param requiredRoleId The new required role identifier.
+        *
         */
         void setRequiredRoleId(const std::string&);
         

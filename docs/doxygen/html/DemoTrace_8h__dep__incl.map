@@ -1,0 +1,7 @@
+<map id="DemoTrace.h" name="DemoTrace.h">
+<area shape="rect" id="Node000001" title="Records a demo run so the GUI (gui/index.html) can replay what the engine really did." alt="" coords="11,5,117,33"/>
+<area shape="rect" id="Node000002" href="$DemoRunner_8h.html" title="The code both demo scenarios share: one engine and one run loop." alt="" coords="5,81,123,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="65,46,67,81,61,80,63,51"/>
+<area shape="rect" id="Node000003" href="$main_8cpp.html" title="TIVIDY demo: one engine runs two unrelated processes." alt="" coords="23,157,105,184"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="66,123,67,157,61,155,62,126"/>
+</map>
