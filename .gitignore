@@ -2,6 +2,6 @@
 *.exe
 *.log
 Makefile
-.gitignore
 *.swp
 build/
+docs/doxygen/
