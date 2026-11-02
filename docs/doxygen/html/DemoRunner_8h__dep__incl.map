@@ -1,5 +1,0 @@
-<map id="DemoRunner.h" name="DemoRunner.h">
-<area shape="rect" id="Node000001" title="The code both demo scenarios share: one engine and one run loop." alt="" coords="5,5,123,33"/>
-<area shape="rect" id="Node000002" href="$main_8cpp.html" title="TIVIDY demo: one engine runs two unrelated processes." alt="" coords="23,81,105,109"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="66,47,67,81,61,80,62,51"/>
-</map>

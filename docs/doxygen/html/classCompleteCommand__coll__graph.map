@@ -1,5 +1,0 @@
-<map id="CompleteCommand" name="CompleteCommand">
-<area shape="rect" id="Node000001" title="ConcreteCommand that finishes an In_Progress work item, moving it to Completed. The owner stays on re..." alt="" coords="5,81,157,109"/>
-<area shape="rect" id="Node000002" href="$classWorkflowAction.html" title="This is the Command participant. Every action performed on a work item is an object that can run itse..." alt="" coords="20,5,142,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,47,84,81,78,80,79,51"/>
-</map>

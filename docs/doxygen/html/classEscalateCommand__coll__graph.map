@@ -1,5 +1,0 @@
-<map id="EscalateCommand" name="EscalateCommand">
-<area shape="rect" id="Node000001" title="ConcreteCommand that hands a work item over for someone else to pick up, moving an Available,..." alt="" coords="5,81,149,109"/>
-<area shape="rect" id="Node000002" href="$classWorkflowAction.html" title="This is the Command participant. Every action performed on a work item is an object that can run itse..." alt="" coords="16,5,138,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="79,47,80,81,74,80,75,51"/>
-</map>

@@ -1,5 +1,0 @@
-<map id="WorkflowBuilder" name="WorkflowBuilder">
-<area shape="rect" id="Node000001" title="The Abstract Builder interface for constructing a WorkflowDefinition." alt="" coords="34,5,162,33"/>
-<area shape="rect" id="Node000002" href="$classConcreteWorkflowBuilder.html" title="The Concrete Builder in the Builder pattern." alt="" coords="5,81,191,109"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="100,47,100,82,96,80,96,51"/>
-</map>

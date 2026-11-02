@@ -1,5 +1,0 @@
-<map id="BFSTraversalStrategy&lt; T &gt;" name="BFSTraversalStrategy&lt; T &gt;">
-<area shape="rect" id="Node000001" title="Breadth&#45;First Search (BFS) implementation of TraversalStrategy using FIFO (std::queue)." alt="" coords="5,81,203,109"/>
-<area shape="rect" id="Node000002" href="$classTraversalStrategy.html" title="Abstract strategy interface defining how nodes are buffered and retrieved during iteration." alt="" coords="17,5,191,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="106,47,106,82,102,79,102,51"/>
-</map>

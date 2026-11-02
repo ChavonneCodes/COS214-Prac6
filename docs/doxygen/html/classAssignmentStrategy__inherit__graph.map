@@ -1,9 +1,0 @@
-<map id="AssignmentStrategy" name="AssignmentStrategy">
-<area shape="rect" id="Node000001" title="Decides which participant should receive a work item." alt="" coords="204,5,358,33"/>
-<area shape="rect" id="Node000002" href="$classRoleBasedAssignment.html" title="Picks the first candidate who holds the role the activity requires." alt="" coords="5,81,173,109"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="235,40,124,83,122,78,230,38"/>
-<area shape="rect" id="Node000003" href="$classRuleBasedAssignment.html" title="Uses a predicate to decide who may take a work item." alt="" coords="197,81,365,109"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="283,47,283,82,279,79,279,51"/>
-<area shape="rect" id="Node000004" href="$classWorkloadBasedAssignment.html" title="Among candidates who hold the required role, picks the one with the fewest open work items." alt="" coords="389,81,589,109"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="333,36,454,80,449,81,332,41"/>
-</map>

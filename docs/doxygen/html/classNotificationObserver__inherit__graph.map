@@ -1,5 +1,0 @@
-<map id="NotificationObserver" name="NotificationObserver">
-<area shape="rect" id="Node000001" title="Reacts only to the event name it watches and &quot;notifies&quot; someone." alt="" coords="5,81,161,109"/>
-<area shape="rect" id="Node000002" href="$classWorkFlowObserver.html" title="Anything that wants to react to workflow events implements this interface." alt="" coords="11,5,155,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,47,86,81,80,80,81,51"/>
-</map>

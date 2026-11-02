@@ -1,5 +1,0 @@
-<map id="AuditObserver" name="AuditObserver">
-<area shape="rect" id="Node000001" title="Records every event it receives, in order, as one text line each." alt="" coords="20,81,135,109"/>
-<area shape="rect" id="Node000002" href="$classWorkFlowObserver.html" title="Anything that wants to react to workflow events implements this interface." alt="" coords="5,5,150,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="79,47,80,81,75,80,76,51"/>
-</map>

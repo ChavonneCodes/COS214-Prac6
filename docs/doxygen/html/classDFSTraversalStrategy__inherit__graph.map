@@ -1,5 +1,0 @@
-<map id="DFSTraversalStrategy&lt; T &gt;" name="DFSTraversalStrategy&lt; T &gt;">
-<area shape="rect" id="Node000001" title="Depth&#45;First Search (DFS) implementation of TraversalStrategy using LIFO (std::stack)." alt="" coords="5,81,204,109"/>
-<area shape="rect" id="Node000002" href="$classTraversalStrategy.html" title="Abstract strategy interface defining how nodes are buffered and retrieved during iteration." alt="" coords="18,5,191,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="106,47,107,82,102,79,103,51"/>
-</map>

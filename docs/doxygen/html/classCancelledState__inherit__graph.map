@@ -1,5 +1,0 @@
-<map id="CancelledState" name="CancelledState">
-<area shape="rect" id="Node000001" title="ConcreteState for a work item that was abandoned before it finished. It is a final state: it override..." alt="" coords="5,81,125,109"/>
-<area shape="rect" id="Node000002" href="$classWorkItemState.html" title="This is the State participant for a work item&#39;s life cycle. Every action a work item can be asked to ..." alt="" coords="6,5,124,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="67,47,68,81,62,80,63,51"/>
-</map>

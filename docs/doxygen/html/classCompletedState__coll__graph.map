@@ -1,5 +1,0 @@
-<map id="CompletedState" name="CompletedState">
-<area shape="rect" id="Node000001" title="ConcreteState for a work item that has finished successfully. It is a final state: it overrides no ac..." alt="" coords="5,81,132,109"/>
-<area shape="rect" id="Node000002" href="$classWorkItemState.html" title="This is the State participant for a work item&#39;s life cycle. Every action a work item can be asked to ..." alt="" coords="9,5,128,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="70,47,71,81,66,80,67,51"/>
-</map>

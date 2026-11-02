@@ -1,7 +1,0 @@
-<map id="WorkFlowEvent.cpp" name="WorkFlowEvent.cpp">
-<area shape="rect" id="Node000001" title="Implementation of WorkFlowEvent (Observer pattern: the event message)." alt="" coords="5,5,155,33"/>
-<area shape="rect" id="Node000002" href="$WorkFlowEvent_8h.html" title="Message published on the EventBus when something happens to a work item." alt="" coords="13,81,147,109"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,31,83,66,77,65,79,36"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="51,157,109,184"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="82,107,83,142,77,140,78,111"/>
-</map>

@@ -1,5 +1,0 @@
-<map id="SubProcessDefinition" name="SubProcessDefinition">
-<area shape="rect" id="Node000001" title="Represents a call to another workflow definition within the current blueprint." alt="" coords="5,81,164,109"/>
-<area shape="rect" id="Node000002" href="$classWorkflowComponent.html" title="The base class for all nodes in the workflow definition tree." alt="" coords="6,5,163,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="86,47,87,81,82,80,83,51"/>
-</map>

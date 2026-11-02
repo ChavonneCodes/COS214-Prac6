@@ -1,5 +1,0 @@
-<map id="StartCommand" name="StartCommand">
-<area shape="rect" id="Node000001" title="ConcreteCommand that starts work on an Assigned work item, moving it to In_Progress...." alt="" coords="7,81,126,109"/>
-<area shape="rect" id="Node000002" href="$classWorkflowAction.html" title="This is the Command participant. Every action performed on a work item is an object that can run itse..." alt="" coords="5,5,128,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="68,47,69,81,64,80,65,51"/>
-</map>

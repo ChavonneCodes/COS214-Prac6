@@ -1,5 +1,0 @@
-<map id="WorkflowBlueprint" name="WorkflowBlueprint">
-<area shape="rect" id="Node000001" title="A Data Transfer Object (DTO) carrying the raw configuration for a workflow." alt="" coords="8,106,149,134"/>
-<area shape="rect" id="Node000002" href="$structWorkflowNodeData.html" title="A raw data representation of a single node in the workflow hierarchy." alt="" coords="5,5,152,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,47,81,106,76,105,76,50"/>
-</map>

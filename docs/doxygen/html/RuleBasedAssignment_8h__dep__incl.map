@@ -1,5 +1,0 @@
-<map id="RuleBasedAssignment.h" name="RuleBasedAssignment.h">
-<area shape="rect" id="Node000001" title="Assignment decided by a rule supplied from outside." alt="" coords="13,5,192,33"/>
-<area shape="rect" id="Node000002" href="$RuleBasedAssignment_8cpp.html" title="Implementation of RuleBasedAssignment (Strategy pattern: ConcreteStrategy)." alt="" coords="5,81,200,109"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="104,47,105,82,100,80,101,51"/>
-</map>

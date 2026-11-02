@@ -1,5 +1,0 @@
-<map id="TimeoutEscalationHandler" name="TimeoutEscalationHandler">
-<area shape="rect" id="Node000001" title="Moves a task along after a certain amount of time." alt="" coords="5,81,199,109"/>
-<area shape="rect" id="Node000002" href="$classApprovalHandler.html" title="chain of responsibility, who handles a task?." alt="" coords="37,5,167,33"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="104,47,104,82,100,80,100,51"/>
-</map>
