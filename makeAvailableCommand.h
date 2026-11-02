@@ -20,12 +20,11 @@ class makeAvailableCommand: public WorkflowAction{
     private:
         WorkItem* receiver;
         std::vector<WorkItemMemento> myHistory;
-    public:
-    /**
- * @brief Creates a command that avails the given work item.
- * @param r Non-owning pointer to the work item. The caller keeps ownership
- *          and must keep it alive until execute() has run.
- */
+     public:
+     /**
+         * @brief creates makeAvailableCommand
+         * @param r pinter to workItem
+         */
         makeAvailableCommand(WorkItem* r);
          /**
          * @brief calls the appropriate method in WorkItem to execute the command
