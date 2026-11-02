@@ -7,6 +7,7 @@
 class IteratorTest : public ::testing::Test {
 protected:
     StageInstance* stageInstanceRoot;
+    std::vector<StageDefinition*>definitions;
 
     void SetUp() override {
         // Build the tree structure with IDs matching their names
@@ -22,11 +23,23 @@ protected:
         stageInstance0->addChild(stageInstance02);
         stageInstanceRoot->addChild(stageInstance1);
         stageInstanceRoot->addChild(stageInstance2);
+
+        definitions = {
+        stageInstanceRoot->getDefinition(),
+        stageInstance0->getDefinition(),
+        stageInstance01->getDefinition(),
+        stageInstance02->getDefinition(),
+        stageInstance1->getDefinition(),
+        stageInstance2->getDefinition()
+};
+
     }
 
     void TearDown() override {
         // Clean up to prevent memory leaks during test runs
         delete stageInstanceRoot; 
+        for (auto* def : definitions)
+        delete def;
     }
 };
 
