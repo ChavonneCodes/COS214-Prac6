@@ -45,6 +45,7 @@ TEST_F(IteratorTest, DFSReturnsCorrectOrder) {
     };
 
     EXPECT_EQ(actualOrder, expectedOrder);
+    delete iterDFS; // Clean up the iterator to prevent memory leaks
 }
 
 TEST_F(IteratorTest, BFSReturnsCorrectOrder) {
@@ -61,4 +62,5 @@ TEST_F(IteratorTest, BFSReturnsCorrectOrder) {
 	    { "name2", "name1", "name0", "name02", "name01" };
 
     EXPECT_EQ(actualOrder, expectedOrder);
+    delete iterBFS; // Clean up the iterator to prevent memory leaks
 }
