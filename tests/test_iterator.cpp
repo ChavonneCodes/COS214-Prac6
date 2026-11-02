@@ -24,15 +24,6 @@ protected:
         stageInstanceRoot->addChild(stageInstance1);
         stageInstanceRoot->addChild(stageInstance2);
 
-        definitions = {
-        stageInstanceRoot->getDefinition(),
-        stageInstance0->getDefinition(),
-        stageInstance01->getDefinition(),
-        stageInstance02->getDefinition(),
-        stageInstance1->getDefinition(),
-        stageInstance2->getDefinition()
-};
-
     }
 
     void TearDown() override {
