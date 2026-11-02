@@ -1,0 +1,10 @@
+build/
+*.o
+*.a
+*.so
+main
+scenario1
+run_tests
+.git
+.vscode
+*.log

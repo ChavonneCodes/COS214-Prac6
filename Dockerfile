@@ -25,6 +25,7 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN make main scenario1 run_tests
+RUN make clean || true
+RUN make -B main scenario1 run_tests
 
 CMD ["/bin/bash"]
