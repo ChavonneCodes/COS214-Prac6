@@ -231,6 +231,7 @@ footer .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:
 #console h2.title { font-size:clamp(30px,3.6vw,44px); margin:0; }
 #console .console-head { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap; margin-bottom:22px; }
 #console .console-grid { max-width:none; padding:0; }
+#console .next { background:var(--only-bg); color:#b34407; font-weight:600; font-size:13px; border-radius:8px; padding:7px 10px; margin-top:8px; }
 #console .card h1 { font-size:20px; letter-spacing:0; line-height:1.3; }
 #console .card h2 { font-size:14px; letter-spacing:0; line-height:1.5; margin-bottom:8px; }
 #console button { font-family:inherit; }
@@ -685,9 +686,19 @@ function treeHtml(tree) {
 
 function actionsHtml(node) {
   if (!node) return '<h2>Actions</h2><p class="empty">Select a work item in the tree. You can try anything: the item&#39;s state decides.</p>';
-  var people = data.people.filter(function (p) { return p.roles.indexOf(node.role) >= 0; });
+  var matching = data.people.filter(function (p) { return p.roles.indexOf(node.role) >= 0; });
+  var roleLevel = Math.min.apply(null, matching.map(function (p) { return p.level; }));
+  var senior = data.people.filter(function (p) { return p.level > roleLevel; });
+  var people = node.state === 'Escalated' && senior.length ? senior : matching;   // escalation hands work upward
+  var next = {
+    Escalated: 'Escalated: only Assign or Cancel work now. Hand it to someone more senior to carry on.',
+    Rejected: 'Rejected: use Make available to offer it again, or Cancel it.',
+    Failed: 'Failed: use Make available to try again, or Cancel it.',
+    Available: 'Available: Assign it to someone to carry on.'
+  }[node.state];
   var html = '<h2>' + esc(node.name) + ' ' + pill(node.state) + '</h2><p class="hint">Needs ' + esc(node.role) + ', held by ' + esc(node.who || 'nobody') +
-    (node.active ? '. Routing is here.' : '. Routing has not reached this step.') + '</p><div class="actions">';
+    (data.selected.ended ? '. The case has ended.' : node.active ? '. Routing is here.' : '. Routing has not reached this step.') + '</p>' +
+    (next && node.active ? '<p class="next">' + next + '</p>' : '') + '<div class="actions">';
   html += '<div class="inline"><select id="who">' + people.map(function (p) { return '<option value="' + esc(p.id) + '">' + esc(p.name) + ' (' + p.open + ' open)</option>'; }).join('') +
     '</select><button class="btn" data-action="assign">Assign</button></div>';
   [['available', 'Make available'], ['start', 'Start']].forEach(function (a) { html += '<button class="btn" data-action="' + a[0] + '">' + a[1] + '</button>'; });
@@ -742,6 +753,7 @@ function renderDetail() {
     '<button class="btn spacer" id="undo"' + (s.canUndo ? '' : ' disabled') + '>Undo last</button></div>' +
     '<p class="hint">' + esc(s.id) + (s.budget ? ', budget R' + esc(Number(s.budget).toLocaleString('en-ZA')) : '') +
     (s.parent ? ', sub-process of ' + esc(s.parent) : '') + ', ' + s.done + ' of ' + s.total + ' work items done</p>' +
+    (s.ended ? '<p class="next">' + esc(s.ended) + '.</p>' : '') +
     '<div class="lc-bar"><i style="width:' + s.percent + '%"></i></div></div>' +
     '<div class="two"><div class="card"><h2>Live tree</h2>' + treeHtml(s.tree) + '</div>' +
     '<div class="stack"><div class="card">' + actionsHtml(node) + '</div><div class="card"><h2>Routing</h2>' + edgesHtml(s.edges) + '</div></div></div>' +

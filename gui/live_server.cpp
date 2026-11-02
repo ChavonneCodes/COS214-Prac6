@@ -110,6 +110,7 @@ struct Case {
     std::string callStep;                    ///< Step of the parent that this case runs.
     AssignmentStrategy* strategy = nullptr;  ///< Assignment rule (not owned, may be null).
     bool finished = false;
+    std::string ended;                       ///< Why the case stopped (empty while it is running).
     std::vector<std::string> active;         ///< Steps routing has reached and not left.
     std::vector<std::vector<std::string>> undoStack; ///< Active steps before each undoable command.
     std::vector<FeedLine> feed;
@@ -184,7 +185,10 @@ public:
         commands["cancel"] = [](WorkItem* item, Participant*) { return new CancelCommand(item); };
 
         afterCommand["complete"] = [this](Case& c, WorkItem* item, const std::string& outcome) { route(c, item->getId(), outcome); };
-        afterCommand["cancel"] = [this](Case& c, WorkItem*, const std::string&) { stop(c); };
+        afterCommand["cancel"] = [this](Case& c, WorkItem* item, const std::string&) { stop(c, item->getName()); };
+        afterCommand["escalate"] = [](Case& c, WorkItem* item, const std::string&) {
+            say(c, "info", item->getName() + " is waiting for someone more senior to take it over", "State");
+        };
     }
 
     /** @brief Starts a new case of a process and returns its id. */
@@ -223,6 +227,10 @@ public:
         const std::string itemId = params.at("item"), action = params.at("action");
         WorkItem* item = instance->findWorkItem(itemId);
         if (!item) throw std::runtime_error("There is no work item " + itemId + " in this case");
+        if (c.finished) {
+            say(c, "refused", "Refused: " + action + " on " + item->getName() + ". " + c.ended, "State");
+            return;
+        }
         if (std::find(c.active.begin(), c.active.end(), itemId) == c.active.end()) {
             say(c, "refused", "Refused: " + action + " on " + item->getName() + ". Routing has not made this step available",
                 "Strategy (routing)");
@@ -258,6 +266,7 @@ public:
         c.active = c.undoStack.back();
         c.undoStack.pop_back();
         c.finished = false;
+        c.ended.clear();
         engine.getInstance(c.id)->setState("RUNNING");
         say(c, "undo", "Undo restored the snapshot taken before the last command", "Command + Memento + Prototype");
     }
@@ -596,6 +605,7 @@ private:
     void finish(Case& c) {
         engine.getInstance(c.id)->setState("COMPLETED");
         c.finished = true;
+        c.ended = "This case has finished";
         bus.notify(WorkFlowEvent("INSTANCE_COMPLETED", c.id, "-", "COMPLETED"));
         say(c, "info", "Case finished", "Observer");
         if (c.parent) {
@@ -606,11 +616,13 @@ private:
         }
     }
 
-    void stop(Case& c) {
+    void stop(Case& c, const std::string& stepName) {
         engine.getInstance(c.id)->setState("CANCELLED");
         c.finished = true;
+        c.ended = "This case stopped because " + stepName + " was cancelled. Undo brings it back";
         c.active.clear();
-        say(c, "info", "Step cancelled, so this case stops here. Undo brings it back", "State");
+        say(c, "info", c.ended, "State");
+        if (c.parent) say(*c.parent, "info", "Sub-process " + c.id + " was cancelled, so this case waits until that is undone", "Composite");
     }
 
     std::string processesJson() {
@@ -636,6 +648,7 @@ private:
         for (Participant* person : everyone) {
             out.push_back("{\"id\":" + quote(person->getParticipantId()) + ",\"name\":" + quote(person->getName()) +
                           ",\"roles\":" + quoteAll(rolesOf.at(person->getParticipantId())) +
+                          ",\"level\":" + std::to_string(person->getLevel()) +
                           ",\"open\":" + std::to_string(person->getOpenItems()) + "}");
         }
         return array(out);
@@ -710,7 +723,7 @@ private:
         return "{\"id\":" + quote(c.id) + ",\"title\":" + quote(c.title) + ",\"budget\":" + quote(c.budget) +
                ",\"state\":" + quote(engine.getInstance(c.id)->getState()) +
                ",\"parent\":" + quote(c.parent ? c.parent->id : "") +
-               ",\"guarded\":" + (c.guard ? "true" : "false") +
+               ",\"ended\":" + quote(c.ended) + ",\"guarded\":" + (c.guard ? "true" : "false") +
                ",\"canUndo\":" + (c.undoStack.empty() ? "false" : "true") +
                ",\"done\":" + std::to_string(progress.getCompletedItems()) +
                ",\"total\":" + std::to_string(progress.getTotalItems()) +
