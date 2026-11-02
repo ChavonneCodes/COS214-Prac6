@@ -9,7 +9,7 @@ protected:
     StageInstance* stageInstanceRoot;
     std::vector<StageDefinition*>definitions;
 
-    void SetUp() override {
+    /*void SetUp() override {
         // Build the tree structure with IDs matching their names
         stageInstanceRoot = new StageInstance("root", new StageDefinition("root", "root"));
         StageInstance* stageInstance0 = new StageInstance("name0", new StageDefinition("name0", "name0"));
@@ -24,7 +24,27 @@ protected:
         stageInstanceRoot->addChild(stageInstance1);
         stageInstanceRoot->addChild(stageInstance2);
 
-    }
+    }*/
+    void SetUp() override {
+    auto make = [this](const std::string& id) -> StageInstance* {
+        auto* def = new StageDefinition(id, id);
+        definitions.push_back(def);           // ← this is the key line
+        return new StageInstance(id, def);
+    };
+
+    stageInstanceRoot       = make("root");
+    StageInstance* name0    = make("name0");
+    StageInstance* name01   = make("name01");
+    StageInstance* name02   = make("name02");
+    StageInstance* name1    = make("name1");
+    StageInstance* name2    = make("name2");
+
+    stageInstanceRoot->addChild(name0);
+    name0->addChild(name01);
+    name0->addChild(name02);
+    stageInstanceRoot->addChild(name1);
+    stageInstanceRoot->addChild(name2);
+}
 
     /*void TearDown() override {
         // Clean up to prevent memory leaks during test runs
